@@ -1,0 +1,93 @@
+.Login-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 100px; /* Espaço entre as sessoes de Login e Cadastro */
+  padding: 100px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  color: white;
+  
+}
+
+.auth-box {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  width: 400px; /* cada box terá largura fixa */
+  height: 400px;
+  padding: 40px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  padding: 40px;
+}
+.auth-section {
+  display: flex;
+  flex-direction: column;
+    gap: 15px;
+}
+
+.auth-section h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+
+}
+
+.auth-section label {
+  margin-top: 10px;
+  font-size: 14px;
+  
+}
+
+.auth-section input {
+  margin-top: 5px;
+  padding: 10px;
+  border: none;
+  border-radius: 25px;
+  width: 100%;
+    background-color: rgba(245, 180, 3, 0.548);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(221, 182, 6, 0.253);
+}
+
+.checkbox-group {
+  margin: 12px 0;
+  display: flex;
+
+  align-items: center;
+}
+
+.checkbox-group input {
+  margin-right: 8px;
+  justify-content: center;
+  
+}
+
+.btn {
+  padding: 12px;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  width: 200px;
+}
+
+.btn.yellow {
+  background-color: #f1c40f;
+  color: #000;
+}
+
+.btn.red {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+
+
+form{
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}

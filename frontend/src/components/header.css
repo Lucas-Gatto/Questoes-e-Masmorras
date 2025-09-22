@@ -1,0 +1,21 @@
+header {
+    height: 60px;
+    background-color: #000000;
+    color: rgb(247, 182, 5);
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Old English Text MT';
+    padding: 0px 30px;
+
+}
+
+a {
+
+    color: rgb(247, 182, 5);
+    text-decoration: inherit;
+}
+
+.logo {
+    height: 40px;
+}

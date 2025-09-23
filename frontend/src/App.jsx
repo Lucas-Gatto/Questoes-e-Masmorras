@@ -6,6 +6,7 @@ import Footer from './components/footer'
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import Home from './pages/home'
 import Login from './pages/login'
+import HeaderLogado from './components/header-logado'
 
 
 function App() {
@@ -15,7 +16,7 @@ function App() {
       <BrowserRouter>
 
         <Header />
-
+        <HeaderLogado/>
        
         <main className='main-content'>
         <Routes>

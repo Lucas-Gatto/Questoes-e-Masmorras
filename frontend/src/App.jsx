@@ -11,21 +11,21 @@ import Login from './pages/login'
 function App() {
 
   return (
-    <>
+     <div className="app-container"> 
       <BrowserRouter>
 
         <Header />
 
-        <Background />
+       
         <main className='main-content'>
         <Routes>
           <Route path='/' element={<Home />} />
-           <Route path='/login' element={<Login />} />
+            <Route path='/login' element={<Login />} />
         </Routes>
         </main>
         <Footer />
       </BrowserRouter>
-    </>
+    </div>
   )
 }
 

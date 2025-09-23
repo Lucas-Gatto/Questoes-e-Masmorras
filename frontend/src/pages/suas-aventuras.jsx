@@ -1,11 +1,14 @@
 import React from 'react'
 import Aventura from '../components/aventura.jsx'
+import '../pages/suas-aventuras.css'
 
 const SuasAventuras = () => {
   return (
-    <div>
-        <Aventura/>
-    </div>
+    <main className='suas-aventuras'>
+      <div>
+       <Aventura/>
+       </div>
+    </main>
   )
 }
 

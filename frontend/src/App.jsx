@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import Home from './pages/home'
 import Login from './pages/login'
 import HeaderLogado from './components/header-logado'
+import SuasAventuras from './pages/suas-aventuras'
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
+            <Route path='/suas-aventuras' element={<SuasAventuras />} />
         </Routes>
         </main>
         <Footer />

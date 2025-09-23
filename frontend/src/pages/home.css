@@ -11,10 +11,10 @@
 }
 
 .scroll-title{
-  font-family: 'Old English Text MT';
+  font-family: 'MedievalSharp', cursive;
 }
 
-.scroll-container {
+.img-pergaminho {
   width: 100%;
   max-width: 700px;
   min-height: 450px;
@@ -29,7 +29,7 @@
 }
 
 .signup-button {
-  font-family: 'old english text mt';
+  font-family: 'MedievalSharp';
   padding: 12px 35px;
   background-color: #C68700; 
   font-size: 22px;

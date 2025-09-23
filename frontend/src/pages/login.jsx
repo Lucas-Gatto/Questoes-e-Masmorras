@@ -1,47 +1,49 @@
 import React from 'react';
 import './login.css';
+import bonecos from '../assets/bonecos.png';
 
 function Login() {
   return (
-    <div className="Login-container">
-
-      <div className="auth-box">
-        <div className="auth-section">
+    <div className="login-page-container">
+      {/* Container para os formulários e a imagem */}
+      <div className="auth-wrapper">
+        
+        {/* Painel de Login (Esquerda) */}
+        <div className="auth-box">
           <h2>Bem vindo de Volta!</h2>
           <form>
-            <label>Usuário:</label>
-            <input type="email" placeholder="login@gmail.com" />
+            <label htmlFor="login-usuario">Usuário:</label>
+            <input id="login-usuario" type="email" defaultValue="login@gmail.com" />
 
-            <label>Senha:</label>
-            <input type="password" placeholder="**********" />
+            <label htmlFor="login-senha">Senha:</label>
+            <input id="login-senha" type="password" defaultValue="**********" />
 
-            <div className="checkbox-group">
-              <label>Esqueci minha senha</label>
-            </div>
+            <a href="#" className="forgot-password">Esqueci minha senha</a>
 
-            <button className="btn yellow">ENTRAR</button>
-
+            <button type="button" className="btn btn-yellow">ENTRAR</button>
           </form>
         </div>
-      </div>
 
+        {/* 2. Imagem dos personagens no meio */}
+        <img src={bonecos} alt="Personagens" className="character-image" />
 
-      <div className="auth-box">
-        <div className="auth-section">
+        {/* Painel de Cadastro (Direita) */}
+        <div className="auth-box">
           <h2>Cadastre-se</h2>
           <form>
-            <label>Usuário:</label>
-            <input type="email" placeholder="login@gmail.com" />
+            <label htmlFor="register-usuario">Usuário:</label>
+            <input id="register-usuario" type="email" defaultValue="login@gmail.com" />
 
-            <label>Senha:</label>
-            <input type="password" placeholder="**********" />
+            <label htmlFor="register-senha">Senha:</label>
+            <input id="register-senha" type="password" defaultValue="**********" />
 
-            <label>Confirmar senha:</label>
-            <input type="password" placeholder="**********" />
+            <label htmlFor="register-confirmar-senha">Confirmar senha:</label>
+            <input id="register-confirmar-senha" type="password" defaultValue="**********" />
 
-            <button className="btn red">CADASTRAR</button>
+            <button type="button" className="btn btn-red">CADASTRAR</button>
           </form>
         </div>
+
       </div>
     </div>
   );

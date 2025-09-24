@@ -47,7 +47,6 @@
   cursor: pointer;
   transition: all 0.2s;
 
-  /* Lógica de posicionamento */
   position: absolute;
   bottom: 40px;      
   left: 50%;          
@@ -56,6 +55,5 @@
 
 .add-aventura-btn:hover {
   background-color: #444;
-  /* Garante que o botão não se mova ao escalar no hover */
   transform: scale(1.05) translateX(-50%);
 }

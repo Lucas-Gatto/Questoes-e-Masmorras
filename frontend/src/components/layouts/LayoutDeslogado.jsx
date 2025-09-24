@@ -8,7 +8,7 @@ const LayoutDeslogado = () => {
     <>
       <Header />
       <main className='main-content'>
-        <Outlet /> {/* Aqui entrarão as páginas Home e Login */}
+        <Outlet /> 
       </main>
       <Footer />
     </>

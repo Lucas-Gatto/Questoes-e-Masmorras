@@ -1,6 +1,6 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom'; // Importante!
-import Headerlogado from '../header-logado'; // O header de usuário logado
+import { Outlet } from 'react-router-dom'; 
+import Headerlogado from '../header-logado'; 
 import Footer from '../footer';
 
 const LayoutLogado = () => {
@@ -8,7 +8,6 @@ const LayoutLogado = () => {
     <>
       <Headerlogado />
       <main className='main-content'>
-        {/* O Outlet é um placeholder onde a sua página (SuasAventuras) será renderizada */}
         <Outlet />
       </main>
       <Footer />

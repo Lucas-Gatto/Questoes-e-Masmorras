@@ -1,0 +1,362 @@
+.nova-aventura-container {
+  width: 90%;
+  max-width: 900px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  padding: 30px;
+  margin: 40px auto;
+  box-sizing: border-box;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.titulo-pagina {
+  font-family: 'MedievalSharp', cursive;
+  font-size: 2.2rem;
+  /* ✨ CORRIGIDO: Sua cor e !important foram mantidos ✨ */
+  color: #C68700 !important;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #555;
+  padding-bottom: 30px;
+}
+
+.input-titulo-aventura {
+  flex-grow: 1;
+  padding: 12px 20px;
+  border: none;
+  background-color: #5C481A;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 1.1rem;
+  /* ✨ CORRIGIDO: Seu !important foi mantido ✨ */
+  border-radius: 10px !important;
+}
+
+.input-titulo-aventura::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.stepper-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.stepper-container label {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.stepper-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stepper-numero-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #333;
+  border-radius: 10px;
+  padding: 4px;
+  height: 38px;
+  box-sizing: border-box;
+}
+
+.stepper-controls button {
+  width: 38px;
+  height: 38px;
+  border-radius: 20%;
+  border: none;
+  background-color: #007BFF;
+  color: white;
+  font-size: 1.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+  transition: opacity 0.2s;
+}
+
+.stepper-controls button:first-child {
+  background-color: #DC3545;
+}
+
+.stepper-controls button:hover {
+  opacity: 0.8;
+}
+
+.stepper-controls span {
+  width: 40px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* === ESTRUTURA CORRETA DA LISTA DE SALAS === */
+
+.lista-salas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.sala-item {
+  background-color: #333;
+  border-radius: 10px;
+  padding: 15px;
+  display: grid;
+  align-items: center;
+  gap: 10px 15px;
+  
+  grid-template-columns: 40px 1fr auto 80px;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "numero label-nome label-tipo ."
+    "numero input-nome input-tipo acoes";
+}
+
+.sala-numero {
+  grid-area: numero;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-align: center;
+  align-self: center;
+}
+
+.sala-label-nome, .sala-label-tipo {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-bottom: -5px;
+}
+.sala-label-nome { grid-area: label-nome; }
+.sala-label-tipo { grid-area: label-tipo; }
+
+.sala-input-nome { grid-area: input-nome; }
+.sala-tipo-container { grid-area: input-tipo; }
+.sala-acoes { grid-area: acoes; }
+
+.sala-input-nome, .sala-select-tipo {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 10px;
+  background-color: #555;
+  color: white;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.sala-select-tipo {
+  background-color: #C68700;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* ✨ CORRIGIDO: Erro de sintaxe no SVG da seta foi consertado ✨ */
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+  padding-right: 30px;
+}
+
+.sala-acoes {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.sala-acoes img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+.sala-acoes img:hover {
+  opacity: 1;
+}
+
+.perguntas-rolagem-container {
+  margin-top: 30px;
+}
+
+.subtitulo {
+  font-family: Arial, sans-serif;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  padding: 0 10px;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.pergunta-item {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+  background-color: #333;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.pergunta-numero {
+  font-weight: bold;
+  text-align: center;
+}
+
+.pergunta-input-texto {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 10px;
+  background-color: #555;
+  color: white;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.pergunta-acoes {
+  display: flex;
+  justify-content: center;
+}
+
+.pergunta-acoes img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.add-pergunta-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.add-pergunta-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.add-pergunta-btn:hover {
+  opacity: 1;
+}
+
+.botoes-finais-container {
+  display: flex;
+  justify-content: center; 
+  gap: 20px;
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid #555;
+}
+
+.btn-final {
+  padding: 12px 100px;
+  border: none;
+  border-radius: 10px;
+font-family: 'MedievalSharp', cursive; 
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  transition: opacity 0.2s;
+}
+
+.btn-final:hover {
+  opacity: 0.9;
+}
+
+.btn-deletar {
+  background-color: #DC3545;
+}
+
+.btn-concluir {
+  background-color: #007BFF;
+}
+/* =============================================== */
+/* === SEÇÃO RESPONSIVA PARA TELAS PEQUENAS === */
+/* =============================================== */
+
+@media (max-width: 800px) {
+
+  /* Ajusta o container principal */
+  .nova-aventura-container {
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    padding: 20px;
+    min-height: calc(100vh - 60px); /* Ocupa a tela toda menos o header */
+  }
+
+  /* 1. Cabeçalho do formulário: empilha os elementos */
+  .form-cabecalho {
+    flex-direction: column; /* Coloca o contador abaixo do título */
+    align-items: stretch; /* Faz o input ocupar toda a largura */
+    gap: 25px;
+  }
+
+  .stepper-container {
+    align-items: center; /* Centraliza o contador */
+  }
+
+  /* 2. Lista de Salas: a maior mudança */
+  
+  /* Esconde os cabeçalhos da "tabela", pois não fazem sentido no layout vertical */
+  .salas-header-row {
+    display: none;
+  }
+  
+  /* Faz o número da sala aparecer acima do card da sala */
+  .sala-wrapper {
+    grid-template-columns: 1fr; /* Agora o número e o card ficam em colunas diferentes */
+    text-align: left;
+  }
+  
+  .sala-numero {
+    text-align: left;
+    margin-bottom: -5px; /* Aproxima o número do card */
+    padding-left: 10px;
+  }
+  
+  /* Transforma o layout de cada sala para empilhar os campos */
+  .sala-item {
+    grid-template-columns: 1fr; /* Uma única coluna */
+    gap: 12px;
+  }
+  
+  /* 3. Lista de Perguntas: ajusta para telas menores */
+  .pergunta-item {
+    grid-template-columns: 30px 1fr 40px; /* Diminui o espaço do número */
+    gap: 10px;
+  }
+
+  /* 4. Botões Finais: empilha e centraliza */
+  .botoes-finais-container {
+    flex-direction: column-reverse; /* Empilha e coloca "Concluir" em cima */
+    align-items: stretch; /* Faz os botões ocuparem toda a largura */
+    gap: 15px;
+  }
+}

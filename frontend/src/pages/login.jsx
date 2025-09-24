@@ -5,10 +5,7 @@ import bonecos from '../assets/bonecos.png';
 function Login() {
   return (
     <div className="login-page-container">
-      {/* Container para os formulários e a imagem */}
       <div className="auth-wrapper">
-        
-        {/* Painel de Login (Esquerda) */}
         <div className="auth-box">
           <h2>Bem vindo de Volta!</h2>
           <form>
@@ -23,11 +20,7 @@ function Login() {
             <button type="button" className="btn btn-yellow">ENTRAR</button>
           </form>
         </div>
-
-        {/* 2. Imagem dos personagens no meio */}
         <img src={bonecos} alt="Personagens" className="character-image" />
-
-        {/* Painel de Cadastro (Direita) */}
         <div className="auth-box">
           <h2>Cadastre-se</h2>
           <form>

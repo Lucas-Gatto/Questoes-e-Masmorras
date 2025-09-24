@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Aventura from '../components/aventura.jsx';
-import ModalAventura from '../components/ModalAventura.jsx';
 import './suas-aventuras.css';
 
 const SuasAventuras = () => {
@@ -9,81 +9,39 @@ const SuasAventuras = () => {
     return dadosSalvos ? JSON.parse(dadosSalvos) : [];
   });
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     localStorage.setItem('minhas_aventuras', JSON.stringify(aventuras));
   }, [aventuras]);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [novoTitulo, setNovoTitulo] = useState('');
-  const [aventuraEmEdicao, setAventuraEmEdicao] = useState(null);
 
   const handleDeleteAventura = (idParaDeletar) => {
     if (window.confirm("Tem certeza que deseja excluir esta aventura?")) {
       setAventuras(aventurasAtuais => aventurasAtuais.filter(aventura => aventura.id !== idParaDeletar));
     }
   };
-  
-  const handleEditAventura = (aventuraParaEditar) => {
-    setAventuraEmEdicao(aventuraParaEditar);
-    setNovoTitulo(aventuraParaEditar.titulo);
-    setIsModalOpen(true);
-  };
-
-  const handleOpenCreateModal = () => {
-    setAventuraEmEdicao(null);
-    setNovoTitulo('');
-    setIsModalOpen(true);
-  };
-
-  const handleSaveAventura = () => {
-    if (novoTitulo.trim() === '') {
-      alert('O título não pode estar vazio!');
-      return;
-    }
-
-    if (aventuraEmEdicao) {
-      setAventuras(aventurasAtuais => aventurasAtuais.map(aventura => 
-        aventura.id === aventuraEmEdicao.id ? { ...aventura, titulo: novoTitulo } : aventura
-      ));
-    } else {
-      const novaAventura = { id: Date.now(), titulo: novoTitulo };
-      setAventuras(aventurasAtuais => [...aventurasAtuais, novaAventura]);
-    }
-
-    setNovoTitulo('');
-    setAventuraEmEdicao(null);
-    setIsModalOpen(false);
-  };
 
   return (
-    <>
-      <div className="aventuras-page-container">
-        <h2>Suas aventuras</h2>
-        <div className="aventuras-grid">
-          {aventuras.length === 0 && (
-            <p style={{color: 'white', opacity: 0.7}}>Nenhuma aventura criada ainda. Clique no '+' para começar!</p>
-          )}
-          {aventuras.map(aventura => (
-            <Aventura 
-              key={aventura.id} 
-              titulo={aventura.titulo} 
-              onDelete={() => handleDeleteAventura(aventura.id)}
-              onEdit={() => handleEditAventura(aventura)}
-            />
-          ))}
-        </div>
-        <button className="add-aventura-btn" onClick={handleOpenCreateModal}>
+    <div className="aventuras-page-container">
+      <h2>Suas aventuras</h2>
+      <div className="aventuras-grid">
+        {aventuras.length === 0 && (
+          <p style={{color: 'white', opacity: 0.7}}>Nenhuma aventura criada ainda. Clique no '+' para começar!</p>
+        )}
+        {aventuras.map(aventura => (
+          <Aventura 
+            key={aventura.id} 
+            titulo={aventura.titulo} 
+            onDelete={() => handleDeleteAventura(aventura.id)}
+            // O botão de editar agora navega para a página de edição com o ID correto
+            onEdit={() => navigate(`/editar-aventura/${aventura.id}`)}
+          />
+        ))}
+        <button className="add-aventura-btn" onClick={() => navigate('/nova-aventura')}>
           +
         </button>
       </div>
-      <ModalAventura 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSaveAventura}
-        titulo={novoTitulo}
-        setTitulo={setNovoTitulo}
-      />
-    </>
+    </div>
   );
 };
 

@@ -1,35 +1,36 @@
-import { useState } from 'react'
-import './App.css'
-import Header from './components/header'
-import Background from './components/background'
-import Footer from './components/footer'
-import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
-import Home from './pages/home'
-import Login from './pages/login'
-import HeaderLogado from './components/header-logado'
-import SuasAventuras from './pages/suas-aventuras'
+import React from 'react';
+import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+// Importe os DOIS Layouts
+import LayoutDeslogado from './components/layouts/LayoutDeslogado';
+import LayoutLogado from './components/layouts/LayoutLogado';
+
+// Importe as Páginas
+import Home from './pages/home';
+import Login from './pages/login';
+import SuasAventuras from './pages/suas-aventuras';
 
 function App() {
-
   return (
-     <div className="app-container"> 
+    <div className="app-container">
       <BrowserRouter>
-
-        <Header />
-        <HeaderLogado/>
-       
-        <main className='main-content'>
         <Routes>
-          <Route path='/' element={<Home />} />
+          {/* GRUPO DE ROTAS PÚBLICAS (Layout com Header normal) */}
+          <Route element={<LayoutDeslogado />}>
+            <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
+          </Route>
+
+          {/* GRUPO DE ROTAS PRIVADAS (Layout com Header logado) */}
+          <Route element={<LayoutLogado />}>
             <Route path='/suas-aventuras' element={<SuasAventuras />} />
+            {/* Adicione outras páginas logadas aqui, como '/nova-aventura' */}
+          </Route>
         </Routes>
-        </main>
-        <Footer />
       </BrowserRouter>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -20,7 +20,9 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%); 
-  height: 600px; 
+   height: 100vh; 
+  max-height: 550px; 
+  width: auto; 
   z-index: 0; 
   pointer-events: none; 
 }
@@ -39,10 +41,10 @@
 }
 
 .auth-box h2 {
-  font-family: 'Old English Text MT', serif; 
-  font-size: 2.2rem;
+  font-family: 'MedievalSharp', cursive; 
+  font-size: 2.5rem;
   color: white;
-  text-align: left;
+  text-align: center;
   margin-bottom: 25px;
 }
 
@@ -53,7 +55,7 @@
 }
 
 .auth-box label {
-  font-family: 'Old English Text MT', serif; 
+  font-family: 'MedievalSharp', cursive; 
   font-size: 1.2rem;
   color: white;
   text-align: left;
@@ -68,12 +70,12 @@
   background-color: #8B6B2E; 
   color: white;
   box-sizing: border-box;
-  font-family: Arial, sans-serif; 
+  font-family: 'MedievalSharp', cursive; 
   font-size: 1rem;
 }
 
 .forgot-password {
-  font-family: 'Old English Text MT', serif;
+ font-family: 'MedievalSharp', cursive;
   color: white;
   font-size: 1rem;
   text-decoration: none;
@@ -86,7 +88,7 @@
   padding: 12px;
   border: 1px solid black;
   border-radius: 25px;
-  font-family: 'Old English Text MT', serif; 
+  font-family: 'MedievalSharp', cursive; 
   font-size: 1.3rem;
   font-weight: bold;
   cursor: pointer;
@@ -107,5 +109,24 @@
 
 .btn.btn-red {
   background-color: #e74c3c;
-  color: #fff;
+  color: #000000;
+}
+
+
+
+@media (max-width: 850px) { 
+
+  .auth-wrapper {
+    flex-direction: column; 
+    gap: 40px; 
+  }
+
+  .character-image {
+    display: none; 
+  }
+
+  .auth-box {
+    width: 90%; 
+    max-width: 400px; 
+  }
 }

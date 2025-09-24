@@ -1,22 +1,48 @@
-.header-logado {
-    height: 60px;
-    background-color: #000000;
-    color: rgb(247, 182, 5);
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-    font-family: 'MedievalSharp', cursive;
-    padding: 0px 30px;
+.header-logado-container {
+  height: 60px;
+  width: 100%;
+  background-color: #000000;
+  color: rgb(247, 182, 5);
+  padding: 0 30px;
+  box-sizing: border-box;
 
+  
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-
-a {
-
-    color: rgb(247, 182, 5);
-    text-decoration: inherit;
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 40px; 
 }
 
-.logo {
-    height: 40px;
+.avatar-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #555;
+  border: 2px solid rgb(247, 182, 5);
+}
+
+.header-nav {
+  display: flex;
+  gap: 80px;
+}
+
+.header-nav a {
+  color: rgb(247, 182, 5);
+  text-decoration: none;
+  font-family: 'MedievalSharp', cursive; 
+  font-size: 1.5rem;
+  transition: color 0.2s;
+}
+
+.header-nav a:hover {
+  color: rgb(255, 220, 115);
+}
+
+.header-right .logo {
+  height: 40px;
 }

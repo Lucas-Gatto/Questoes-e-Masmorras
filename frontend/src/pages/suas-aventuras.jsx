@@ -33,7 +33,6 @@ const SuasAventuras = () => {
             key={aventura.id} 
             titulo={aventura.titulo} 
             onDelete={() => handleDeleteAventura(aventura.id)}
-            // O botão de editar agora navega para a página de edição com o ID correto
             onEdit={() => navigate(`/editar-aventura/${aventura.id}`)}
           />
         ))}

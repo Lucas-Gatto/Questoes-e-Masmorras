@@ -32,7 +32,7 @@ const NovaAventura = () => {
       aventura={aventura}
       setAventura={setAventura}
       handleSave={handleConcluir}
-      handleDelete={() => navigate('/suas-aventuras')} // Botão deletar volta para a lista
+      handleDelete={() => navigate('/suas-aventuras')}
       pageTitle="Nova aventura"
       submitButtonText="Concluir"
     />

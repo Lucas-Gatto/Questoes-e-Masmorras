@@ -1,6 +1,7 @@
 import React from 'react';
 import './login.css';
 import bonecos from '../assets/bonecos.png';
+import { Link } from 'react-router-dom';
 
 function Login() {
   return (
@@ -17,7 +18,9 @@ function Login() {
 
             <a href="#" className="forgot-password">Esqueci minha senha</a>
 
-            <button type="button" className="btn btn-yellow">ENTRAR</button>
+            <Link to="/suas-aventuras">
+              <button type="button" className="btn btn-yellow">ENTRAR</button>
+            </Link>
           </form>
         </div>
         <img src={bonecos} alt="Personagens" className="character-image" />
@@ -32,8 +35,9 @@ function Login() {
 
             <label htmlFor="register-confirmar-senha">Confirmar senha:</label>
             <input id="register-confirmar-senha" type="password" defaultValue="**********" />
-
+            <Link to="/suas-aventuras">
             <button type="button" className="btn btn-red">CADASTRAR</button>
+            </Link>
           </form>
         </div>
 

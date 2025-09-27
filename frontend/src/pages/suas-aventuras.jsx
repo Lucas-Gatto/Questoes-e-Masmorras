@@ -26,7 +26,7 @@ const SuasAventuras = () => {
       <h2>Suas aventuras</h2>
       <div className="aventuras-grid">
         {aventuras.length === 0 && (
-          <p style={{color: 'white', opacity: 0.7}}>Nenhuma aventura criada ainda. Clique no '+' para começar!</p>
+          <h3 style={{color: 'white', opacity: 0.7}}>Nenhuma aventura criada ainda. Clique no '+' para começar!</h3>
         )}
         {aventuras.map(aventura => (
           <Aventura 

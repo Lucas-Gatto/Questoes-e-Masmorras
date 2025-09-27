@@ -2,6 +2,7 @@
   width: 90%;
   max-width: 900px;
   background-color: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   border-radius: 10px;
   padding: 30px;
   margin: 40px auto;
@@ -32,7 +33,8 @@
   flex-grow: 1;
   padding: 12px 20px;
   border: none;
-  background-color: #5C481A;
+  background-color:#8b6a2ee4;
+  box-shadow: 0 0 20px rgba(235, 181, 2, 0.338);
   color: white;
   font-family: Arial, sans-serif;
   font-size: 1.1rem;
@@ -65,7 +67,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #333;
+  background-color: #333333;
   border-radius: 10px;
   padding: 4px;
   height: 38px;
@@ -77,7 +79,7 @@
   height: 38px;
   border-radius: 20%;
   border: none;
-  background-color: #007BFF;
+  background-color: #0037ff;
   color: white;
   font-size: 1.8rem;
   font-weight: bold;
@@ -91,11 +93,11 @@
 }
 
 .stepper-controls button:first-child {
-  background-color: #DC3545;
+  background-color: #a90f1e;
 }
 
 .stepper-controls button:hover {
-  opacity: 0.8;
+  opacity: 0.10;
 }
 
 .stepper-controls span {
@@ -113,7 +115,7 @@
 }
 
 .sala-item {
-  background-color: #333;
+  background-color: #5353539e;
   border-radius: 10px;
   padding: 15px;
   display: grid;
@@ -156,14 +158,14 @@
   padding: 8px 12px;
   border: none;
   border-radius: 10px;
-  background-color: #555;
+  background-color: #5353539e;
   color: white;
   font-size: 1rem;
   box-sizing: border-box;
 }
 
 .sala-select-tipo {
-  background-color: #5C481A;
+  background-color:#8B6B2E;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -210,7 +212,7 @@
   display: grid;
   grid-template-columns: 40px 1fr;
   gap: 15px;
-  background-color: #333; 
+  background-color: #5353539e; 
   border-radius: 10px;
   padding: 15px;
   margin-bottom: 15px;
@@ -260,19 +262,21 @@
 }
 
 .add-sub-pergunta-btn {
-  width: 5px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid #777;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #a29c9c;
   background: none;
-  color: #777;
-  font-size: 20px;
+  color: #a29c9c;
+  font-size: 18px;
   cursor: pointer;
   align-self: center;
   margin-top: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  line-height: 1;
+   padding: 0; 
 }
 
 .add-sub-pergunta-btn:hover {
@@ -307,11 +311,11 @@
 }
 
 .btn-deletar {
-  background-color: #DC3545;
+  background-color: #a90f1e;
 }
 
 .btn-concluir {
-  background-color: #007BFF;
+  background-color: #0037ff;
 }
 
 @media (max-width: 800px) {

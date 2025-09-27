@@ -2,16 +2,20 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import FormularioAventura from '../components/FormularioAventura'; // Importando o formulário
+import FormularioAventura from '../components/FormularioAventura';
 
 const NovaAventura = () => {
   const navigate = useNavigate();
   
-  // Estado inicial para uma aventura em branco
   const [aventura, setAventura] = useState({
+    id: Date.now(),
     titulo: '',
-    salas: [{ id: Date.now(), nome: '1ª Sala', tipo: 'Enigma' }],
-    perguntas: [{ id: Date.now() + 1, texto: 'Yorem ipsum dolor sit amet...' }]
+    salas: [{ id: Date.now() + 1, nome: '1ª Sala', tipo: 'Enigma' }],
+    // ✨ ESTRUTURA NOVA: 6 grupos de perguntas, cada um com uma sub-pergunta inicial ✨
+    perguntas: Array.from({ length: 6 }, (_, index) => ({
+      id: Date.now() + index + 2,
+      subPerguntas: [{ id: Date.now() + index + 100, texto: 'Lorem ipsum...' }]
+    }))
   });
 
   const handleConcluir = () => {
@@ -19,10 +23,8 @@ const NovaAventura = () => {
       alert('Por favor, dê um nome para a sua aventura.');
       return;
     }
-
     const aventurasExistentes = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
-    const novaAventuraComId = { ...aventura, id: Date.now() };
-    const aventurasAtualizadas = [...aventurasExistentes, novaAventuraComId];
+    const aventurasAtualizadas = [...aventurasExistentes, aventura];
     localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasAtualizadas));
     navigate('/suas-aventuras');
   };
@@ -35,6 +37,7 @@ const NovaAventura = () => {
       handleDelete={() => navigate('/suas-aventuras')}
       pageTitle="Nova aventura"
       submitButtonText="Concluir"
+      navigate={navigate}
     />
   );
 };

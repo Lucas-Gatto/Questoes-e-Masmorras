@@ -12,9 +12,9 @@
 }
 
 .titulo-pagina {
-  font-family: 'MedievalSharp', cursive;
+  font-family: "MedievalSharp", cursive;
   font-size: 2.2rem;
-  color: #C68700 !important;
+  color: #eeb600 !important;
   text-align: center;
   margin-bottom: 30px;
 }
@@ -33,7 +33,7 @@
   flex-grow: 1;
   padding: 12px 20px;
   border: none;
-  background-color:#8b6a2ee4;
+  background-color: #6b5224;
   box-shadow: 0 0 20px rgba(235, 181, 2, 0.338);
   color: white;
   font-family: Arial, sans-serif;
@@ -97,7 +97,7 @@
 }
 
 .stepper-controls button:hover {
-  opacity: 0.10;
+  opacity: 0.1;
 }
 
 .stepper-controls span {
@@ -141,19 +141,31 @@
   align-self: center;
 }
 
-.sala-label-nome, .sala-label-tipo {
+.sala-label-nome,
+.sala-label-tipo {
   font-size: 0.9rem;
   opacity: 0.8;
   margin-bottom: -5px;
 }
-.sala-label-nome { grid-area: label-nome; }
-.sala-label-tipo { grid-area: label-tipo; }
+.sala-label-nome {
+  grid-area: label-nome;
+}
+.sala-label-tipo {
+  grid-area: label-tipo;
+}
 
-.sala-input-nome { grid-area: input-nome; }
-.sala-tipo-container { grid-area: input-tipo; }
-.sala-acoes { grid-area: acoes; }
+.sala-input-nome {
+  grid-area: input-nome;
+}
+.sala-tipo-container {
+  grid-area: input-tipo;
+}
+.sala-acoes {
+  grid-area: acoes;
+}
 
-.sala-input-nome, .sala-select-tipo {
+.sala-input-nome,
+.sala-select-tipo {
   width: 100%;
   padding: 8px 12px;
   border: none;
@@ -165,11 +177,11 @@
 }
 
 .sala-select-tipo {
-  background-color:#8B6B2E;
+  background-color: #6b5224;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E');
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 10px;
@@ -192,8 +204,6 @@
   opacity: 1;
 }
 
-
-
 .perguntas-rolagem-container {
   margin-top: 30px;
 }
@@ -212,7 +222,7 @@
   display: grid;
   grid-template-columns: 40px 1fr;
   gap: 15px;
-  background-color: #5353539e; 
+  background-color: #5353539e;
   border-radius: 10px;
   padding: 15px;
   margin-bottom: 15px;
@@ -276,7 +286,7 @@
   justify-content: center;
   border-radius: 50%;
   line-height: 1;
-   padding: 0; 
+  padding: 0;
 }
 
 .add-sub-pergunta-btn:hover {
@@ -298,7 +308,7 @@
   padding: 12px 100px;
   border: none;
   border-radius: 10px;
-  font-family: 'MedievalSharp', cursive;
+  font-family: "MedievalSharp", cursive;
   font-size: 1.3rem;
   font-weight: bold;
   cursor: pointer;
@@ -324,51 +334,47 @@
     margin: 0;
     border-radius: 0;
     padding: 20px;
-    min-height: calc(100vh - 60px); 
+    min-height: calc(100vh - 60px);
   }
 
-
   .form-cabecalho {
-    flex-direction: column; 
+    flex-direction: column;
     align-items: stretch;
     gap: 25px;
   }
 
   .stepper-container {
-    align-items: center; 
+    align-items: center;
   }
-
 
   .salas-header-row {
     display: none;
   }
-  
-  
+
   .sala-wrapper {
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
     text-align: left;
   }
-  
+
   .sala-numero {
     text-align: left;
-    margin-bottom: -5px; 
+    margin-bottom: -5px;
     padding-left: 10px;
   }
-  
- 
+
   .sala-item {
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
     gap: 12px;
   }
 
   .pergunta-item {
-    grid-template-columns: 30px 1fr 40px; 
+    grid-template-columns: 30px 1fr 40px;
     gap: 10px;
   }
 
   .botoes-finais-container {
-    flex-direction: column-reverse; 
-    align-items: stretch; 
+    flex-direction: column-reverse;
+    align-items: stretch;
     gap: 15px;
   }
 }

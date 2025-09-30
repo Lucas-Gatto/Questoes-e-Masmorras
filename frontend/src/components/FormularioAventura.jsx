@@ -247,7 +247,7 @@ const FormularioAventura = ({
             >
               <span className="pergunta-grupo-numero">{index + 1}</span>
               <div className="sub-perguntas-lista">
-                {pergunta.subPerguntas.map((sub) => (
+        {(pergunta.subPerguntas ? pergunta.subPerguntas : []).map((sub) => (
                   <div key={sub.id} className="sub-pergunta-item">
                     <input
                       type="text"

@@ -1,17 +1,15 @@
 .home-container {
-     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    position: relative;
-    padding: 20px;
-  
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  padding: 20px;
 }
 
-.scroll-title{
-  font-family: 'MedievalSharp', cursive;
+.scroll-title {
+  font-family: "MedievalSharp", cursive;
 }
 
 .img-pergaminho {
@@ -22,24 +20,23 @@
   background-repeat: no-repeat;
   background-position: center;
   padding: 4rem;
-  color: #3d2c1b;
+  color: #231910;
   box-sizing: border-box;
   padding: 120px;
   text-align: center;
 }
 
 .signup-button {
-  font-family: 'MedievalSharp';
+  font-family: "MedievalSharp";
   padding: 12px 35px;
-  background-color: #C68700; 
+  background-color: #c68700;
   font-size: 22px;
-  color: #1a1a1a;
+  color: #070707;
   border: 2px solid #1a1a1a;
   border-radius: 50px;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
 }
-
 
 .signup-button:hover {
   transform: scale(1.05);

@@ -3,22 +3,21 @@
   max-width: 1000px;
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 25px;
-  margin: 40px auto; 
+  margin: 40px auto;
   box-sizing: border-box;
   color: white;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: center;
 
-  
-  position: relative; 
-  padding: 30px 30px 140px 30px; 
+  position: relative;
+  padding: 30px 30px 140px 30px;
 }
 
-.aventuras-page-container h2 {
-  font-family: 'MedievalSharp', cursive;
+.aventuras-page-container h1 {
+  font-family: "MedievalSharp", cursive;
   font-size: 2.5rem;
-  color: #C68700;
+  color: #c68700;
   margin-bottom: 30px;
 }
 
@@ -26,31 +25,30 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 30px; 
+  gap: 30px;
 }
 
 .add-aventura-btn {
   width: 50px;
   height: 50px;
-  border-radius: 50%; 
-  background-color: #D9D9D9;
+  border-radius: 50%;
+  background-color: #d9d9d9;
   color: rgb(0, 0, 0);
   font-size: 70px;
   font-weight: bold;
-  
 
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  padding-bottom: 1px; 
+  padding-bottom: 1px;
   cursor: pointer;
   transition: all 0.2s;
 
   position: absolute;
-  bottom: 50px;      
-  left: 50%;          
-  transform: translateX(-50%); 
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .add-aventura-btn:hover {

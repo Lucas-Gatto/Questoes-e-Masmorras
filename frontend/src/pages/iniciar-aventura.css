@@ -1,0 +1,89 @@
+/* A página inteira, controlando o layout */
+.iniciar-aventura-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ocupa a tela toda */
+}
+
+/* O conteúdo principal abaixo do header */
+.iniciar-aventura-main {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.iniciar-painel {
+  width: 90%;
+  max-width: 800px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 25px;
+  padding: 30px 40px;
+  box-sizing: border-box;
+  color: white;
+  text-align: center;
+}
+
+.aventura-titulo-iniciar {
+  font-family: 'MedievalSharp', cursive;
+  font-size: 2.2rem;
+  color: #C68700;
+  margin-bottom: 30px;
+}
+
+.conteudo-conexao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+
+.qr-code-placeholder {
+  width: 200px;
+  height: 200px;
+  background-color: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  font-weight: bold;
+}
+
+.info-conexao {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.info-conexao p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.link-acesso {
+  background-color: #5C481A;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.play-button-iniciar {
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.play-button-iniciar:hover {
+  transform: scale(1.1);
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 700px) {
+  .conteudo-conexao {
+    flex-direction: column;
+  }
+}

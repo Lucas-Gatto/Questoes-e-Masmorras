@@ -1,17 +1,18 @@
 import React from 'react';
-import pergaminho from '../assets/pergaminho.png';
 import './aventura.css';
 import play from '../assets/play.png';
 import edit from '../assets/editar.png';
 import del from '../assets/excluir.png';
 
-const Aventura = ({ titulo, onDelete, onEdit }) => {
+// VERIFIQUE AQUI: 'onPlay' precisa estar listado nas chaves {}.
+const Aventura = ({ titulo, onDelete, onEdit, onPlay }) => {
   return (
     <div className="fundo-aventura">
       <p>{titulo}</p>
       <div className='icons-container'>
         <div className='play-icon-background'>
-          <img src={play} alt="Play Icon" className='play-icon' />
+          {/* E precisa ser usado no onClick aqui */}
+          <img src={play} alt="Play Icon" className='play-icon' onClick={onPlay} />
         </div>
         <img src={edit} alt="Edit Icon" className='edit-icon' onClick={onEdit} />
         <img src={del} alt="Delete Icon" className='delete-icon' onClick={onDelete} />

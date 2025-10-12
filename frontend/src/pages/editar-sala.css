@@ -1,0 +1,127 @@
+
+.editar-sala-container {
+  width: 90%;
+  max-width: 700px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 25px;
+  padding: 30px 40px;
+  margin: 60px auto;
+  box-sizing: border-box;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.editar-sala-titulo {
+  font-family: 'MedievalSharp', cursive;
+  font-size: 2.2rem;
+  color: #C68700;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  padding-left: 10px;
+}
+
+.input-nome-sala,
+.textarea-texto-sala,
+.select-vida-monstro { /* Adicionamos o select aqui */
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 15px;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 1.1rem;
+  box-sizing: border-box;
+}
+
+.input-nome-sala,
+.select-vida-monstro { /* Adicionamos o select aqui */
+  background-color: #5C481A;
+}
+
+.textarea-texto-sala {
+  background-color: #333;
+  resize: vertical;
+}
+
+/* Estilo da setinha para o select (igual ao do formulário principal) */
+.select-vida-monstro {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns="http://www.w3.org/2000/svg" width="292.4" height="292.4"%3E%3Cpath fill="%23FFFFFF" d="M287 69.4a17.6 17.6 0 0 0-13-5.4H18.4c-5 0-9.3 1.8-12.9 5.4A17.6 17.6 0 0 0 0 82.2c0 5 1.8 9.3 5.4 12.9l128 127.9c3.6 3.6 7.8 5.4 12.8 5.4s9.2-1.8 12.8-5.4L287 95c3.5-3.5 5.4-7.8 5.4-12.8 0-5-1.9-9.2-5.5-12.8z"/%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  background-position: right 20px center;
+  background-size: 12px;
+  padding-right: 40px;
+}
+
+
+/* === ESTILOS PARA SALA 'ALTERNATIVA' === */
+.opcoes-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.btn-opcao {
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+}
+
+.btn-opcao.red { background-color: #a42828; }
+.btn-opcao.yellow { background-color: #b4850c; }
+.btn-opcao.green { background-color: #2e8540; }
+.btn-opcao.blue { background-color: #2c5b96; }
+
+
+/* === BOTÕES DE AÇÃO PADRÃO === */
+.botoes-sala-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.btn-sala {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 10px;
+  font-family: 'MedievalSharp', cursive;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  transition: opacity 0.2s;
+}
+
+.btn-sala:hover {
+  opacity: 0.9;
+}
+
+.btn-imagem {
+  background-color: #6c757d;
+}
+
+.btn-salvar {
+  background-color: #007BFF;
+}

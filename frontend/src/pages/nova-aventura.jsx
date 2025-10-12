@@ -1,5 +1,3 @@
-// Em: src/pages/nova-aventura.jsx
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FormularioAventura from '../components/FormularioAventura';
@@ -11,7 +9,6 @@ const NovaAventura = () => {
     id: Date.now(),
     titulo: '',
     salas: [{ id: Date.now() + 1, nome: '1ª Sala', tipo: 'Enigma' }],
-    // ✨ ESTRUTURA NOVA: 6 grupos de perguntas, cada um com uma sub-pergunta inicial ✨
     perguntas: Array.from({ length: 6 }, (_, index) => ({
       id: Date.now() + index + 2,
       subPerguntas: [{ id: Date.now() + index + 100, texto: 'Lorem ipsum...' }]

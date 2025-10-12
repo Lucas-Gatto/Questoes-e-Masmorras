@@ -1,0 +1,50 @@
+.header-aventura-container {
+  width: 100%;
+  padding: 10px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  color: white;
+  background-color: #111; /* Fundo do header */
+}
+
+.header-aventura-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-user-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+
+.encerrar-aventura-btn {
+  background: none;
+  border: none;
+  color: rgb(247, 182, 5);
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.encerrar-aventura-btn:hover {
+  opacity: 1;
+}
+
+.arrow-icon {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.header-aventura-right .header-qm-logo {
+  height: 50px;
+}

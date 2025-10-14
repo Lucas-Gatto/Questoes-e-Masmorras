@@ -154,14 +154,11 @@
   grid-area: label-tipo;
 }
 
-.sala-input-nome {
-  grid-area: input-nome;
-}
-.sala-tipo-container {
-  grid-area: input-tipo;
-}
+.sala-input-nome { grid-area: input-nome; }
+.sala-tipo-container { grid-area: input-tipo; }
 .sala-acoes {
   grid-area: acoes;
+
 }
 
 .sala-input-nome,
@@ -199,6 +196,7 @@
   height: 20px;
   cursor: pointer;
   opacity: 0.7;
+ filter: invert(1) brightness(2);
 }
 .sala-acoes img:hover {
   opacity: 1;
@@ -257,6 +255,12 @@
   color: white;
   font-size: 1rem;
   box-sizing: border-box;
+  
+}
+
+.sub-pergunta-item img
+{
+  filter: invert(1) brightness(2);
 }
 
 .delete-sub-pergunta-icon {

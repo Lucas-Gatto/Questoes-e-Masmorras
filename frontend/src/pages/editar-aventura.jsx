@@ -46,7 +46,8 @@ const EditarAventura = () => {
       handleSave={handleEditar}
       handleDelete={handleDelete}
       pageTitle={aventura.titulo} 
-      submitButtonText="Editar" 
+      submitButtonText="Editar"
+      navigate={navigate} 
     />
   );
 };

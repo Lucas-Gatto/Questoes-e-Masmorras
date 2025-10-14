@@ -4,7 +4,7 @@ import React from "react";
 import "./formulario-aventura.css";
 import editIcon from "../assets/editar.png";
 import deleteIcon from "../assets/excluir.png";
-import { useNavigate } from "react-router-dom";
+// A importação do 'useNavigate' não é necessária aqui, pois ele é recebido via props
 
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import {
@@ -24,12 +24,14 @@ const SalaArrastavel = ({
   navigate,
 }) => {
   const handleEditClick = () => {
-    if (aventuraId && sala.id) {
-      navigate(`/aventura/${aventuraId}/sala/${sala.id}/editar`);
+    if (navigate && aventuraId && sala.id) {
+      navigate(`/aventura/${aventuraId}/sala/${sala.id}/editar?tipo=${sala.tipo}`);
     } else {
-      console.error("IDs faltando, não é possível navegar.");
+      console.error("Erro de navegação: IDs ou função navigate faltando.");
+      alert("Ocorreu um erro ao tentar editar a sala.");
     }
   };
+  
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: sala.id });
   const style = { transform: CSS.Transform.toString(transform), transition };
@@ -46,7 +48,7 @@ const SalaArrastavel = ({
       </span>
       <label className="sala-label-nome">Nome da sala:</label>
       <input
-        aria-label="Search"
+        aria-label="Nome da sala"
         type="text"
         className="sala-input-nome"
         value={sala.nome}
@@ -55,7 +57,7 @@ const SalaArrastavel = ({
       <label className="sala-label-tipo">Tipo de sala:</label>
       <div className="sala-tipo-container">
         <select
-          aria-label="State"
+          aria-label="Tipo da sala"
           className="sala-select-tipo"
           value={sala.tipo}
           onChange={(e) => handleSalaChange(sala.id, "tipo", e.target.value)}
@@ -140,7 +142,7 @@ const FormularioAventura = ({
     }
   };
 
-  // ✨ NOVAS FUNÇÕES PARA MANIPULAR AS SUB-PERGUNTAS ✨
+
   const handleSubPerguntaChange = (perguntaId, subPerguntaId, novoTexto) => {
     const novasPerguntas = aventura.perguntas.map((pergunta) => {
       if (pergunta.id === perguntaId) {
@@ -172,7 +174,6 @@ const FormularioAventura = ({
     const novasPerguntas = aventura.perguntas.map((pergunta) => {
       if (pergunta.id === perguntaId) {
         if (pergunta.subPerguntas.length > 1) {
-          // Só deleta se houver mais de uma
           const novasSubPerguntas = pergunta.subPerguntas.filter(
             (sub) => sub.id !== subPerguntaId
           );
@@ -243,7 +244,6 @@ const FormularioAventura = ({
             <div
               key={pergunta.id}
               className="pergunta-grupo"
-              aria-label="Search"
             >
               <span className="pergunta-grupo-numero">{index + 1}</span>
               <div className="sub-perguntas-lista">
@@ -252,7 +252,6 @@ const FormularioAventura = ({
                     <input
                       type="text"
                       className="pergunta-input-texto"
-                      aria-label="Search"
                       value={sub.texto}
                       onChange={(e) =>
                         handleSubPerguntaChange(

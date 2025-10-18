@@ -3,6 +3,18 @@ import { useParams, useNavigate } from 'react-router-dom';
 import HeaderAventura from '../components/HeaderAventura.jsx';
 import Footer from '../components/footer.jsx';
 import './sala-de-jogo.css';
+// import dadoIcon from '../assets/dado.png'; // Você pode adicionar isso
+
+// Função auxiliar para converter "Média" em "50%"
+const getVidaPercentual = (vida) => {
+  switch (vida) {
+    case 'Baixa': return 25;
+    case 'Média': return 50;
+    case 'Alta': return 75;
+    case 'Chefe': return 100;
+    default: return 50;
+  }
+};
 
 const SalaDeJogo = () => {
   const { aventuraId } = useParams();
@@ -12,14 +24,13 @@ const SalaDeJogo = () => {
   const [salaAtualIndex, setSalaAtualIndex] = useState(0);
 
   useEffect(() => {
+    // ... (useEffect permanece o mesmo, está correto)
     try {
       const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
       const aventuraAtual = aventurasSalvas.find(a => a.id === Number(aventuraId));
-
       if (aventuraAtual && aventuraAtual.salas && aventuraAtual.salas.length > 0) {
         setAventura(aventuraAtual);
       } else {
-        // Alerta e navegação reativados
         alert("Aventura não encontrada ou não possui salas para jogar!");
         navigate('/suas-aventuras');
       }
@@ -30,6 +41,7 @@ const SalaDeJogo = () => {
   }, [aventuraId, navigate]);
 
   const handleAvancarSala = () => {
+    // ... (handleAvancarSala permanece o mesmo)
     if (aventura && salaAtualIndex < aventura.salas.length - 1) {
       setSalaAtualIndex(prevIndex => prevIndex + 1);
     } else {
@@ -38,17 +50,29 @@ const SalaDeJogo = () => {
     }
   };
   
+  // 👇 FUNÇÃO DE RENDERIZAÇÃO TOTALMENTE ATUALIZADA 👇
   const renderConteudoSala = (sala) => {
     if (!sala) return <p>Carregando dados da sala...</p>;
     
+    // Helper para renderizar a imagem
+    const renderImagem = (sala) => (
+      <div className="imagem-container">
+        {sala.imagem ? (
+          <img src={sala.imagem} alt="Imagem da Sala" />
+        ) : (
+          <span>Sem Imagem</span>
+        )}
+      </div>
+    );
+
     switch (sala.tipo) {
       case 'Enigma':
         return (
           <div className="conteudo-enigma">
-            <p className="texto-sala">{sala.texto || "Qual a quinta heurística de Nielsen?"}</p>
-            <div className="imagem-placeholder"><span>EXAMPLE</span></div>
+            <p className="texto-sala">{sala.enigma || "Enigma não preenchido"}</p>
+            {renderImagem(sala)}
             <div className="botoes-grid-enigma">
-              <div className="resposta-enigma">Heurística 5: Prevenção de erros</div>
+              <div className="resposta-enigma">{sala.resposta || "Resposta não preenchida"}</div>
               <button className="btn-jogo azul">Revelar</button>
               <button className="btn-jogo dourado">Selecionar Respondente</button>
               <button className="btn-jogo vermelho" onClick={handleAvancarSala}>Avançar Sala</button>
@@ -58,13 +82,24 @@ const SalaDeJogo = () => {
       case 'Monstro':
         return (
           <div className="conteudo-monstro">
-             <p className="texto-sala">{sala.texto || "Descrição do monstro e da situação de combate."}</p>
+             <p className="texto-sala">{sala.texto || "Descrição do monstro não preenchida."}</p>
             <div className="monstro-grid">
-              <div className="monstro-imagem-container"></div>
+              <div className="monstro-imagem-container">
+                {sala.imagem ? (
+                  <img src={sala.imagem} alt="Imagem do Monstro" />
+                ) : (
+                  <span>Sem Imagem</span>
+                )}
+              </div>
               <div className="monstro-status">
                 <div className="vida-monstro-container">
-                  <span>Vida do Monstro</span>
-                  <div className="vida-barra"><div className="vida-preenchimento" style={{width: '80%'}}></div></div>
+                  <span>Vida do Monstro ({sala.vidaMonstro})</span>
+                  <div className="vida-barra">
+                    <div 
+                      className="vida-preenchimento" 
+                      style={{width: `${getVidaPercentual(sala.vidaMonstro)}%`}}>
+                    </div>
+                  </div>
                 </div>
                 <div className="pergunta-nivel">
                   <span>Pergunta de Nível: <strong>2</strong></span>
@@ -83,9 +118,10 @@ const SalaDeJogo = () => {
       case 'Alternativa':
         return (
           <div className="conteudo-alternativa">
-            <p className="texto-sala">{sala.texto || "Descrição da situação e das escolhas possíveis."}</p>
-            <div className="imagem-placeholder"><span>EXAMPLE</span></div>
+            <p className="texto-sala">{sala.texto || "Descrição da alternativa não preenchida."}</p>
+            {renderImagem(sala)}
             <div className="botoes-grid-alternativa">
+              {/* NOTA: As opções ainda não são editáveis, por isso estão como placeholders */}
               <button className="btn-opcao-jogo red">Opção 1</button>
               <button className="btn-opcao-jogo yellow">Opção 2</button>
               <button className="btn-jogo azul">Revelar</button>
@@ -101,11 +137,8 @@ const SalaDeJogo = () => {
   };
 
   if (!aventura) {
-    return (
-      <div style={{ backgroundColor: '#212529', minHeight: '100vh', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        Carregando aventura...
-      </div>
-    );
+    // ... (tela de carregamento permanece a mesma)
+    return <div>Carregando aventura...</div>
   }
 
   const salaAtual = aventura.salas[salaAtualIndex];
@@ -120,7 +153,8 @@ const SalaDeJogo = () => {
         </div>
         <div className="sala-painel">
           <h1 className="sala-titulo-aventura">{aventura.titulo}</h1>
-          <h2 className="sala-titulo-nome">{salaAtual.nome}</h2>
+          {/* 👇 Exibe o nome real da sala 👇 */}
+          <h2 className="sala-titulo-nome">{salaAtual.nome || "Sala sem nome"}</h2>
           {renderConteudoSala(salaAtual)}
         </div>
       </main>

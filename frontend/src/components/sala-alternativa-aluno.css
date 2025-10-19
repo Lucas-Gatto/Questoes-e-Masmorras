@@ -1,0 +1,107 @@
+/* Container principal da sala */
+.sala-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  color: white;
+  font-family: 'Georgia', serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+/* Botão de encerrar aventura */
+.btn-encerrar {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* Conteúdo central */
+.conteudo-central {
+  text-align: center;
+  margin-top: 5rem;
+}
+
+/* Título e subtítulo */
+.titulo {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #ff9900;
+}
+
+.subtitulo {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: #ff9900;
+}
+
+/* Quadro com fundo preto transparente */
+.quadro-transparente {
+  background-color: rgba(0, 0, 0, 0.6); /* fundo preto com transparência */
+  border-radius: 8px;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  color: white;
+  text-align: center;
+}
+
+/* Texto da pergunta */
+.texto-placeholder {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+/* Container das opções em grid */
+.opcoes-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* duas colunas iguais */
+  gap: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Botões de opção */
+.btn-opcao {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  width: 100%; /* ocupa toda a largura da célula */
+}
+
+/* Cores dos botões */
+.btn-opcao.red {
+  background-color: #e74c3c;
+}
+
+.btn-opcao.yellow {
+  background-color: #f1c40f;
+  color: black;
+}
+
+.btn-opcao.green {
+  background-color: #2ecc71;
+}
+
+.btn-opcao.blue {
+  background-color: #3498db;
+}
+
+/* Rodapé */
+.rodape {
+  text-align: center;
+  font-size: 0.9rem;
+  color: white;
+  margin-top: auto;
+}

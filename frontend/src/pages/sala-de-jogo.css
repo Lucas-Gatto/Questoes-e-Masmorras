@@ -91,7 +91,8 @@
 }
 .btn-jogo:hover { opacity: 0.9; }
 .btn-jogo.vermelho { background-color: #a42828; }
-.btn-jogo.azul { background-color: #2c5b96; }
+.btn-jogo.azul { background-color: #2c5b96;
+}
 .btn-jogo.dourado { background-color: #b4850c; }
 
 

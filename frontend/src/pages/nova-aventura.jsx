@@ -4,7 +4,7 @@ import FormularioAventura from '../components/FormularioAventura';
 
 const NovaAventura = () => {
   const navigate = useNavigate();
-  
+
   const [aventura, setAventura] = useState({
     id: Date.now(),
     titulo: '',
@@ -15,15 +15,34 @@ const NovaAventura = () => {
     }))
   });
 
-  const handleConcluir = () => {
+  // Em NovaAventura.jsx
+  const handleConcluir = async () => {
     if (aventura.titulo.trim() === '') {
       alert('Por favor, dê um nome para a sua aventura.');
       return;
     }
-    const aventurasExistentes = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
-    const aventurasAtualizadas = [...aventurasExistentes, aventura];
-    localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasAtualizadas));
-    navigate('/suas-aventuras');
+
+    try {
+      const res = await fetch('http://localhost:3000/api/aventuras', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // 🔥 importante para sessão
+        body: JSON.stringify(aventura),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Erro ao salvar a aventura.');
+      }
+
+      const data = await res.json();
+      console.log('Aventura criada:', data);
+      alert('Aventura criada com sucesso!');
+      navigate('/suas-aventuras');
+    } catch (error) {
+      console.error('Erro ao criar aventura:', error);
+      alert('Ocorreu um erro ao salvar a aventura.');
+    }
   };
 
   return (

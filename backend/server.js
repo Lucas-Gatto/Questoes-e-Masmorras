@@ -1,23 +1,47 @@
 const express = require('express');
 const connectDB = require('./config/db');
+const session = require('express-session');
+const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
 
-//Conectar ao MongoDB
+// Conectar ao MongoDB
 connectDB();
 app.use(express.json());
 
-//Permitir que o front acesse o back
-const cors = require('cors');
-app.use(cors());
-app.use(cors({ origin: 'http://localhost:5173' }));
+// Configurar CORS (importante usar apenas UMA vez!)
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true, // 🔥 permite cookies/sessão do front
+}));
 
-//Rotas
+// Configurar sessão (sem JWT)
+app.use(session({
+  secret: 'segredo-muito-seguro-aqui', // troque por algo melhor  
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // true se for HTTPS
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24, // 1 dia
+  },
+}));
+
+// Middleware para deixar req.user acessível
+app.use((req, res, next) => {
+  req.user = req.session.user || null;
+  next();
+});
+
+// Rotas
 const userRoutes = require('./routes/userRoute');
-app.use('/api/user', userRoutes);
+const aventuraRoutes = require('./routes/aventuraRoute');
 
-//Porta do servidor
+app.use('/api/user', userRoutes);
+app.use('/api/aventuras', aventuraRoutes); // rota das aventuras
+
+// Porta do servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);

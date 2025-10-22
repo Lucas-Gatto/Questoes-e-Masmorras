@@ -5,30 +5,56 @@ import "./suas-aventuras.css";
 
 
 const SuasAventuras = () => {
-  const [aventuras, setAventuras] = useState(() => {
-    // Bloco de segurança para evitar que JSON inválido quebre a aplicação
-    try {
-      const dadosSalvos = localStorage.getItem("minhas_aventuras");
-      return dadosSalvos ? JSON.parse(dadosSalvos) : [];
-    } catch (error) {
-      console.error("Erro ao ler aventuras do localStorage:", error);
-      return []; // Retorna um array vazio em caso de erro
-    }
-  });
-
+  const [aventuras, setAventuras] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    localStorage.setItem("minhas_aventuras", JSON.stringify(aventuras));
-  }, [aventuras]);
+    const fetchAventuras = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/aventuras", {
+          method: "GET",
+          credentials: "include", // 🔥 envia o cookie da sessão
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setAventuras(data);
+        } else {
+          alert(data.error || "Erro ao buscar aventuras");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao buscar aventuras");
+      }
+    };
 
-  const handleDeleteAventura = (idParaDeletar) => {
-    if (window.confirm("Tem certeza que deseja excluir esta aventura?")) {
-      setAventuras((aventurasAtuais) =>
-        aventurasAtuais.filter((aventura) => aventura.id !== idParaDeletar)
-      );
+    fetchAventuras();
+  }, []);
+
+  const handleDeleteAventura = async (idParaDeletar) => {
+  if (!window.confirm("Tem certeza que deseja excluir esta aventura?")) return;
+
+  try {
+    const res = await fetch(`http://localhost:3000/api/aventuras/${idParaDeletar}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || "Erro ao deletar aventura");
     }
-  };
+
+    // Atualiza o estado local
+    setAventuras((aventurasAtuais) =>
+      aventurasAtuais.filter((aventura) => aventura._id !== idParaDeletar)
+    );
+
+    alert("Aventura deletada com sucesso!");
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao deletar aventura");
+  }
+};
 
   return (
     <div className="aventuras-page-container" role="main">
@@ -39,18 +65,18 @@ const SuasAventuras = () => {
             Nenhuma aventura criada ainda. Clique no '+' para começar!
           </h3>
         )}
-        
+
         {/* VERIFIQUE AQUI: O map precisa existir e a prop onPlay precisa ser passada */}
         {aventuras && aventuras.map((aventura) => (
           <Aventura
             key={aventura.id}
             titulo={aventura.titulo}
-            onDelete={() => handleDeleteAventura(aventura.id)}
-            onEdit={() => navigate(`/editar-aventura/${aventura.id}`)}
-            onPlay={() => navigate(`/iniciar-aventura/${aventura.id}`)} // A linha que adicionamos
+            onDelete={() => handleDeleteAventura(aventura._id)}
+            onEdit={() => navigate(`/editar-aventura/${aventura._id}`)}
+            onPlay={() => navigate(`/iniciar-aventura/${aventura._id}`)} // A linha que adicionamos
           />
         ))}
-        
+
         <button
           className="add-aventura-btn"
           onClick={() => navigate("/nova-aventura")}

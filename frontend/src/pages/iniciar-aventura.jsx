@@ -12,22 +12,22 @@ const IniciarAventura = () => {
 
   // Efeito que roda quando o componente é montado para carregar os dados da aventura.
   useEffect(() => {
-    try {
-      const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
-      // Encontra a aventura específica pelo ID pego da URL
-      const aventuraAtual = aventurasSalvas.find(a => a.id === Number(aventuraId));
-
-      if (aventuraAtual) {
-        setAventura(aventuraAtual);
-      } else {
-        // Se não encontrar a aventura, avisa o usuário e volta para a página principal
-        alert("Aventura não encontrada!");
+    const fetchAventura = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/aventuras/${aventuraId}`, {
+          credentials: 'include',
+        });
+        if (!res.ok) throw new Error('Aventura não encontrada');
+        const data = await res.json();
+        setAventura(data);
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao carregar a aventura.');
         navigate('/suas-aventuras');
       }
-    } catch (error) {
-      console.error("Erro ao carregar dados da aventura:", error);
-      navigate('/suas-aventuras');
-    }
+    };
+
+    fetchAventura();
   }, [aventuraId, navigate]);
 
   // Função chamada ao clicar no botão de play para iniciar o jogo
@@ -50,7 +50,7 @@ const IniciarAventura = () => {
       <main className="iniciar-aventura-main">
         <div className="iniciar-painel">
           <h1 className="aventura-titulo-iniciar">{aventura.titulo}</h1>
-          
+
           <div className="conteudo-conexao">
             <div className="qr-code-placeholder">
               {/* No futuro, um componente de QR Code real pode ser inserido aqui */}
@@ -63,9 +63,9 @@ const IniciarAventura = () => {
                 www.site.com/{aventura.id}
               </div>
               <p>Clique para iniciar aventura:</p>
-              <img 
-                src={playIcon} 
-                alt="Iniciar Aventura" 
+              <img
+                src={playIcon}
+                alt="Iniciar Aventura"
                 className="play-button-iniciar"
                 onClick={handleStartGame}
               />

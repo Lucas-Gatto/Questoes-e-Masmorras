@@ -22,6 +22,7 @@ function Login() {
       const res = await fetch("http://localhost:3000/api/user/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", 
         body: JSON.stringify({ email: loginEmail, password: loginSenha }),
       });
 

@@ -1,11 +1,7 @@
-// Em: src/components/FormularioAventura.jsx
-
 import React from "react";
 import "./formulario-aventura.css";
 import editIcon from "../assets/editar.png";
 import deleteIcon from "../assets/excluir.png";
-// A importação do 'useNavigate' não é necessária aqui, pois ele é recebido via props
-
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -15,19 +11,45 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
+
 const SalaArrastavel = ({
   sala,
   index,
   handleSalaChange,
   handleDeleteSala,
-  aventuraId,
+  aventura, 
+  isNew,   
   navigate,
 }) => {
+  
   const handleEditClick = () => {
-    if (navigate && aventuraId && sala.id) {
-      navigate(`/aventura/${aventuraId}/sala/${sala.id}/editar?tipo=${sala.tipo}`);
+ 
+    if (isNew) {
+  
+      const aventurasExistentes = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
+      const aventuraJaExiste = aventurasExistentes.find(a => a.id === aventura.id);
+      
+      let aventurasAtualizadas;
+      if (aventuraJaExiste) {
+
+        aventurasAtualizadas = aventurasExistentes.map(a => 
+          a.id === aventura.id ? aventura : a
+        );
+      } else {
+       
+        aventurasAtualizadas = [...aventurasExistentes, aventura];
+      }
+      localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasAtualizadas));
+    }
+  
+    if (navigate && aventura.id && sala.id) {
+      navigate(`/aventura/${aventura.id}/sala/${sala.id}/editar?tipo=${sala.tipo}`);
     } else {
-      console.error("Erro de navegação: IDs ou função navigate faltando.");
+      console.error("Erro de navegação: IDs ou função navigate faltando.", {
+        navigateExists: !!navigate,
+        aventuraId: aventura.id,
+        salaId: sala.id,
+      });
       alert("Ocorreu um erro ao tentar editar a sala.");
     }
   };
@@ -87,10 +109,15 @@ const FormularioAventura = ({
   pageTitle,
   submitButtonText,
   navigate,
+  isNew, 
 }) => {
+  
+
+
   const handleTituloChange = (e) => {
     setAventura({ ...aventura, titulo: e.target.value });
   };
+
   const handleNumSalasChange = (novoNum) => {
     const num = Math.max(1, novoNum);
     const salasAtuais = aventura.salas || [];
@@ -108,12 +135,14 @@ const FormularioAventura = ({
     }
     setAventura({ ...aventura, salas: novasSalas });
   };
+
   const handleSalaChange = (id, campo, valor) => {
     const novasSalas = aventura.salas.map((sala) =>
       sala.id === id ? { ...sala, [campo]: valor } : sala
     );
     setAventura({ ...aventura, salas: novasSalas });
   };
+
   const handleDeleteSala = (idParaDeletar) => {
     if (aventura.salas.length <= 1) {
       alert("A aventura deve ter pelo menos uma sala.");
@@ -124,6 +153,7 @@ const FormularioAventura = ({
     );
     setAventura({ ...aventura, salas: novasSalas });
   };
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (active.id !== over.id) {
@@ -141,7 +171,6 @@ const FormularioAventura = ({
       });
     }
   };
-
 
   const handleSubPerguntaChange = (perguntaId, subPerguntaId, novoTexto) => {
     const novasPerguntas = aventura.perguntas.map((pergunta) => {
@@ -185,6 +214,7 @@ const FormularioAventura = ({
     setAventura({ ...aventura, perguntas: novasPerguntas });
   };
 
+
   return (
     <div className="nova-aventura-container" role="main">
       <h1 className="titulo-pagina">{pageTitle}</h1>
@@ -227,7 +257,8 @@ const FormularioAventura = ({
                   key={sala.id}
                   sala={sala}
                   index={index}
-                  aventuraId={aventura.id}
+                  aventura={aventura} 
+                  isNew={isNew}      
                   handleSalaChange={handleSalaChange}
                   handleDeleteSala={handleDeleteSala}
                   navigate={navigate}

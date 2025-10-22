@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import FormularioAventura from '../components/FormularioAventura';
+import FormularioAventura from '../components/FormularioAventura.jsx'; 
 
 const NovaAventura = () => {
   const navigate = useNavigate();
@@ -21,7 +21,21 @@ const NovaAventura = () => {
       return;
     }
     const aventurasExistentes = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
-    const aventurasAtualizadas = [...aventurasExistentes, aventura];
+    
+   
+    const aventuraJaExiste = aventurasExistentes.find(a => a.id === aventura.id);
+    let aventurasAtualizadas;
+
+    if (aventuraJaExiste) {
+  
+      aventurasAtualizadas = aventurasExistentes.map(a => 
+        a.id === aventura.id ? aventura : a
+      );
+    } else {
+ 
+      aventurasAtualizadas = [...aventurasExistentes, aventura];
+    }
+    
     localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasAtualizadas));
     navigate('/suas-aventuras');
   };
@@ -35,6 +49,7 @@ const NovaAventura = () => {
       pageTitle="Nova aventura"
       submitButtonText="Concluir"
       navigate={navigate}
+      isNew={true} 
     />
   );
 };

@@ -1,0 +1,115 @@
+.escolher-classe-container {
+    padding: 30px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: url('/imagens/fundo-parede.jpg') center/cover no-repeat;
+  color: #C68700;
+  font-family: 'Cinzel', serif;
+}
+
+.escolher-classe-conteudo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto;
+  width: 85%;
+  max-width: 900px;
+  background: rgba(0, 0, 0, 0.6); /* quadro preto translúcido */
+  border-radius: 20px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+  color: #C68700;
+  font-size: 1.8rem;
+  margin-bottom: 0.3rem;
+  text-shadow: 0 0 6px #000;
+  font-family: 'MedievalSharp', cursive;
+}
+
+h2 {
+  color: #C68700;
+  font-size: 1.3rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 6px #000;
+  font-family: 'MedievalSharp', cursive;
+}
+
+.classes-opcoes {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.classe-card {
+  cursor: pointer;
+  transition: 0.3s;
+  opacity: 0.7;
+}
+
+.classe-card.selecionada {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.classe-card img {
+  width: 130px;
+  height: 180px;
+  object-fit: contain;
+}
+
+.input-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  max-width: 550px;
+  margin: 0 auto;
+  margin-bottom: 1.5rem;
+}
+
+.input-habilidade {
+  flex: 1;
+  background-color: rgba(255, 215, 0, 0.3); /* dourado translúcido */
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+}
+
+.input-habilidade::placeholder {
+  color: #e5c55b;
+}
+
+.btn-confirmar {
+  background-color: #2349b1;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+    font-family: 'MedievalSharp', cursive;
+}
+
+.btn-confirmar:hover {
+  background-color: #3a65e2;
+
+}
+
+.titulo-aventura {
+  font-size: 1.5rem;
+  color: #c68700;
+  text-align: center;
+  margin-bottom: 10px;
+}

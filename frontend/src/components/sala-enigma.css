@@ -1,0 +1,53 @@
+.container-sala {
+  background: url('../assets/fundo-parede.png') center/cover no-repeat;
+  min-height: 100vh;
+  color: #fff;
+  font-family: 'MedievalSharp', cursive;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 1px;
+}
+
+
+.logo {
+  font-size: 1.8rem;
+  color: #0a68ff;
+}
+
+.conteudo {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.quadro {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 40px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 700px;
+}
+
+.quadro h1 {
+  color: gold;
+  margin-bottom: 10px;
+}
+
+.quadro h2 {
+  color: gold;
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+}
+
+.quadro p {
+  margin-bottom: 20px;
+}
+
+.imagem-enigma {
+  width: 80%;
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px;
+}

@@ -7,100 +7,115 @@ const EditarSala = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [sala, setSala] = useState(null); // Armazena o objeto da sala inteira
-  const fileInputRef = useRef(null); // Referência para o input de arquivo
-  const [fileName, setFileName] = useState('Upload de Imagem ☁️'); // Nome do arquivo
+  const [sala, setSala] = useState(null);
+  const fileInputRef = useRef(null);
+  const [fileName, setFileName] = useState('Upload de Imagem ☁️');
+  // const [isNewAventura, setIsNewAventura] = useState(false); // Mantido caso precise
 
   useEffect(() => {
-    // Pega o tipo da sala da URL (ex: ?tipo=Enigma)
     const queryParams = new URLSearchParams(location.search);
     const tipoFromUrl = queryParams.get('tipo');
+    // const isNewParam = queryParams.get('isNew');
+    // setIsNewAventura(isNewParam === 'true');
 
-    const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
-    const aventuraAtual = aventurasSalvas.find(a => a.id === Number(aventuraId));
-    
-    if (aventuraAtual) {
-      const salaAtual = aventuraAtual.salas.find(s => s.id === Number(salaId));
-      if (salaAtual) {
-        // Define o estado da sala com valores padrão
-        setSala({
-          texto: '',
-          vidaMonstro: 'Média',
-          opcoes: [/* ... */],
-          enigma: '',
-          resposta: '',
-          ...salaAtual,      // Carrega os dados salvos por cima dos padrões
-          tipo: tipoFromUrl  // Garante que o tipo da URL seja o definitivo
-        });
+    try {
+      const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
+      const aventuraAtual = aventurasSalvas.find(a => a.id === Number(aventuraId));
+
+      if (aventuraAtual) {
+        const salaAtual = aventuraAtual.salas.find(s => s.id === Number(salaId));
+        if (salaAtual) {
+          setSala({
+            texto: '', vidaMonstro: 'Média', enigma: '', resposta: '', opcoes: [],
+            ...salaAtual,
+            tipo: tipoFromUrl
+          });
+          if (salaAtual.imagem) {
+            setFileName("Imagem salva");
+          }
+        } else {
+          alert('Sala não encontrada!');
+          navigate(`/editar-aventura/${aventuraId}`);
+        }
       } else {
-        alert('Sala não encontrada!');
-        navigate(`/editar-aventura/${aventuraId}`);
+        alert('Aventura não encontrada!');
+        navigate('/suas-aventuras');
       }
-    } else {
-      alert('Aventura não encontrada!');
+    } catch (error) {
+      console.error("Erro ao carregar dados da sala:", error);
       navigate('/suas-aventuras');
     }
   }, [aventuraId, salaId, navigate, location.search]);
 
-  // Salva o objeto 'sala' inteiro de volta no localStorage
+  // Salva o objeto 'sala' inteiro no localStorage
   const handleSalvar = () => {
-    const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
-    const aventurasAtualizadas = aventurasSalvas.map(aventura => {
-      if (aventura.id === Number(aventuraId)) {
-        // Encontra e substitui a sala específica dentro da aventura
-        const salasAtualizadas = aventura.salas.map(s => 
-          s.id === Number(salaId) ? sala : s
-        );
-        return { ...aventura, salas: salasAtualizadas };
-      }
-      return aventura;
-    });
-
-    localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasAtualizadas));
-    alert('Sala atualizada com sucesso!');
-    navigate(`/editar-aventura/${aventuraId}`); // Volta para a edição da aventura
+    if (!sala) return;
+    try {
+      const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
+      const aventurasAtualizadas = aventurasSalvas.map(aventura => {
+        if (aventura.id === Number(aventuraId)) {
+          const salasAtualizadas = aventura.salas.map(s =>
+            s.id === Number(salaId) ? sala : s
+          );
+          return { ...aventura, salas: salasAtualizadas };
+        }
+        return aventura;
+      });
+      localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasAtualizadas));
+      alert('Sala atualizada com sucesso!');
+      navigate(-1); // Volta para a página anterior
+    } catch (error) {
+       console.error("Erro ao salvar a sala:", error);
+       alert("Ocorreu um erro ao salvar a sala.");
+    }
   };
 
-  // Atualiza qualquer campo do objeto 'sala' no estado
+  // Atualiza o estado da sala
   const handleInputChange = (campo, valor) => {
     setSala(salaAtual => ({ ...salaAtual, [campo]: valor }));
   };
 
-  // --- Funções de Upload de Imagem ---
-
-  // Ativado pelo clique no botão 'Upload'
+  // Funções de Upload de Imagem (sem alterações)
   const handleImageUploadClick = (e) => {
     e.preventDefault();
-    fileInputRef.current.click(); // Clica no input escondido
-  };
-
-  // Ativado quando um arquivo é selecionado no input
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFileName(file.name); // Mostra o nome do arquivo no botão
-      console.log("Arquivo selecionado:", file.name);
-      // Futuramente, você pode converter para base64 e salvar em sala.imagem
+    if (fileInputRef.current) {
+        fileInputRef.current.click();
     }
   };
 
-  // --- Renderização Condicional ---
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        handleInputChange('imagem', reader.result); // Salva como Base64
+        setFileName(file.name);
+      };
+      reader.onerror = (error) => {
+          console.error("Erro ao ler o arquivo:", error);
+          alert("Erro ao carregar a imagem.");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-  // Esta função decide qual "miolo" do formulário deve ser renderizado
+  // --- 👇 FUNÇÃO RENDERFORM COM O JSX DOS FORMULÁRIOS DENTRO 👇 ---
   const renderFormBody = () => {
     if (!sala) return <p>Carregando...</p>;
 
+    console.log("[renderFormBody] Verificando sala.tipo:", sala.tipo); // Mantenha para depurar
+
     switch (sala.tipo) {
-      // --- Layout para ENIGMA ---
       case 'Enigma':
+        console.log("[renderFormBody] Renderizando formulário Enigma.");
         return (
           <>
             <div className="form-group">
               <label htmlFor="enigma-sala">Enigma da Sala</label>
-              <textarea 
+              <textarea
                 id="enigma-sala"
                 className="textarea-texto-sala"
-                value={sala.enigma}
+                value={sala.enigma || ''}
                 onChange={(e) => handleInputChange('enigma', e.target.value)}
                 rows="3"
                 placeholder="Digite o enigma aqui..."
@@ -108,25 +123,24 @@ const EditarSala = () => {
             </div>
             <div className="form-group">
               <label htmlFor="resposta-enigma">Resposta do enigma</label>
-              <input 
+              <input
                 id="resposta-enigma"
                 type="text"
                 className="input-resposta-enigma"
-                value={sala.resposta}
+                value={sala.resposta || ''}
                 onChange={(e) => handleInputChange('resposta', e.target.value)}
                 placeholder="Digite a resposta aqui..."
               />
             </div>
           </>
         );
-
-      // --- Layout para MONSTRO ---
       case 'Monstro':
+        console.log("[renderFormBody] Renderizando formulário Monstro.");
         return (
           <>
             <div className="form-group">
               <label htmlFor="texto-sala">Texto da sala</label>
-              <textarea 
+              <textarea
                 id="texto-sala"
                 className="textarea-texto-sala"
                 value={sala.texto || ''}
@@ -150,14 +164,13 @@ const EditarSala = () => {
             </div>
           </>
         );
-
-      // --- Layout para ALTERNATIVA ---
       case 'Alternativa':
+        console.log("[renderFormBody] Renderizando formulário Alternativa.");
         return (
           <>
             <div className="form-group">
               <label htmlFor="texto-sala">Texto da sala</label>
-              <textarea 
+              <textarea
                 id="texto-sala"
                 className="textarea-texto-sala"
                 value={sala.texto || ''}
@@ -168,6 +181,7 @@ const EditarSala = () => {
             <div className="form-group">
               <label>Opções de resposta (configuração em breve)</label>
               <div className="opcoes-container">
+                {/* Aqui ainda podemos melhorar para permitir edição das opções */}
                 <button className="btn-opcao red">Opção 1</button>
                 <button className="btn-opcao yellow">Opção 2</button>
                 <button className="btn-opcao green">Opção 3</button>
@@ -177,40 +191,41 @@ const EditarSala = () => {
           </>
         );
       default:
-        return <p>Tipo de sala desconhecido. Por favor, volte e tente novamente.</p>;
+        console.log(`[renderFormBody] NENHUM MATCH. Tipo "${sala.tipo}".`);
+        return <p>Tipo de sala desconhecido: {sala.tipo}.</p>;
     }
   };
-  
-  // Tela de carregamento enquanto 'sala' é nulo
+  // --- FIM DA FUNÇÃO RENDERFORM ---
+
+
   if (!sala) {
     return (
       <div style={{ backgroundColor: '#212529', minHeight: '100vh', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        Carregando sala...
+        Carregando sala... (Verifique o console F12 se travar aqui)
       </div>
     );
   }
 
-  // --- O JSX principal (Return) ---
+  // --- JSX Principal ---
   return (
     <div className="editar-sala-container">
-      <h1 className="editar-sala-titulo">Editar {sala.nome}</h1>
-      
-      {/* Campo "Nome da sala" (comum a todos) */}
+      <h1 className="editar-sala-titulo">Editar {sala.nome || 'Sala'}</h1>
+
       <div className="form-group">
         <label htmlFor="nome-sala">Nome da sala</label>
-        <input 
+        <input
           id="nome-sala"
-          type="text" 
+          type="text"
           className="input-nome-sala"
-          value={sala.nome}
+          value={sala.nome || ''}
           onChange={(e) => handleInputChange('nome', e.target.value)}
         />
       </div>
 
-      {/* Renderiza o "miolo" do formulário (Enigma, Monstro ou Alternativa) */}
+      {/* Renderiza o corpo do formulário específico do tipo de sala */}
       {renderFormBody()}
 
-      {/* Botões "Imagem" e "Editar" (comuns a todos, conforme sua última alteração) */}
+      {/* Botões comuns: Imagem e Salvar */}
       <div className="form-group">
         <label>Imagem</label>
         <div className="botoes-sala-container">
@@ -224,12 +239,12 @@ const EditarSala = () => {
       </div>
 
       {/* Input de arquivo escondido */}
-      <input 
+      <input
         type="file"
         ref={fileInputRef}
         onChange={handleFileChange}
         style={{ display: 'none' }}
-        accept="image/png, image/jpeg, image/jpg, image/gif" 
+        accept="image/png, image/jpeg, image/jpg, image/gif"
       />
     </div>
   );

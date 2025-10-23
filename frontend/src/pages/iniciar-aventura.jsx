@@ -6,44 +6,55 @@ import playIcon from '../assets/play.png';
 import './iniciar-aventura.css';
 
 const IniciarAventura = () => {
+  // --- 👇 CONSOLE.LOG ADICIONADO AQUI 👇 ---
+  console.log("Componente IniciarAventura começou a renderizar.");
+  // --- FIM DA ADIÇÃO ---
+
   const { aventuraId } = useParams();
   const navigate = useNavigate();
   const [aventura, setAventura] = useState(null);
 
-  // Efeito que roda quando o componente é montado para carregar os dados da aventura.
+  // Efeito para carregar dados da aventura
   useEffect(() => {
-    const fetchAventura = async () => {
-      try {
-        const res = await fetch(`http://localhost:3000/api/aventuras/${aventuraId}`, {
-          credentials: 'include',
-        });
-        if (!res.ok) throw new Error('Aventura não encontrada');
-        const data = await res.json();
-        setAventura(data);
-      } catch (err) {
-        console.error(err);
-        alert('Erro ao carregar a aventura.');
+    console.log(`[IniciarAventura useEffect] Carregando dados para aventura ID: ${aventuraId}`); // Log
+    try {
+      const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
+      const aventuraAtual = aventurasSalvas.find(a => a.id === Number(aventuraId));
+
+      if (aventuraAtual) {
+        console.log("[IniciarAventura useEffect] Aventura encontrada:", aventuraAtual); // Log
+        setAventura(aventuraAtual);
+      } else {
+        console.warn(`[IniciarAventura useEffect] Aventura com ID ${aventuraId} não encontrada.`); // Log
+        alert("Aventura não encontrada!");
         navigate('/suas-aventuras');
       }
-    };
-
-    fetchAventura();
+    } catch (error) {
+      console.error("Erro ao carregar dados da aventura em IniciarAventura:", error);
+      navigate('/suas-aventuras');
+    }
   }, [aventuraId, navigate]);
 
-  // Função chamada ao clicar no botão de play para iniciar o jogo
+  // Função para navegar para a tela de jogo
   const handleStartGame = () => {
     if (aventura) {
-      console.log(`Iniciando a aventura "${aventura.titulo}"...`);
-      // Navega para a tela de jogo do mestre
+      console.log(`Iniciando a aventura "${aventura.titulo}"... Navegando para /aventura/${aventura.id}/jogar`); // Log
       navigate(`/aventura/${aventura.id}/jogar`);
+    } else {
+       console.error("handleStartGame chamado, mas 'aventura' é nula."); // Log de erro
     }
   };
 
-  // Exibe uma mensagem de carregamento enquanto os dados da aventura não chegam
+  // Tela de carregamento
   if (!aventura) {
-    return <div>Carregando...</div>;
+    return (
+        <div style={{ backgroundColor: '#212529', minHeight: '100vh', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            Carregando lobby da aventura... (Verifique o console F12)
+        </div>
+    );
   }
 
+  // Renderização principal
   return (
     <div className="iniciar-aventura-page">
       <HeaderAventura />
@@ -53,21 +64,20 @@ const IniciarAventura = () => {
 
           <div className="conteudo-conexao">
             <div className="qr-code-placeholder">
-              {/* No futuro, um componente de QR Code real pode ser inserido aqui */}
               <span>QR Code Aqui</span>
             </div>
             <div className="info-conexao">
               <p>Ou acesse pelo link:</p>
               <div className="link-acesso">
-                {/* Exibe um link único para a aventura */}
-                www.site.com/{aventura.id}
+                www.site.com/{aventura.id} {/* Exibe o ID da aventura */}
               </div>
               <p>Clique para iniciar aventura:</p>
               <img
                 src={playIcon}
                 alt="Iniciar Aventura"
                 className="play-button-iniciar"
-                onClick={handleStartGame}
+                onClick={handleStartGame} 
+                role="button"
               />
             </div>
           </div>

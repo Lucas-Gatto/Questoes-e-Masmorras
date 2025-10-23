@@ -19,8 +19,8 @@ const cadastrarUser = async (req, res) => {
       return res.status(400).json({ message: 'Email já cadastrado' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ email, password: hashedPassword });
+   
+    const user = await User.create({ email, password });
 
     res.status(201).json({
       message: 'Cadastro realizado com sucesso',

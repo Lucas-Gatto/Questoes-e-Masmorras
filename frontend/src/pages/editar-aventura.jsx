@@ -1,92 +1,92 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import FormularioAventura from '../components/FormularioAventura';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import FormularioAventura from '../components/FormularioAventura.jsx';
 
 const EditarAventura = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation(); // Usado para forçar o reload
+
   const [aventura, setAventura] = useState(null);
 
-  // Buscar aventura no backend
+  // Efeito para carregar a aventura do localStorage ao montar ou ao voltar
   useEffect(() => {
-    const fetchAventura = async () => {
+    console.log("Executando useEffect em EditarAventura... Triggered by location key:", location.key);
+    try {
+      const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
+      const aventuraParaEditar = aventurasSalvas.find(a => a.id === Number(id));
+
+      if (aventuraParaEditar) {
+        console.log("Aventura encontrada no localStorage:", aventuraParaEditar);
+        setAventura(aventuraParaEditar); // Define o estado com os dados carregados
+      } else {
+        console.warn("Aventura NÃO encontrada no localStorage para ID:", id);
+        alert("Aventura não encontrada para edição.");
+        navigate('/suas-aventuras');
+      }
+    } catch (error) {
+       console.error("Erro ao carregar aventura para edição:", error);
+       alert("Ocorreu um erro ao carregar a aventura. Verifique o console.");
+       navigate('/suas-aventuras');
+    }
+  }, [id, navigate, location.key]); // Depende do ID e da chave de localização
+
+  // Função chamada pelo botão 'Salvar Alterações' do FormularioAventura
+  const handleEditar = () => {
+    // 1. Validação
+    if (!aventura || aventura.titulo.trim() === '') {
+        alert('A aventura precisa de um nome.');
+        return; // Interrompe se inválido
+    }
+
+    // 2. Salvamento (apenas se válido)
+    try {
+        console.log("Salvando alterações da aventura:", aventura);
+        const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
+        const aventurasAtualizadas = aventurasSalvas.map(a =>
+          a.id === Number(id) ? aventura : a // Substitui a aventura editada
+        );
+        localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasAtualizadas));
+        alert('Aventura atualizada com sucesso!');
+        navigate('/suas-aventuras'); // Volta para a lista principal após salvar
+    } catch (error) {
+        console.error("Erro ao salvar alterações da aventura:", error);
+        alert('Erro ao salvar as alterações.');
+    }
+  };
+
+  // Função chamada pelo botão 'Deletar Aventura' do FormularioAventura
+  const handleDelete = () => {
+    if (window.confirm("Tem certeza que deseja excluir esta aventura?")) {
       try {
-        const res = await fetch(`http://localhost:3000/api/aventuras/${id}`, {
-          credentials: 'include', // se estiver usando sessão
-        });
-        if (!res.ok) throw new Error('Erro ao buscar aventura');
-        const data = await res.json();
-        setAventura(data);
-      } catch (err) {
-        console.error(err);
-        navigate('/suas-aventuras'); // volta caso não encontre
+          const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
+          const aventurasAtualizadas = aventurasSalvas.filter(a => a.id !== Number(id));
+          localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasAtualizadas));
+          alert('Aventura deletada com sucesso!');
+          navigate('/suas-aventuras');
+      } catch (error) {
+          console.error("Erro ao deletar aventura:", error);
+          alert('Erro ao deletar a aventura.');
       }
-    };
-    fetchAventura();
-  }, [id, navigate]);
-
-  // Atualizar aventura (U)
-  const handleEditar = async () => {
-    if (!aventura.titulo || aventura.titulo.trim() === '') {
-      alert('Por favor, dê um título à aventura.');
-      return;
-    }
-
-    try {
-      const res = await fetch(`http://localhost:3000/api/aventuras/${id}`, {
-        method: 'PUT',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(aventura),
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || 'Erro ao atualizar aventura');
-      }
-
-      alert('Aventura atualizada com sucesso!');
-      navigate('/suas-aventuras');
-    } catch (err) {
-      console.error(err);
-      alert('Ocorreu um erro ao atualizar a aventura');
     }
   };
 
-  // Deletar aventura
-  const handleDelete = async () => {
-    if (!window.confirm('Tem certeza que deseja excluir esta aventura?')) return;
+  // Tela de carregamento enquanto 'aventura' é nulo
+  if (!aventura) {
+    return 
+  }
 
-    try {
-      const res = await fetch(`http://localhost:3000/api/aventuras/${id}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || 'Erro ao deletar aventura');
-      }
-
-      alert('Aventura deletada com sucesso!');
-      navigate('/suas-aventuras');
-    } catch (err) {
-      console.error(err);
-      alert('Ocorreu um erro ao deletar a aventura');
-    }
-  };
-
-  if (!aventura) return <div>Carregando...</div>;
-
+  // Renderiza o formulário reutilizável
   return (
     <FormularioAventura
       aventura={aventura}
       setAventura={setAventura}
-      handleSave={handleEditar}
-      handleDelete={handleDelete}
-      pageTitle={aventura.titulo}
-      submitButtonText="Editar"
+      handleSave={handleEditar} // Conecta ao botão 'Salvar Alterações'
+      handleDelete={handleDelete} // Conecta ao botão 'Deletar Aventura'
+      pageTitle={`Editando: ${aventura.titulo}`}
+      submitButtonText="Salvar Alterações"
       navigate={navigate}
+      isNew={false} // Informa que NÃO é uma nova aventura
     />
   );
 };

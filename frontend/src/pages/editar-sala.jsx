@@ -5,107 +5,145 @@ import './editar-sala.css';
 const EditarSala = () => {
   const { aventuraId, salaId } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
+  const location = useLocation(); // Usado para ler o estado passado
 
-  const [sala, setSala] = useState(null);
-  const fileInputRef = useRef(null);
-  const [fileName, setFileName] = useState('Upload de Imagem ☁️');
-  // const [isNewAventura, setIsNewAventura] = useState(false); // Mantido caso precise
+  const [sala, setSala] = useState(null); // Armazena o objeto da sala inteira
+  const fileInputRef = useRef(null); // Referência para o input de arquivo
+  const [fileName, setFileName] = useState('Upload de Imagem ☁️'); // Nome do arquivo
+  // const [isNewAventura, setIsNewAventura] = useState(false); // Mantido caso precise no futuro
 
+  // --- useEffect para Carregar Dados da Sala ---
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const tipoFromUrl = queryParams.get('tipo');
-    // const isNewParam = queryParams.get('isNew');
+    // const isNewParam = queryParams.get('isNew'); // Pode ler se precisar
     // setIsNewAventura(isNewParam === 'true');
 
-    try {
-      const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
-      const aventuraAtual = aventurasSalvas.find(a => a.id === Number(aventuraId));
+    // 1. Tenta pegar os dados passados via navegação
+    const passedSalaData = location.state?.salaData;
+    console.log("[EditarSala useEffect] Sala data passada via location.state:", passedSalaData);
 
-      if (aventuraAtual) {
-        const salaAtual = aventuraAtual.salas.find(s => s.id === Number(salaId));
-        if (salaAtual) {
-          setSala({
+    // 2. Verifica se os dados passados correspondem ao ID da URL
+    if (passedSalaData && passedSalaData.id === Number(salaId)) {
+        // Usa os dados passados (mais recentes)
+        console.log("[EditarSala useEffect] Usando sala data do location.state");
+        setSala({
+            // Garante valores padrão caso não venham no state
             texto: '', vidaMonstro: 'Média', enigma: '', resposta: '', opcoes: [],
-            ...salaAtual,
-            tipo: tipoFromUrl
-          });
-          if (salaAtual.imagem) {
-            setFileName("Imagem salva");
-          }
-        } else {
-          alert('Sala não encontrada!');
-          navigate(`/editar-aventura/${aventuraId}`);
+            ...passedSalaData, // Dados passados
+            tipo: tipoFromUrl  // Garante que o tipo da URL (o mais recente) prevaleça
+        });
+        if (passedSalaData.imagem) setFileName("Imagem salva");
+
+    } else {
+        // 3. FALLBACK: Carrega do localStorage
+        console.log("[EditarSala useEffect] Não encontrou state válido, carregando do localStorage...");
+        try {
+            const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
+            const aventuraAtual = aventurasSalvas.find(a => a.id === Number(aventuraId));
+            if (aventuraAtual) {
+                const salaAtual = (aventuraAtual.salas || []).find(s => s.id === Number(salaId)); // Garante que salas exista
+                if (salaAtual) {
+                    setSala({
+                        texto: '', vidaMonstro: 'Média', enigma: '', resposta: '', opcoes: [],
+                        ...salaAtual,
+                        tipo: tipoFromUrl // Garante tipo da URL
+                    });
+                    if (salaAtual.imagem) setFileName("Imagem salva");
+                    console.log("[EditarSala useEffect] Sala carregada do localStorage.");
+                } else {
+                    console.warn(`[EditarSala useEffect] Sala ID ${salaId} não encontrada no localStorage.`);
+                    alert('Sala não encontrada!');
+                    // Decide para onde voltar baseado no isNew (se necessário usar)
+                    // isNewParam === 'true' ? navigate(-1) : navigate(`/editar-aventura/${aventuraId}`);
+                    navigate(`/editar-aventura/${aventuraId}`); // Assume que volta para edição
+                }
+            } else {
+                console.warn(`[EditarSala useEffect] Aventura ID ${aventuraId} não encontrada no localStorage.`);
+                alert('Aventura não encontrada!');
+                navigate('/suas-aventuras');
+            }
+        } catch (error) {
+            console.error("Erro ao carregar dados da sala do localStorage:", error);
+            navigate('/suas-aventuras');
         }
-      } else {
-        alert('Aventura não encontrada!');
-        navigate('/suas-aventuras');
-      }
-    } catch (error) {
-      console.error("Erro ao carregar dados da sala:", error);
-      navigate('/suas-aventuras');
     }
-  }, [aventuraId, salaId, navigate, location.search]);
+  // Adiciona 'location' como dependência para reler o state se ele mudar
+  }, [aventuraId, salaId, navigate, location]);
+  // --- FIM DO useEffect ---
+
+  // --- Funções de Manipulação ---
 
   // Salva o objeto 'sala' inteiro no localStorage
   const handleSalvar = () => {
-    if (!sala) return;
+    if (!sala) {
+        console.error("Tentativa de salvar com 'sala' nula.");
+        alert("Erro: Dados da sala não carregados.");
+        return;
+    }
     try {
       const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
       const aventurasAtualizadas = aventurasSalvas.map(aventura => {
         if (aventura.id === Number(aventuraId)) {
-          const salasAtualizadas = aventura.salas.map(s =>
-            s.id === Number(salaId) ? sala : s
+          // Garante que aventura.salas exista antes de mapear
+          const salasAtualizadas = (aventura.salas || []).map(s =>
+            s.id === Number(salaId) ? sala : s // Substitui a sala antiga pela 'sala' do estado
           );
-          return { ...aventura, salas: salasAtualizadas };
+          return { ...aventura, salas: salasAtualizadas }; // Retorna a aventura com a sala atualizada
         }
-        return aventura;
+        return aventura; // Retorna as outras aventuras sem modificação
       });
+
+      console.log("Salvando sala. Aventura completa atualizada:", aventurasAtualizadas); // Log antes de salvar
       localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasAtualizadas));
       alert('Sala atualizada com sucesso!');
-      navigate(-1); // Volta para a página anterior
+      navigate(-1); // Volta para a página anterior (Nova ou Editar Aventura)
     } catch (error) {
        console.error("Erro ao salvar a sala:", error);
        alert("Ocorreu um erro ao salvar a sala.");
     }
   };
 
-  // Atualiza o estado da sala
+  // Atualiza qualquer campo do objeto 'sala' no estado
   const handleInputChange = (campo, valor) => {
     setSala(salaAtual => ({ ...salaAtual, [campo]: valor }));
   };
 
-  // Funções de Upload de Imagem (sem alterações)
+  // Ativado pelo clique no botão 'Upload'
   const handleImageUploadClick = (e) => {
     e.preventDefault();
     if (fileInputRef.current) {
-        fileInputRef.current.click();
+        fileInputRef.current.click(); // Dispara o clique no input escondido
     }
   };
 
+  // Ativado quando um arquivo é selecionado no input
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        handleInputChange('imagem', reader.result); // Salva como Base64
-        setFileName(file.name);
+        // Callback executado após a leitura do arquivo
+        handleInputChange('imagem', reader.result); // Salva a imagem como Base64 no estado
+        setFileName(file.name); // Atualiza o nome no botão
       };
-      reader.onerror = (error) => {
+      reader.onerror = (error) => { // Adiciona tratamento de erro
           console.error("Erro ao ler o arquivo:", error);
           alert("Erro ao carregar a imagem.");
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file); // Inicia a leitura/conversão para Base64
     }
   };
 
-  // --- 👇 FUNÇÃO RENDERFORM COM O JSX DOS FORMULÁRIOS DENTRO 👇 ---
+  // --- Renderização Condicional do Corpo do Formulário ---
   const renderFormBody = () => {
+    // Não renderiza nada se a sala ainda não foi carregada
     if (!sala) return <p>Carregando...</p>;
 
     console.log("[renderFormBody] Verificando sala.tipo:", sala.tipo); // Mantenha para depurar
 
     switch (sala.tipo) {
+      // --- Layout para ENIGMA ---
       case 'Enigma':
         console.log("[renderFormBody] Renderizando formulário Enigma.");
         return (
@@ -115,7 +153,7 @@ const EditarSala = () => {
               <textarea
                 id="enigma-sala"
                 className="textarea-texto-sala"
-                value={sala.enigma || ''}
+                value={sala.enigma || ''} // Usa '' como fallback
                 onChange={(e) => handleInputChange('enigma', e.target.value)}
                 rows="3"
                 placeholder="Digite o enigma aqui..."
@@ -127,13 +165,14 @@ const EditarSala = () => {
                 id="resposta-enigma"
                 type="text"
                 className="input-resposta-enigma"
-                value={sala.resposta || ''}
+                value={sala.resposta || ''} // Usa '' como fallback
                 onChange={(e) => handleInputChange('resposta', e.target.value)}
                 placeholder="Digite a resposta aqui..."
               />
             </div>
           </>
         );
+      // --- Layout para MONSTRO ---
       case 'Monstro':
         console.log("[renderFormBody] Renderizando formulário Monstro.");
         return (
@@ -143,7 +182,7 @@ const EditarSala = () => {
               <textarea
                 id="texto-sala"
                 className="textarea-texto-sala"
-                value={sala.texto || ''}
+                value={sala.texto || ''} // Usa '' como fallback
                 onChange={(e) => handleInputChange('texto', e.target.value)}
                 rows="5"
               />
@@ -153,7 +192,7 @@ const EditarSala = () => {
               <select
                 id="vida-monstro"
                 className="select-vida-monstro"
-                value={sala.vidaMonstro}
+                value={sala.vidaMonstro} // O valor padrão já está no estado
                 onChange={(e) => handleInputChange('vidaMonstro', e.target.value)}
               >
                 <option value="Baixa">Baixa</option>
@@ -164,6 +203,7 @@ const EditarSala = () => {
             </div>
           </>
         );
+      // --- Layout para ALTERNATIVA ---
       case 'Alternativa':
         console.log("[renderFormBody] Renderizando formulário Alternativa.");
         return (
@@ -173,7 +213,7 @@ const EditarSala = () => {
               <textarea
                 id="texto-sala"
                 className="textarea-texto-sala"
-                value={sala.texto || ''}
+                value={sala.texto || ''} // Usa '' como fallback
                 onChange={(e) => handleInputChange('texto', e.target.value)}
                 rows="5"
               />
@@ -181,7 +221,7 @@ const EditarSala = () => {
             <div className="form-group">
               <label>Opções de resposta (configuração em breve)</label>
               <div className="opcoes-container">
-                {/* Aqui ainda podemos melhorar para permitir edição das opções */}
+                {/* No futuro, mapear sala.opcoes aqui e torná-los inputs */}
                 <button className="btn-opcao red">Opção 1</button>
                 <button className="btn-opcao yellow">Opção 2</button>
                 <button className="btn-opcao green">Opção 3</button>
@@ -195,9 +235,8 @@ const EditarSala = () => {
         return <p>Tipo de sala desconhecido: {sala.tipo}.</p>;
     }
   };
-  // --- FIM DA FUNÇÃO RENDERFORM ---
 
-
+  // --- Tela de carregamento ---
   if (!sala) {
     return (
       <div style={{ backgroundColor: '#212529', minHeight: '100vh', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -209,15 +248,16 @@ const EditarSala = () => {
   // --- JSX Principal ---
   return (
     <div className="editar-sala-container">
-      <h1 className="editar-sala-titulo">Editar {sala.nome || 'Sala'}</h1>
+      <h1 className="editar-sala-titulo">Editar {sala.nome || 'Sala'}</h1> {/* Usa fallback */}
 
+      {/* Campo comum: Nome da Sala */}
       <div className="form-group">
         <label htmlFor="nome-sala">Nome da sala</label>
         <input
           id="nome-sala"
           type="text"
           className="input-nome-sala"
-          value={sala.nome || ''}
+          value={sala.nome || ''} // Usa fallback
           onChange={(e) => handleInputChange('nome', e.target.value)}
         />
       </div>
@@ -243,8 +283,8 @@ const EditarSala = () => {
         type="file"
         ref={fileInputRef}
         onChange={handleFileChange}
-        style={{ display: 'none' }}
-        accept="image/png, image/jpeg, image/jpg, image/gif"
+        style={{ display: 'none' }} // Mantém escondido
+        accept="image/png, image/jpeg, image/jpg, image/gif" // Aceita formatos comuns
       />
     </div>
   );

@@ -50,11 +50,15 @@ const NovaAventura = () => {
   // Função chamada pelo botão 'Cancelar' do FormularioAventura
   const handleCancelar = () => {
       // Opcional: Remover rascunho pré-salvo do localStorage
-      // try {
-      //     const aventurasExistentes = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
-      //     const aventurasFiltradas = aventurasExistentes.filter(a => a.id !== aventura.id);
-      //     localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasFiltradas));
-      // } catch (error) { console.error("Erro ao remover rascunho:", error); }
+      try {
+          const aventurasExistentes = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
+          // Remove apenas se o título estiver vazio (indicando que não foi realmente editado)
+          if (aventura && aventura.titulo.trim() === '') {
+              const aventurasFiltradas = aventurasExistentes.filter(a => a.id !== aventura.id);
+              localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasFiltradas));
+              console.log("Rascunho cancelado removido do localStorage.");
+          }
+      } catch (error) { console.error("Erro ao remover rascunho:", error); }
       navigate('/suas-aventuras'); // Simplesmente volta para a lista
   }
 

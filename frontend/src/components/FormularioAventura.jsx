@@ -17,40 +17,22 @@ const SalaArrastavel = ({
   index,
   handleSalaChange,
   handleDeleteSala,
-  aventura, // Recebe a aventura inteira
-  isNew,    // Recebe o booleano 'isNew'
+  aventura, // Recebe a aventura inteira para obter IDs
+  isNew,    // Recebe o booleano 'isNew' para passar na URL
   navigate,
 }) => {
 
   const handleEditClick = () => {
-    // --- LÓGICA DE PRÉ-SALVAMENTO RESTAURADA (SÓ PARA isNew=true) ---
-    if (isNew) {
-      console.log("[handleEditClick - Pré-Salvamento] (isNew=true) Estado da aventura ANTES de salvar:", aventura);
-      try {
-        const aventurasExistentes = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
-        const indexExistente = aventurasExistentes.findIndex(a => a.id === aventura.id);
-        let aventurasAtualizadas;
-        if (indexExistente > -1) {
-          aventurasAtualizadas = [...aventurasExistentes];
-          aventurasAtualizadas[indexExistente] = aventura; // Atualiza rascunho
-        } else {
-          aventurasAtualizadas = [...aventurasExistentes, aventura]; // Salva rascunho pela 1ª vez
-        }
-        localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasAtualizadas));
-        console.log("[handleEditClick - Pré-Salvamento] Dados salvos no localStorage.");
-      } catch (error) {
-         console.error("Erro ao pré-salvar aventura:", error);
-         alert("Ocorreu um erro ao tentar salvar o rascunho da aventura.");
-         return; // Interrompe se não conseguir salvar
-      }
-    }
-    // --- FIM DO PRÉ-SALVAMENTO ---
+    // ❌ Lógica de pré-salvamento REMOVIDA daqui ❌
 
-    // Navegação (passa isNew para EditarSala saber como voltar)
+    // Navegação, agora passando 'sala' via estado da navegação
     if (navigate && aventura?.id && sala?.id) {
       const editUrl = `/aventura/${aventura.id}/sala/${sala.id}/editar?tipo=${sala.tipo}&isNew=${isNew ? 'true' : 'false'}`;
-      console.log("[handleEditClick] Navegando para:", editUrl);
-      navigate(editUrl);
+      console.log("[handleEditClick] Navegando para:", editUrl, "PASSANDO STATE:", sala);
+
+      // 👇 PASSA O OBJETO 'sala' ATUAL VIA ESTADO DA NAVEGAÇÃO 👇
+      navigate(editUrl, { state: { salaData: sala } });
+
     } else {
       console.error("Erro de navegação: Faltando dados.", { navigateExists: !!navigate, aventuraId: aventura?.id, salaId: sala?.id, salaTipo: sala?.tipo, isNewProp: isNew });
       alert("Ocorreu um erro ao tentar editar a sala.");
@@ -93,6 +75,7 @@ const SalaArrastavel = ({
   );
 };
 
+
 // --- Componente Principal FormularioAventura ---
 const FormularioAventura = ({
   aventura,
@@ -104,8 +87,6 @@ const FormularioAventura = ({
   navigate,
   isNew = false,    // Flag para saber se é criação ou edição
 }) => {
-
-  // ❌ REMOVIDO: useEffect que salvava automaticamente no localStorage ❌
 
   // --- Funções de Manipulação do Estado (COMPLETAS) ---
 
@@ -234,7 +215,7 @@ const FormularioAventura = ({
   // --- Verificações de Segurança ---
   if (!aventura || !aventura.salas || !aventura.perguntas) {
     console.warn("FormularioAventura: Dados essenciais da aventura estão faltando ou nulos.", { aventura });
-    return
+    return 
   }
 
   // --- Renderização ---
@@ -242,7 +223,6 @@ const FormularioAventura = ({
     <div className="nova-aventura-container" role="main">
       <h1 className="titulo-pagina">{pageTitle || "Formulário da Aventura"}</h1>
 
-       {/* --- Cabeçalho --- */}
        <div className="form-cabecalho">
           <input type="text" className="input-titulo-aventura" placeholder="Digite o nome da aventura..."
             value={aventura.titulo || ""} onChange={handleTituloChange}
@@ -257,18 +237,17 @@ const FormularioAventura = ({
           </div>
         </div>
 
-      {/* --- Lista de Salas --- */}
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <div className="lista-salas-container">
           <SortableContext items={aventura.salas.map(s => s.id)} strategy={verticalListSortingStrategy}>
             {aventura.salas.map((sala, index) => (
               <SalaArrastavel
                 key={sala.id}
-                id={sala.id}
+                id={sala.id} // Necessário para SortableContext
                 sala={sala}
                 index={index}
-                aventura={aventura} // Passa aventura para pré-salvar/navegar
-                isNew={isNew}      // Passa isNew para SalaArrastavel saber se pré-salva
+                aventura={aventura} // Passa aventura para navegação
+                isNew={isNew}      // Passa isNew para URL
                 handleSalaChange={handleSalaChange}
                 handleDeleteSala={handleDeleteSala}
                 navigate={navigate}
@@ -278,7 +257,6 @@ const FormularioAventura = ({
         </div>
       </DndContext>
 
-      {/* --- Perguntas de Rolagem --- */}
        <div className="perguntas-rolagem-container">
           <h2 className="subtitulo">Perguntas de Rolagem</h2>
           {aventura.perguntas.map((pergunta, index) => (
@@ -303,7 +281,6 @@ const FormularioAventura = ({
           ))}
         </div>
 
-      {/* --- Botões Finais --- */}
        <div className="botoes-finais-container">
           <button className="btn-final btn-deletar" onClick={handleDelete}>
             {isNew ? 'Cancelar' : 'Deletar Aventura'}

@@ -7,9 +7,9 @@ const EditarAventura = () => {
   const navigate = useNavigate();
   const location = useLocation(); // Usado para forçar o reload
 
-  const [aventura, setAventura] = useState(null);
+  const [aventura, setAventura] = useState(null); // Estado para guardar a aventura
 
-  // Efeito para carregar a aventura do localStorage ao montar ou ao voltar
+  // Efeito para carregar a aventura do localStorage
   useEffect(() => {
     console.log("Executando useEffect em EditarAventura... Triggered by location key:", location.key);
     try {
@@ -73,20 +73,24 @@ const EditarAventura = () => {
 
   // Tela de carregamento enquanto 'aventura' é nulo
   if (!aventura) {
-    return 
+    return (
+        <div style={{ backgroundColor: '#212529', minHeight: '100vh', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            Carregando dados da aventura...
+        </div>
+    );
   }
 
   // Renderiza o formulário reutilizável
   return (
     <FormularioAventura
       aventura={aventura}
-      setAventura={setAventura}
-      handleSave={handleEditar} // Conecta ao botão 'Salvar Alterações'
-      handleDelete={handleDelete} // Conecta ao botão 'Deletar Aventura'
+      setAventura={setAventura} // Passa a função para permitir atualizações diretas no estado
+      handleSave={handleEditar} // Passa a função que será chamada ao clicar em 'Salvar Alterações'
+      handleDelete={handleDelete} // Passa a função para o botão 'Deletar Aventura'
       pageTitle={`Editando: ${aventura.titulo}`}
       submitButtonText="Salvar Alterações"
-      navigate={navigate}
-      isNew={false} // Informa que NÃO é uma nova aventura
+      navigate={navigate} // Passa a função navigate para a SalaArrastavel
+      isNew={false} // Informa explicitamente que NÃO é uma nova aventura
     />
   );
 };

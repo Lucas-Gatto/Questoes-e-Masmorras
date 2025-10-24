@@ -10,8 +10,8 @@ exports.createAventura = async (req, res) => {
     await aventura.save();
     res.status(201).json(aventura);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Erro ao criar aventura" });
+    console.error("[createAventura]", err);
+    res.status(500).json({ error: "Erro ao criar aventura", details: err?.message });
   }
 };
 

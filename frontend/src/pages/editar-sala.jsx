@@ -86,10 +86,12 @@ const EditarSala = () => {
       const aventurasAtualizadas = aventurasSalvas.map(aventura => {
         if (aventura.id === Number(aventuraId)) {
           // Garante que aventura.salas exista antes de mapear
-          const salasAtualizadas = (aventura.salas || []).map(s =>
-            s.id === Number(salaId) ? sala : s // Substitui a sala antiga pela 'sala' do estado
-          );
-          return { ...aventura, salas: salasAtualizadas }; // Retorna a aventura com a sala atualizada
+          const salasOrig = Array.isArray(aventura.salas) ? aventura.salas : [];
+          const existeSala = salasOrig.some(s => s.id === Number(salaId));
+          const salasAtualizadas = existeSala
+            ? salasOrig.map(s => (s.id === Number(salaId) ? sala : s))
+            : [...salasOrig, sala]; // Se não existir, adiciona a nova sala
+          return { ...aventura, salas: salasAtualizadas };
         }
         return aventura; // Retorna as outras aventuras sem modificação
       });

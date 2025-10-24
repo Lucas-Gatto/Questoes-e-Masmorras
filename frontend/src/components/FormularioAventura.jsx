@@ -23,19 +23,36 @@ const SalaArrastavel = ({
 }) => {
 
   const handleEditClick = () => {
-    // ❌ Lógica de pré-salvamento REMOVIDA daqui ❌
+    try {
+      // Antes de navegar, salva a aventura atual no localStorage (autosave)
+      if (aventura?.id) {
+        const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
+        const idx = aventurasSalvas.findIndex((a) => a.id === aventura.id);
+        if (idx > -1) {
+          aventurasSalvas[idx] = aventura; // Atualiza aventura existente
+        } else {
+          aventurasSalvas.push(aventura); // Insere nova aventura (rascunho)
+        }
+        localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasSalvas));
+        // Marca o ID do rascunho atual para que NovaAventura recarregue ele ao voltar
+        localStorage.setItem('draft_aventura_id', String(aventura.id));
+        console.log('[SalaArrastavel] Autosave realizado e draft_aventura_id marcado:', aventura.id);
+      } else {
+        console.warn('[SalaArrastavel] Aventura sem ID ao tentar autosave.');
+      }
 
-    // Navegação, agora passando 'sala' via estado da navegação
-    if (navigate && aventura?.id && sala?.id) {
-      const editUrl = `/aventura/${aventura.id}/sala/${sala.id}/editar?tipo=${sala.tipo}&isNew=${isNew ? 'true' : 'false'}`;
-      console.log("[handleEditClick] Navegando para:", editUrl, "PASSANDO STATE:", sala);
-
-      // 👇 PASSA O OBJETO 'sala' ATUAL VIA ESTADO DA NAVEGAÇÃO 👇
-      navigate(editUrl, { state: { salaData: sala } });
-
-    } else {
-      console.error("Erro de navegação: Faltando dados.", { navigateExists: !!navigate, aventuraId: aventura?.id, salaId: sala?.id, salaTipo: sala?.tipo, isNewProp: isNew });
-      alert("Ocorreu um erro ao tentar editar a sala.");
+      // Navegação, passando 'sala' via estado da navegação
+      if (navigate && aventura?.id && sala?.id) {
+        const editUrl = `/aventura/${aventura.id}/sala/${sala.id}/editar?tipo=${sala.tipo}&isNew=${isNew ? 'true' : 'false'}`;
+        console.log('[handleEditClick] Navegando para:', editUrl, 'PASSANDO STATE:', sala);
+        navigate(editUrl, { state: { salaData: sala } });
+      } else {
+        console.error('Erro de navegação: Faltando dados.', { navigateExists: !!navigate, aventuraId: aventura?.id, salaId: sala?.id, salaTipo: sala?.tipo, isNewProp: isNew });
+        alert('Ocorreu um erro ao tentar editar a sala.');
+      }
+    } catch (e) {
+      console.error('Erro ao realizar autosave da aventura antes de editar sala:', e);
+      alert('Erro ao preparar edição da sala. Tente novamente.');
     }
   };
 

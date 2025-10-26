@@ -3,31 +3,35 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  /* background-color: #YourBackgroundColor; Se precisar de cor de fundo */
 }
 .sala-de-jogo-main {
   flex-grow: 1;
   display: flex;
   padding: 40px 20px;
   gap: 20px;
-  align-items: center;
+  align-items: flex-start; /* Alinha painel e barra no topo */
   justify-content: center;
 }
 
 /* Barra de Progresso Lateral */
 .progresso-barra-container {
   width: 20px;
-  height: 50vh;
+  /* Altura pode ser fixa ou % da viewport */
+  height: 60vh; /* Exemplo: 60% da altura da tela */
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 10px;
-  position: relative;
-  overflow: hidden;
+  position: relative; /* Necessário para o preenchimento absoluto */
+  overflow: hidden; /* Esconde o excesso da barra interna */
+  margin-top: 50px; /* Ajuste para alinhar com o painel */
 }
 .progresso-barra-preenchimento {
   width: 100%;
-  background-color: #007BFF;
+  background-color: #007BFF; /* Azul */
   position: absolute;
-  bottom: 0;
-  transition: height 0.5s ease-in-out;
+  bottom: 0; /* Começa de baixo */
+  left: 0;
+  transition: height 0.5s ease-in-out; /* Animação suave */
 }
 
 /* Painel Central da Sala */
@@ -36,50 +40,60 @@
   max-width: 900px;
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 25px;
-  padding: 20px 30px;
+  padding: 20px 30px 30px 30px; /* Aumenta padding inferior */
   color: white;
   font-family: Arial, sans-serif;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra sutil */
 }
 .sala-titulo-aventura {
   font-family: 'MedievalSharp', cursive;
   font-size: 1.8rem;
   color: #C68700;
   text-align: center;
+  margin-top: 0;
+  margin-bottom: 5px;
 }
 .sala-titulo-nome {
   color: #C68700;
   text-align: center;
   font-size: 1.2rem;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  font-weight: bold;
 }
 .texto-sala {
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  line-height: 1.5; /* Melhora legibilidade */
 }
-.imagem-placeholder {
+
+/* Container e Fallback da Imagem */
+.imagem-container {
   width: 100%;
-  height: 150px;
-  background-color: #fff;
-  color: #000;
+  max-width: 400px; /* Limita largura máxima da imagem */
+  height: 200px; /* Altura fixa ou use aspect-ratio */
+  background-color: #222;
+  border-radius: 10px;
+  margin: 0 auto 25px auto; /* Centraliza e adiciona margem inferior */
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  font-size: 2rem;
-  font-weight: bold;
+  overflow: hidden;
 }
-.imagem-placeholder span {
-  color: red;
-  border: 5px solid red;
-  padding: 10px;
-  transform: rotate(-15deg);
+.imagem-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* 'cover' preenche, 'contain' mostra inteira */
+}
+.imagem-fallback-text {
+  color: #555;
+  font-weight: bold;
+  font-style: italic;
 }
 
 
 /* Botões Genéricos */
 .btn-jogo {
-  padding: 10px 20px;
+  padding: 10px 25px; /* Ajuste padding */
   border: none;
   border-radius: 10px;
   font-family: 'MedievalSharp', cursive;
@@ -87,36 +101,46 @@
   font-weight: bold;
   cursor: pointer;
   color: white;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, transform 0.1s;
+  text-align: center;
 }
 .btn-jogo:hover { opacity: 0.9; }
+.btn-jogo:active { transform: scale(0.98); } /* Efeito de clique */
 .btn-jogo.vermelho { background-color: #a42828; }
-.btn-jogo.azul { background-color: #2c5b96;
-}
+.btn-jogo.azul { background-color: #2c5b96; }
 .btn-jogo.dourado { background-color: #b4850c; }
 
 
 /* Estilos Específicos: ENIGMA */
+.conteudo-enigma { /* Sem necessidade de estilos específicos aqui */ }
 .botoes-grid-enigma {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  /* Duas colunas: resposta (maior), botões (menor) */
+  grid-template-columns: 2.5fr 1fr;
+  /* Duas linhas para empilhar os botões */
+  grid-template-rows: auto auto;
   gap: 15px;
+  align-items: stretch; /* Faz todos terem a mesma altura na linha */
 }
 .resposta-enigma {
-  grid-row: 1 / 3; /* Ocupa 2 linhas */
+  grid-row: 1 / 3; /* Ocupa as duas linhas da grid */
   background-color: #333;
   border-radius: 10px;
   padding: 15px;
   display: flex;
   align-items: center;
+  justify-content: center; /* Centraliza texto se for curto */
+  font-size: 1rem;
 }
+/* Força botões a ocuparem toda a célula da grid */
 .botoes-grid-enigma .btn-jogo { width: 100%; }
 
 
 /* Estilos Específicos: ALTERNATIVA */
+.conteudo-alternativa { /* Sem necessidade de estilos específicos aqui */ }
 .botoes-grid-alternativa {
   display: grid;
+  /* Três colunas iguais */
   grid-template-columns: 1fr 1fr 1fr;
   gap: 15px;
 }
@@ -125,42 +149,84 @@
   border-radius: 10px;
   border: 2px solid rgba(0, 0, 0, 0.3);
   color: white; font-weight: bold; cursor: pointer;
+  transition: transform 0.1s;
 }
+.btn-opcao-jogo:active { transform: scale(0.98); }
 .btn-opcao-jogo.red { background-color: #a42828; }
 .btn-opcao-jogo.yellow { background-color: #b4850c; }
 .btn-opcao-jogo.green { background-color: #2e8540; }
 .btn-opcao-jogo.blue { background-color: #2c5b96; }
+/* Faz botão Revelar e Avançar ocuparem toda a célula */
+.botoes-grid-alternativa .btn-jogo { width: 100%; }
 
 
 /* Estilos Específicos: MONSTRO */
+.conteudo-monstro { /* Sem necessidade de estilos específicos aqui */ }
 .monstro-grid {
   display: grid;
+  /* Duas colunas: imagem (fixa), status (flexível) */
   grid-template-columns: 250px 1fr;
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: 25px; /* Aumenta o espaço */
+  margin-bottom: 25px;
+  align-items: center; /* Alinha verticalmente */
 }
 .monstro-imagem-container {
   width: 250px;
   height: 200px;
-  background-color: #222;
   border-radius: 10px;
-  /* Coloque a imagem do monstro aqui como background-image */
+  /* Estilos da imagem já estão em .imagem-container img */
 }
 .monstro-status {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  gap: 10px;
+  justify-content: space-around; /* Distribui espaço vertical */
+  gap: 15px; /* Aumenta espaço entre elementos */
+  height: 100%; /* Ocupa altura da grid */
 }
+.vida-monstro-container span { display: block; margin-bottom: 5px; font-size: 0.9em; opacity: 0.8;}
 .vida-barra {
   width: 100%;
   height: 25px;
   background-color: #555;
   border-radius: 10px;
+  overflow: hidden; /* Garante que preenchimento não vaze */
 }
-.vida-preenchimento { height: 100%; background-color: #f4c20d; border-radius: 10px; }
+.vida-preenchimento { height: 100%; background-color: #f4c20d; border-radius: 10px; transition: width 0.3s ease; }
 .pergunta-nivel, .turno-jogador { display: flex; align-items: center; gap: 10px; }
-.dado-icone { font-size: 2.5rem; }
-.nome-personagem { background-color: #5C481A; padding: 8px 15px; border-radius: 20px; flex-grow: 1; }
-.btn-pular { background-color: #555; border: none; color: white; padding: 8px 20px; border-radius: 20px; cursor: pointer; }
-.btn-finalizar-aventura { width: 100%; padding: 15px; }
+.pergunta-nivel span strong { color: #f4c20d; } /* Destaca o número */
+.dado-icone { font-size: 2.5rem; line-height: 1; }
+.turno-jogador span { opacity: 0.8; }
+.nome-personagem { background-color: #5C481A; padding: 8px 15px; border-radius: 20px; flex-grow: 1; text-align: center; }
+.btn-pular { background-color: #555; border: none; color: white; padding: 8px 20px; border-radius: 20px; cursor: pointer; transition: background-color 0.2s; }
+.btn-pular:hover { background-color: #777; }
+/* Esconde o botão finalizar antigo (se a classe ainda existir) */
+.conteudo-monstro .btn-finalizar-aventura { display: none; }
+
+
+/* Container e Botões de Navegação (Avançar/Finalizar) */
+.botoes-navegacao-sala {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #555;
+  display: flex;
+  justify-content: flex-end; /* Alinha à direita */
+}
+.btn-finalizar-aventura-bottom,
+.btn-avancar-sala-bottom {
+  width: auto;
+  min-width: 180px; /* Largura mínima */
+  padding: 12px 40px;
+}
+.btn-avancar-sala-bottom:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Mensagens de erro/carregamento */
+.loading-sala, .error-sala {
+  text-align: center;
+  font-style: italic;
+  opacity: 0.7;
+  padding: 20px;
+}

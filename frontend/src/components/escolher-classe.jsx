@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'; // useParams para pegar ID da aventura se necessário
+import HeaderAventura from '../components/HeaderAventura.jsx';
+import Footer from '../components/footer.jsx';
 import './escolher-classe.css';
 
 // --- Imagens das Classes (ajuste os caminhos/nomes) ---
@@ -27,10 +29,11 @@ const classesInfo = {
   },
 };
 
+
 const EscolherClasse = () => {
   const navigate = useNavigate();
-
-  const [selectedClassKey, setSelectedClassKey] = useState('bardo'); 
+  // const { aventuraId } = useParams(); // Pode precisar disso no futuro
+  const [selectedClassKey, setSelectedClassKey] = useState('bardo'); // Começa com Bardo selecionado
 
   const handleClassSelect = (classKey) => {
     setSelectedClassKey(classKey);
@@ -47,12 +50,13 @@ const EscolherClasse = () => {
 
   return (
     <div className="escolher-classe-page">
+      <HeaderAventura /> {/* Ou um header específico para aluno? */}
       <main className="escolher-classe-main">
         <div className="escolher-classe-painel">
           {/* Títulos */}
           <h1 className="titulo-aventura-escolha">
             {/* TODO: Carregar nome real da aventura */}
-            TITULO DA AVENTURA
+            O calabouço de Nielsen
           </h1>
           <h2 className="titulo-escolha">Escolha sua Classe</h2>
 
@@ -88,6 +92,7 @@ const EscolherClasse = () => {
 
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

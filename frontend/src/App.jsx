@@ -19,6 +19,7 @@ import SalaDeJogo from './pages/sala-de-jogo.jsx';
 import EntrarAventura from './pages/entrar-aventura.jsx';
 import EscolherClasse from './pages/escolher-classe.jsx';
 import SalasAluno from './pages/salas-aluno.jsx';
+import ResultadosAventura from './pages/resultados-aventura.jsx';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
            {/* 👇 ROTA IMPORTANTE AQUI (FORA do LayoutLogado) 👇 */}
           <Route path="/iniciar-aventura/:aventuraId" element={<IniciarAventura />} />
           <Route path="/aventura/:aventuraId/jogar" element={<SalaDeJogo />} />
+          <Route path="/aventura/:aventuraId/resultados" element={<ResultadosAventura />} />
 
           {/* --- GRUPO 4: Rotas do Aluno (com LayoutAluno) --- */}
           <Route element={<LayoutAluno />}>

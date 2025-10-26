@@ -1,0 +1,119 @@
+.avaliacao-container {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 100px 150px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(22, 22, 22, 0.2);
+  width: fit-content;
+  margin: 50px auto;
+}
+
+.titulo-avaliacao {
+  color: #dca519;
+  font-family: "MedievalSharp", cursive;
+  font-size: 28px;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px rgba(255, 200, 0, 0.4);
+}
+
+.estrelas {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 45px;
+  cursor: pointer;
+}
+
+.estrela {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.estrela:hover {
+  transform: scale(1.2);
+}
+
+.estrela.ativa {
+  color: #ffcc00;
+  text-shadow: 0 0 10px rgba(255, 200, 0, 0.5);
+}
+
+.estrela.inativa {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.mensagem-avaliacao {
+  color: white;
+  margin-top: 15px;
+  font-size: 18px;
+  font-family: 'Trebuchet MS', sans-serif;
+}
+
+.mensagem-avaliacao {
+  color: white;
+  margin-top: 15px;
+  font-size: 18px;
+  font-family: 'Trebuchet MS', sans-serif;
+}
+
+/* Campo de comentário */
+.form-avaliacao {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.campo-comentario {
+  width: 400px;
+  height: 120px;
+  background-color: rgba(255, 200, 0, 0.1);
+  border: 2px solid #dca519;
+  border-radius: 12px;
+  color: white;
+  font-size: 16px;
+  padding: 12px;
+  resize: none;
+  outline: none;
+  transition: 0.3s ease;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.campo-comentario::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.campo-comentario:focus {
+  box-shadow: 0 0 10px rgba(255, 200, 0, 0.4);
+  
+}
+
+/* Botão */
+.botao-enviar {
+  background-color: #dca519;
+  border: none;
+  color: black;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  margin-top: 25px;
+  font-family: "MedievalSharp", cursive;
+}
+
+.botao-enviar:hover {
+    
+  background-color: #ffcc00;
+  transform: scale(1.05);
+}
+
+/* Mensagem de sucesso */
+.mensagem-sucesso {
+margin-top: 20px;
+  color: #ffffff;
+  font-size: 18px;
+  margin-top: 15px;
+  text-shadow: 0 0 10px rgba(255, 200, 0, 0.5);
+}

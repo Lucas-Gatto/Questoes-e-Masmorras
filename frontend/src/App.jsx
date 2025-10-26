@@ -20,6 +20,8 @@ import EntrarAventura from './pages/entrar-aventura.jsx';
 import EscolherClasse from './pages/escolher-classe.jsx';
 import SalasAluno from './pages/salas-aluno.jsx';
 import ResultadosAventura from './pages/resultados-aventura.jsx';
+import Avaliacao from './pages/avaliacao.jsx'; 
+import RecuperarSenha from './pages/recuperar-senha.jsx'; 
 
 function App() {
   return (
@@ -30,7 +32,8 @@ function App() {
           <Route element={<LayoutDeslogado />}>
             <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
-          </Route>
+            <Route path='/recuperar-senha' element={<RecuperarSenha />} />
+            </Route>
 
           {/* --- GRUPO 2: Rotas de Gerenciamento (com LayoutLogado) --- */}
           <Route element={<LayoutLogado />}>
@@ -45,12 +48,14 @@ function App() {
           <Route path="/iniciar-aventura/:aventuraId" element={<IniciarAventura />} />
           <Route path="/aventura/:aventuraId/jogar" element={<SalaDeJogo />} />
           <Route path="/aventura/:aventuraId/resultados" element={<ResultadosAventura />} />
+          
 
           {/* --- GRUPO 4: Rotas do Aluno (com LayoutAluno) --- */}
           <Route element={<LayoutAluno />}>
             <Route path='/entrar-aventura' element={<EntrarAventura />} />
             <Route path='/escolher-classe' element={<EscolherClasse />} />
             <Route path='/salas-aluno' element={<SalasAluno />} />
+           <Route path='/avaliacao' element={<Avaliacao/>} />
              {/* Adicione outras rotas do aluno aqui dentro se necessário */}
           </Route>
 

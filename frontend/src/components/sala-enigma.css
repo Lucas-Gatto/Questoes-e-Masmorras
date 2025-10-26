@@ -5,7 +5,7 @@
   font-family: 'MedievalSharp', cursive;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 1px;
 }
 

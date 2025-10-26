@@ -1,0 +1,130 @@
+/* Container principal para centralizar o painel */
+.recuperar-senha-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 120px); /* Altura da viewport menos header/footer (ajuste) */
+  padding: 20px;
+}
+
+/* Painel Central (similar ao de login/edição) */
+.recuperar-senha-painel {
+  width: 100%;
+  max-width: 500px; /* Largura do painel */
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 25px;
+  padding: 35px 45px;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.titulo-recuperar {
+  font-family: 'MedievalSharp', cursive; /* Fonte Medieval */
+  font-size: 2rem;
+  color: #C68700; /* Dourado */
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.instrucao-recuperar {
+  margin-bottom: 30px;
+  line-height: 1.5;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+.form-recuperar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espaço entre os elementos do form */
+}
+
+.form-group-recuperar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left; /* Alinha label à esquerda */
+}
+
+.form-group-recuperar label {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  padding-left: 10px;
+}
+
+.input-email-recuperar {
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 15px;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 1.1rem;
+  box-sizing: border-box;
+  background-color: #333; /* Fundo cinza escuro */
+}
+.input-email-recuperar::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+.input-email-recuperar:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Estilos para mensagens de feedback */
+.feedback-message {
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  margin-top: -10px; /* Aproxima do input */
+  margin-bottom: 5px; /* Afasta do botão */
+}
+.feedback-message.success {
+  background-color: rgba(40, 167, 69, 0.3); /* Verde semi-transparente */
+  color: #d4edda;
+  border: 1px solid #28a745;
+}
+.feedback-message.error {
+  background-color: rgba(220, 53, 69, 0.3); /* Vermelho semi-transparente */
+  color: #f8d7da;
+  border: 1px solid #dc3545;
+}
+
+.btn-enviar-recuperacao {
+  padding: 15px; /* Botão maior */
+  border: none;
+  border-radius: 10px;
+  font-family: 'MedievalSharp', cursive; /* Fonte Medieval */
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  background-color: #007BFF; /* Azul */
+  transition: opacity 0.2s, transform 0.1s;
+  width: 100%; /* Ocupa largura total */
+}
+.btn-enviar-recuperacao:hover { opacity: 0.9; }
+.btn-enviar-recuperacao:active { transform: scale(0.98); }
+.btn-enviar-recuperacao:disabled {
+  background-color: #555;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.btn-enviar-recuperacao:disabled:active { transform: none; }
+
+/* Link para voltar ao Login */
+.link-voltar-login {
+  margin-top: 25px;
+  font-size: 0.9rem;
+}
+.link-voltar-login a {
+  color: #adb5bd; /* Cinza claro */
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.link-voltar-login a:hover {
+  color: #dee2e6; /* Cinza mais claro */
+  text-decoration: underline;
+}

@@ -112,7 +112,7 @@
 
 
 /* Estilos Específicos: ENIGMA */
-.conteudo-enigma { /* Sem necessidade de estilos específicos aqui */ }
+
 .botoes-grid-enigma {
   display: grid;
   /* Duas colunas: resposta (maior), botões (menor) */
@@ -137,7 +137,6 @@
 
 
 /* Estilos Específicos: ALTERNATIVA */
-.conteudo-alternativa { /* Sem necessidade de estilos específicos aqui */ }
 .botoes-grid-alternativa {
   display: grid;
   /* Três colunas iguais */
@@ -161,7 +160,6 @@
 
 
 /* Estilos Específicos: MONSTRO */
-.conteudo-monstro { /* Sem necessidade de estilos específicos aqui */ }
 .monstro-grid {
   display: grid;
   /* Duas colunas: imagem (fixa), status (flexível) */
@@ -229,4 +227,13 @@
   font-style: italic;
   opacity: 0.7;
   padding: 20px;
+}
+
+.botoes-grid-alternativa .btn-opcao-jogo.placeholder {
+  opacity: 0.5;
+  cursor: default;
+  font-style: italic;
+}
+.botoes-grid-alternativa .btn-opcao-jogo.placeholder:active {
+    transform: none; 
 }

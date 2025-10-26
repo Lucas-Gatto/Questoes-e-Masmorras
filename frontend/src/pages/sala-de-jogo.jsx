@@ -9,31 +9,32 @@ import './sala-de-jogo.css';
 const getVidaPercentual = (vida) => {
   switch (vida?.toLowerCase()) { // Adiciona toLowerCase para segurança
     case 'baixa': return 25;
-    case 'média': return 50; // Atenção ao acento se usar
-    case 'media': return 50; // Sem acento
+    case 'média': case 'media': return 50; // Com e sem acento
     case 'alta': return 75;
     case 'chefe': return 100;
     default: return 50; // Padrão
   }
 };
 
-// Função auxiliar para renderizar a imagem (com fallback)
+// Função auxiliar para renderizar a imagem (com fallback para placeholder)
 const renderImagem = (sala) => (
   <div className="imagem-container">
     {sala?.imagem ? ( // Adiciona verificação '?'
       <img src={sala.imagem} alt={`Imagem para ${sala.nome || 'sala'}`} />
     ) : (
-      <span className="imagem-fallback-text">Sem Imagem</span> // Texto mais descritivo
+      // Usa o placeholder do protótipo se não houver imagem
+      <div className="imagem-placeholder"><span>EXAMPLE</span></div>
     )}
   </div>
 );
+
 
 const SalaDeJogo = () => {
   const { aventuraId } = useParams(); // Pega o ID da aventura da URL
   const navigate = useNavigate();
 
-  const [aventura, setAventura] = useState(null);
-  const [salaAtualIndex, setSalaAtualIndex] = useState(0);
+  const [aventura, setAventura] = useState(null); // Estado para a aventura carregada
+  const [salaAtualIndex, setSalaAtualIndex] = useState(0); // Índice da sala atual
 
   // Efeito para carregar a aventura do localStorage ao montar
   useEffect(() => {
@@ -41,47 +42,49 @@ const SalaDeJogo = () => {
       const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
       const aventuraAtual = aventurasSalvas.find(a => a.id === Number(aventuraId));
 
+      // Valida se a aventura foi encontrada e se tem salas
       if (aventuraAtual && aventuraAtual.salas && aventuraAtual.salas.length > 0) {
-        setAventura(aventuraAtual);
+        setAventura(aventuraAtual); // Define a aventura no estado
+        setSalaAtualIndex(0); // Garante que começa na primeira sala
       } else {
         alert("Aventura não encontrada ou não possui salas para jogar!");
-        navigate('/suas-aventuras');
+        navigate('/suas-aventuras'); // Redireciona se inválido
       }
     } catch (error) {
       console.error("Erro ao carregar a aventura:", error);
       alert("Erro ao carregar dados da aventura.");
-      navigate('/suas-aventuras');
+      navigate('/suas-aventuras'); // Redireciona em caso de erro
     }
-  }, [aventuraId, navigate]); // Dependências: Roda se o ID ou navigate mudarem
+  }, [aventuraId, navigate]); // Dependências: Roda se o ID mudar
 
   // Navega para a próxima sala se não for a última
   const handleAvancarSala = () => {
     if (aventura && salaAtualIndex < aventura.salas.length - 1) {
-      setSalaAtualIndex(prevIndex => prevIndex + 1);
+      setSalaAtualIndex(prevIndex => prevIndex + 1); // Incrementa o índice
     } else {
-      console.warn("Tentativa de avançar além da última sala (botão Finalizar deve ser usado).");
+      // Se já está na última sala, não faz nada (botão Finalizar é que age)
+      console.warn("Tentativa de avançar além da última sala.");
     }
   };
 
-  // --- Função MODIFICADA ---
-  // Finaliza a aventura e navega para a PÁGINA DE RESULTADOS
+  // Navega para a tela de resultados ao finalizar
   const handleFinalizarAventura = () => {
     console.log("Aventura finalizada. Navegando para resultados...");
-    // Navega para a página de resultados da aventura atual
-    navigate(`/aventura/${aventuraId}/resultados`);
+    navigate(`/aventura/${aventuraId}/resultados`); // Navega para a rota de resultados
   }
-  // --- FIM DA MODIFICAÇÃO ---
 
   // Renderiza o conteúdo principal da sala baseado no tipo
   const renderConteudoSala = (sala) => {
+    // Segurança: Retorna mensagem se a sala for nula/indefinida
     if (!sala) return <p className="loading-sala">Carregando dados da sala...</p>;
 
     switch (sala.tipo) {
+      // --- Layout para ENIGMA ---
       case 'Enigma':
         return (
           <div className="conteudo-enigma">
             <p className="texto-sala">{sala.enigma || "Enigma não preenchido"}</p>
-            {renderImagem(sala)}
+            {renderImagem(sala)} {/* Renderiza imagem ou placeholder */}
             <div className="botoes-grid-enigma">
               <div className="resposta-enigma">{sala.resposta || "Resposta não preenchida"}</div>
               <button className="btn-jogo azul">Revelar</button>
@@ -90,13 +93,14 @@ const SalaDeJogo = () => {
             </div>
           </div>
         );
+      // --- Layout para MONSTRO ---
       case 'Monstro':
         return (
           <div className="conteudo-monstro">
              <p className="texto-sala">{sala.texto || "Descrição do monstro não preenchida."}</p>
             <div className="monstro-grid">
               <div className="monstro-imagem-container">
-                 {renderImagem(sala)}
+                 {renderImagem(sala)} {/* Renderiza imagem ou placeholder */}
               </div>
               <div className="monstro-status">
                 <div className="vida-monstro-container">
@@ -109,37 +113,81 @@ const SalaDeJogo = () => {
                   </div>
                 </div>
                 <div className="pergunta-nivel">
-                  <span>Pergunta de Nível: <strong>2</strong></span> {/* Dado de Exemplo */}
+                  {/* TODO: Lógica futura para definir o nível da pergunta */}
+                  <span>Pergunta de Nível: <strong>2</strong></span>
                   <div className="dado-icone">🎲</div>
                 </div>
                 <div className="turno-jogador">
+                  {/* TODO: Lógica futura para definir o jogador da vez */}
                   <span>Turno de:</span>
-                  <div className="nome-personagem">Personagem 1</div> {/* Dado de Exemplo */}
+                  <div className="nome-personagem">Personagem 1</div>
                   <button className="btn-pular">Pular</button>
                 </div>
+                 {/* Adiciona Timer aqui se necessário */}
+                 <div className="timer-container-mestre"> {/* Exemplo */}
+                     <span>00:30</span>
+                 </div>
               </div>
             </div>
              {/* Botão Avançar/Finalizar foi movido para fora */}
           </div>
         );
+      // --- Layout para ALTERNATIVA (Com textos reais nos botões) ---
       case 'Alternativa':
         return (
           <div className="conteudo-alternativa">
             <p className="texto-sala">{sala.texto || "Descrição da alternativa não preenchida."}</p>
-            {renderImagem(sala)}
+            {renderImagem(sala)} {/* Renderiza imagem ou placeholder */}
             <div className="botoes-grid-alternativa">
-              {/* TODO: Mapear sala.opcoes e torná-los interativos */}
-              <button className="btn-opcao-jogo red">Opção 1</button>
-              <button className="btn-opcao-jogo yellow">Opção 2</button>
+              {/* Mapeia as opções REAIS da sala */}
+              {(sala.opcoes || []).map((opcao, index) => {
+                 // Garante que temos 4 opções visuais, mesmo que menos estejam salvas
+                 if (index >= 4) return null; // Limita a 4 botões visuais
+
+                 const cores = ['red', 'yellow', 'green', 'blue'];
+                 const corClasse = cores[index % cores.length];
+                 // Usa o texto real da opção salva, ou um placeholder se vazio/não existir
+                 const textoOpcao = opcao?.texto?.trim() ? opcao.texto : `Opção ${index + 1} (vazio)`;
+                 const idOpcao = opcao?.id != null ? opcao.id : index + 1; // Garante um ID
+
+                 return (
+                    <button
+                        key={idOpcao}
+                        className={`btn-opcao-jogo ${corClasse}`}
+                        // onClick={() => handleAlgumaAcaoProfessor(idOpcao)} // Ação futura do professor
+                        title={opcao?.texto || `Opção ${index + 1}`} // Mostra texto completo no hover
+                    >
+                        {textoOpcao} {/* Exibe o texto real ou fallback */}
+                    </button>
+                 );
+              })}
+              {/* Adiciona placeholders se houver menos de 4 opções salvas */}
+              {Array.from({ length: Math.max(0, 4 - (sala.opcoes?.length || 0)) }).map((_, i) => {
+                 const index = (sala.opcoes?.length || 0) + i;
+                 const cores = ['red', 'yellow', 'green', 'blue'];
+                 const corClasse = cores[index % cores.length];
+                 return (
+                     <button key={`placeholder-${index}`} className={`btn-opcao-jogo ${corClasse} placeholder`} disabled>
+                         Opção {index + 1} (vazio)
+                     </button>
+                 );
+              })}
+
+              {/* Mantém o botão Revelar */}
               <button className="btn-jogo azul">Revelar</button>
-              <button className="btn-opcao-jogo green">Opção 3</button>
-              <button className="btn-opcao-jogo blue">Opção 4</button>
-              {/* Botão Avançar/Finalizar foi movido para fora */}
+
+              {/* Mensagem se não houver opções */}
+              {(!sala?.opcoes || sala.opcoes.length === 0) && (
+                 <p className="sem-opcoes-mensagem">Nenhuma opção configurada.</p>
+              )}
+               {/* Botão Avançar foi movido para fora */}
             </div>
           </div>
         );
+      // --- FIM DO LAYOUT ALTERNATIVA ---
       default:
-        return <p className="error-sala">Tipo de sala desconhecido: {sala.tipo}</p>;
+        // Caso o tipo seja inválido ou inesperado
+        return <p className="error-sala">Erro: Tipo de sala desconhecido encontrado ({sala.tipo})</p>;
     }
   };
 
@@ -154,10 +202,11 @@ const SalaDeJogo = () => {
     );
   }
 
-  // Garante que temos uma sala para o índice atual (segurança extra)
+  // Define a sala atual com segurança (usando optional chaining)
   const salaAtual = aventura.salas?.[salaAtualIndex];
+  // Calcula progresso e se é a última sala com segurança
   const progresso = Array.isArray(aventura.salas) && aventura.salas.length > 0 ? ((salaAtualIndex + 1) / aventura.salas.length) * 100 : 0;
-  const isUltimaSala = Array.isArray(aventura.salas) && salaAtualIndex === aventura.salas.length - 1;
+  const isUltimaSala = Array.isArray(aventura.salas) && aventura.salas.length > 0 && salaAtualIndex === aventura.salas.length - 1;
 
   return (
     <div className="sala-de-jogo-page">
@@ -173,7 +222,7 @@ const SalaDeJogo = () => {
           <h1 className="sala-titulo-aventura">{aventura.titulo || "Aventura Sem Título"}</h1>
           <h2 className="sala-titulo-nome">{salaAtual?.nome || "Carregando Sala..."}</h2>
 
-          {/* Renderiza o conteúdo da sala */}
+          {/* Renderiza o conteúdo da sala atual */}
           {salaAtual ? renderConteudoSala(salaAtual) : <p className="loading-sala">Carregando sala...</p>}
 
           {/* Botão Condicional de Navegação (Avançar/Finalizar) */}

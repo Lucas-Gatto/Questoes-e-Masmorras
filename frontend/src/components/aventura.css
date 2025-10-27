@@ -1,22 +1,29 @@
 .fundo-aventura {
-  width: 400px;    
+  width: 400px;
   height: 300px;
-  background-image: url('../assets/pergaminho.png');
+  background-image: url("../assets/pergaminho.png");
   background-position: center;
   position: relative;
-  display: flex;;
+  display: flex;
   justify-content: center;
   align-items: center;
-background-size: contain;
-background-repeat: no-repeat;
-flex-direction: column;
+  background-size: contain;
+  background-repeat: no-repeat;
+  flex-direction: column;
+}
+
+.subtitulo_aventura {
+  font-family: "MedievalSharp", cursive;
+  font-size: 36px;
+  color: black;
+  text-shadow: none;
 }
 
 .fundo-aventura p {
-  font-family: 'MedievalSharp', cursive;
-    font-size: 36px;
-    color: black;
-    font-style: bold;
+  font-family: "MedievalSharp", cursive;
+  font-size: 36px;
+  color: black;
+  font-style: bold;
 }
 
 .icons-container {
@@ -31,7 +38,6 @@ flex-direction: column;
   width: 50px;
   height: 50px;
   cursor: pointer;
-
 }
 
 .edit-icon {

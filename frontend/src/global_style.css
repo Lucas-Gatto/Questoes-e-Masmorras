@@ -1,0 +1,25 @@
+/*definindo cores padroes*/
+
+:root {
+  /*principais cores - fundo tijolos*/
+  --titulo: #eeb600;
+  --subtitulo: #c39500;
+
+  /*principais botoes - letra branca*/
+  --vermelho: #a90f1e;
+  --azul: #0037ff;
+  --cinza: #4e5256;
+
+  /*input*/
+  --input_amarelo: #6b5224;
+
+  /*alternativas*/
+  --alternativa_amarela: #a36700;
+  --alternativa_azul: #0037ff;
+  --alternativa_verde: #156525;
+  --alternativa_vermelha: #a90f1e;
+
+  /*fundo preto*/
+  --letras_amarelas: #eeb600;
+  --letras_vermelhas: #ff2e2e;
+}

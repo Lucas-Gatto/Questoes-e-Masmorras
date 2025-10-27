@@ -16,9 +16,9 @@
 }
 
 .editar-sala-titulo {
-  font-family: 'MedievalSharp', cursive;
+  font-family: "MedievalSharp", cursive;
   font-size: 2.2rem;
-  color: #C68700;
+  color: var(--titulo);
   text-align: center;
   margin-bottom: 10px;
 }
@@ -53,7 +53,7 @@
 
 .input-nome-sala,
 .select-vida-monstro {
-  background-color: #5C481A;
+  background-color: var(--input_amarelo);
 }
 
 .textarea-texto-sala {
@@ -86,7 +86,6 @@
   padding-right: 40px;
 }
 
-
 /* === ESTILOS PARA SALA 'ALTERNATIVA' === */
 
 /* Sua nova definição para .opcoes-container */
@@ -110,11 +109,18 @@
   cursor: pointer;
 }
 
-.btn-opcao.red { background-color: #a42828; }
-.btn-opcao.yellow { background-color: #b4850c; }
-.btn-opcao.green { background-color: #2e8540; }
-.btn-opcao.blue { background-color: #2c5b96; }
-
+.btn-opcao.red {
+  background-color: var(--alternativa_vermelha);
+}
+.btn-opcao.yellow {
+  background-color: var(--alternativa_amarela);
+}
+.btn-opcao.green {
+  background-color: var(--alternativa_verde);
+}
+.btn-opcao.blue {
+  background-color: var(--alternativa_azul);
+}
 
 /* === BOTÕES DE AÇÃO PADRÃO === */
 
@@ -131,7 +137,7 @@
   padding: 12px 30px;
   border: none;
   border-radius: 10px;
-  font-family: 'MedievalSharp', cursive;
+  font-family: "MedievalSharp", cursive;
   font-size: 1.3rem;
   font-weight: bold;
   cursor: pointer;
@@ -145,14 +151,14 @@
 
 /* .btn-imagem com suas mudanças + as minhas (para o nome do arquivo) */
 .btn-imagem {
-  background-color: #6c757d;
+  background-color: var(--cinza);
   font-family: Arial, sans-serif; /* Fonte normal */
-  font-size: 1rem;            /* Tamanho menor */
-  text-overflow: ellipsis;    /* Adiciona '...' se o nome for longo */
+  font-size: 1rem; /* Tamanho menor */
+  text-overflow: ellipsis; /* Adiciona '...' se o nome for longo */
   overflow: hidden;
   white-space: nowrap;
 }
 
 .btn-salvar {
-  background-color: #007BFF;
+  background-color: var(--azul);
 }

@@ -1,14 +1,13 @@
 .container-sala {
-  background: url('../assets/fundo-parede.png') center/cover no-repeat;
+  background: url("../assets/fundo-parede.png") center/cover no-repeat;
   min-height: 100vh;
   color: #fff;
-  font-family: 'MedievalSharp', cursive;
+  font-family: "MedievalSharp", cursive;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin-top: 1px;
 }
-
 
 .logo {
   font-size: 1.8rem;
@@ -16,7 +15,6 @@
 }
 
 .conteudo {
-
   display: flex;
   justify-content: center;
   align-items: center;

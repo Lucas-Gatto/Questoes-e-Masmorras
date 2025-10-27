@@ -1,12 +1,12 @@
 .escolher-classe-container {
-    padding: 30px;
+  padding: 30px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: url('/imagens/fundo-parede.jpg') center/cover no-repeat;
-  color: #C68700;
-  font-family: 'Cinzel', serif;
+  background: url("/imagens/fundo-parede.jpg") center/cover no-repeat;
+  color: #c68700;
+  font-family: "Cinzel", serif;
 }
 
 .escolher-classe-conteudo {
@@ -25,19 +25,19 @@
 }
 
 h1 {
-  color: #C68700;
+  color: var(--titulo);
   font-size: 1.8rem;
   margin-bottom: 0.3rem;
   text-shadow: 0 0 6px #000;
-  font-family: 'MedievalSharp', cursive;
+  font-family: "MedievalSharp", cursive;
 }
 
 h2 {
-  color: #C68700;
+  color: #c68700;
   font-size: 1.3rem;
   margin-bottom: 2rem;
   text-shadow: 0 0 6px #000;
-  font-family: 'MedievalSharp', cursive;
+  font-family: "MedievalSharp", cursive;
 }
 
 .classes-opcoes {
@@ -99,12 +99,11 @@ h2 {
   font-size: 1rem;
   cursor: pointer;
   transition: 0.3s;
-    font-family: 'MedievalSharp', cursive;
+  font-family: "MedievalSharp", cursive;
 }
 
 .btn-confirmar:hover {
   background-color: #3a65e2;
-
 }
 
 .titulo-aventura {

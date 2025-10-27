@@ -22,6 +22,7 @@ import SalasAluno from './pages/salas-aluno.jsx';
 import ResultadosAventura from './pages/resultados-aventura.jsx';
 import Avaliacao from './pages/avaliacao.jsx'; 
 import RecuperarSenha from './pages/recuperar-senha.jsx'; 
+import ResetSenha from './pages/reset-senha.jsx';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
             <Route path='/recuperar-senha' element={<RecuperarSenha />} />
+            <Route path="/reset-password/:token" element={<ResetSenha />} />
             </Route>
 
           {/* --- GRUPO 2: Rotas de Gerenciamento (com LayoutLogado) --- */}

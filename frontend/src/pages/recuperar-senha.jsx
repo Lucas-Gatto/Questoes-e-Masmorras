@@ -11,54 +11,41 @@ const RecuperarSenha = () => {
   const [message, setMessage] = useState(''); // Para feedback (sucesso/erro)
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Impede o recarregamento padrão do form
-    setIsLoading(true);
-    setMessage(''); // Limpa mensagens antigas
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
+  setMessage('');
 
-    if (!email) {
-      setMessage('Por favor, insira seu endereço de email.');
-      setIsLoading(false);
-      return;
+  if (!email) {
+    setMessage('Por favor, insira seu endereço de email.');
+    setIsLoading(false);
+    return;
+  }
+
+  try {
+    // --- Chamada real ao backend ---
+    const response = await fetch(`${API_URL}/user/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }), // envia o email para o backend
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || `Erro ${response.status}`);
     }
 
-    try {
-      // --- Lógica de Chamada ao Backend (Placeholder) ---
-      console.log(`Enviando solicitação de recuperação para: ${email}`);
-      // TODO: Descomentar e ajustar quando o endpoint do backend existir
-      /*
-      const response = await fetch(`${API_URL}/user/recuperar-senha`, { // Endpoint hipotético
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
+    setMessage(data.message); // exibe a mensagem retornada pelo backend
+    setEmail(''); // limpa o input
 
-      const data = await response.json(); // Tenta ler a resposta JSON
-
-      if (!response.ok) {
-        // Usa a mensagem do backend se disponível, senão uma genérica
-        throw new Error(data.message || `Erro ${response.status}`);
-      }
-      */
-      // --- Simulação de Sucesso (Remover depois) ---
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simula espera da rede
-      const data = { message: 'Se um usuário com este email existir, um link de recuperação foi enviado.' };
-      // --- Fim da Simulação ---
-
-
-      setMessage(data.message); // Exibe mensagem de sucesso (ou a mensagem do backend)
-      setEmail(''); // Limpa o campo de email
-
-    } catch (error) {
-      console.error("Erro ao solicitar recuperação de senha:", error);
-      // Mostra a mensagem de erro vinda do backend ou uma padrão
-      setMessage(error.message || 'Ocorreu um erro. Tente novamente.');
-    } finally {
-      setIsLoading(false); // Finaliza o carregamento
-    }
-  };
+  } catch (error) {
+    console.error("Erro ao solicitar recuperação de senha:", error);
+    setMessage(error.message || 'Ocorreu um erro. Tente novamente.');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     // Reutiliza estilos de container se houver (ex: login-main) ou crie um novo

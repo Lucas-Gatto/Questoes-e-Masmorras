@@ -109,7 +109,8 @@ const forgotPassword = async (req, res) => {
 
 //Reset Senha
 const resetPassword = async (req, res) => {
-  const { token, password, confirmPassword } = req.body;
+  const { token } = req.params;
+  const { password, confirmPassword } = req.body;
 
   try {
     if (!token || !password || !confirmPassword) {

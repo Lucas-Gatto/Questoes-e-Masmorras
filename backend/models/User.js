@@ -12,7 +12,11 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+
+    //Campos para recuperação de senha
+    resetToken: String,
+    resetTokenExpires: Date,
 });
 
 //Criptografar senha antes de salvar
@@ -29,4 +33,3 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 };
 
 module.exports = mongoose.model('User', userSchema, 'Usuários');
-

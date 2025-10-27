@@ -25,7 +25,7 @@ const EntrarAventura = () => {
 
       <input
         id="login-senha"
-        type="password"
+        type="text"
         placeholder="Digite o nome do seu personagem..."
       />
 

@@ -1,93 +1,92 @@
-import React, { useState, useEffect } from "react";
-import "./escolher-classe.css";
-import { useNavigate } from "react-router-dom";
-import HeaderAventura from "../components/HeaderAventura.jsx";
-import Footer from "../components/footer.jsx";
+import React, { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom'; // useParams para pegar ID da aventura se necessário
+import './escolher-classe.css';
 
-import bardoImg from "../assets/bonecos.png";
-import magoImg from "../assets/bonecos.png";
-import guerreiroImg from "../assets/bonecos.png";
+// --- Imagens das Classes (ajuste os caminhos/nomes) ---
+import magoImg from '../assets/mago.png'; // Exemplo
+import bardoImg from '../assets/bardo.png'; // Exemplo
+import guerreiroImg from '../assets/guerreiro.png'; // Exemplo
+// --- FIM Imagens ---
+
+// --- Dados de Exemplo das Classes ---
+const classesInfo = {
+  mago: {
+    nome: "Mago",
+    descricao: "Mestres das artes arcanas, conjuram magias poderosas.",
+    imagem: magoImg,
+  },
+  bardo: {
+    nome: "Bardo",
+    descricao: "Música e carisma são suas armas, inspiram aliados e confundem inimigos.",
+    imagem: bardoImg,
+  },
+  guerreiro: {
+    nome: "Guerreiro",
+    descricao: "Combatentes habilidosos, mestres no uso de armas e armaduras.",
+    imagem: guerreiroImg,
+  },
+};
 
 const EscolherClasse = () => {
   const navigate = useNavigate();
-  const [classeSelecionada, setClasseSelecionada] = useState("");
-  const [habilidade, setHabilidade] = useState("");
-  const [aventuraSelecionada, setAventuraSelecionada] = useState(null);
 
-  useEffect(() => {
-    const aventurasSalvas = JSON.parse(localStorage.getItem("minhas_aventuras")) || [];
-    if (aventurasSalvas.length > 0) {
-      const ultima = aventurasSalvas[aventurasSalvas.length - 1];
-      setAventuraSelecionada(ultima);
-    }
-  }, []);
+  const [selectedClassKey, setSelectedClassKey] = useState('bardo'); 
 
-  const handleConfirmar = () => {
-    if (!classeSelecionada) {
-      alert("Escolha uma classe antes de confirmar!");
-      return;
-    }
-
-    console.log({
-      classe: classeSelecionada,
-      habilidade: habilidade,
-    });
-
-    navigate("/salas-aluno");
+  const handleClassSelect = (classKey) => {
+    setSelectedClassKey(classKey);
   };
 
+  const handleConfirm = () => {
+    // TODO: Lógica futura para salvar a classe escolhida e ir para a próxima tela (SalasAluno?)
+    console.log(`Classe selecionada: ${selectedClassKey}`);
+    alert(`Classe ${classesInfo[selectedClassKey]?.nome} selecionada! Próxima etapa a implementar.`);
+    // Exemplo: navigate(`/aventura/${aventuraId}/jogar-aluno`);
+  };
+
+  const selectedClassData = classesInfo[selectedClassKey];
+
   return (
-    <div className="escolher-classe-container">
-      <main className="escolher-classe-conteudo">
-        {aventuraSelecionada && (
-          <h1 className="titulo-aventura">{aventuraSelecionada.titulo}</h1>
-        )}
-        <h2>Escolha sua Classe</h2>
+    <div className="escolher-classe-page">
+      <main className="escolher-classe-main">
+        <div className="escolher-classe-painel">
+          {/* Títulos */}
+          <h1 className="titulo-aventura-escolha">
+            {/* TODO: Carregar nome real da aventura */}
+            TITULO DA AVENTURA
+          </h1>
+          <h2 className="titulo-escolha">Escolha sua Classe</h2>
 
-        <div className="classes-opcoes">
-          <div
-            className={`classe-card ${classeSelecionada === "Mago" ? "selecionada" : ""}`}
-            onClick={() => setClasseSelecionada("Mago")}
-          >
-            <img src={magoImg} alt="Mago" />
+          {/* Seleção de Classes */}
+          <div className="classes-container">
+            {Object.keys(classesInfo).map((key) => (
+              <div
+                key={key}
+                className={`classe-item ${selectedClassKey === key ? 'selected' : ''}`}
+                onClick={() => handleClassSelect(key)}
+              >
+                <img
+                  src={classesInfo[key].imagem}
+                  alt={classesInfo[key].nome}
+                  className="classe-imagem"
+                />
+              </div>
+            ))}
           </div>
 
-          <div
-            className={`classe-card ${classeSelecionada === "Bardo" ? "selecionada" : ""}`}
-            onClick={() => setClasseSelecionada("Bardo")}
-          >
-            <img src={bardoImg} alt="Bardo" />
-          </div>
-
-          <div
-            className={`classe-card ${classeSelecionada === "Guerreiro" ? "selecionada" : ""}`}
-            onClick={() => setClasseSelecionada("Guerreiro")}
-          >
-            <img src={guerreiroImg} alt="Guerreiro" />
-          </div>
-        </div>
-
-        {classeSelecionada && (
-          <>
-            <h3 style={{ color: "white", marginBottom: "0.5rem" }}>
-              {classeSelecionada}
-            </h3>
-
-            <div className="input-container">
-              <input
-                type="text"
-                className="input-habilidade"
-                placeholder={`Habilidade do ${classeSelecionada}...`}
-                value={habilidade}
-                onChange={(e) => setHabilidade(e.target.value)}
-              />
-
-              <button className="btn-confirmar" onClick={handleConfirmar}>
+          {/* Informações da Classe Selecionada e Botão */}
+          {selectedClassData && (
+            <div className="info-classe-container">
+              <div className="nome-classe-display">{selectedClassData.nome}</div>
+              <div className="descricao-classe-display">
+                {selectedClassData.descricao}
+              </div>
+              <button className="btn-confirmar-escolha" onClick={handleConfirm}>
                 Confirmar Escolha
               </button>
             </div>
-          </>
-        )}
+          )}
+
+        </div>
       </main>
     </div>
   );

@@ -1,0 +1,83 @@
+/* Layout da Página de Resultados */
+.resultados-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.resultados-main {
+  flex-grow: 1;
+  display: flex;
+  align-items: center; /* Centraliza verticalmente */
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* Painel Central */
+.resultados-painel {
+  width: 90%;
+  max-width: 800px; /* Um pouco mais largo talvez */
+  background-color: rgba(0, 0, 0, 0.7); /* Mais opaco */
+  border-radius: 25px;
+  padding: 30px 40px;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.status-concluido {
+  color: #28a745; /* Verde sucesso */
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.titulo-aventura-resultados {
+  font-family: 'MedievalSharp', cursive;
+  font-size: 2rem;
+  color: #C68700;
+  margin-bottom: 15px;
+}
+
+.descricao-resultados {
+  margin-bottom: 30px;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+/* Tabela de Resultados */
+.tabela-resultados {
+  background-color: rgba(50, 50, 50, 0.5); /* Fundo sutil para a tabela */
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 30px;
+}
+
+.tabela-header,
+.tabela-linha {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* Três colunas iguais */
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Linha separadora */
+}
+
+.tabela-linha:last-child {
+  border-bottom: none; /* Remove a linha da última linha */
+}
+
+.tabela-header .th {
+  font-weight: bold;
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+.tabela-coluna {
+  text-align: center;
+}
+
+/* Botão Encerrar */
+.btn-encerrar-resultados {
+  padding: 12px 50px; /* Padding generoso */
+  width: auto; /* Largura automática */
+}

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "./login.css";
 import bonecos from "../assets/bonecos.png";
-import { useNavigate } from "react-router-dom";
+// 👇 1. Adicione 'Link' à importação aqui
+import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
   //Constante de redirecionamento de página
@@ -22,7 +23,7 @@ function Login() {
       const res = await fetch("http://localhost:3000/api/user/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", 
+        credentials: "include",
         body: JSON.stringify({ email: loginEmail, password: loginSenha }),
       });
 
@@ -90,10 +91,12 @@ function Login() {
               value={loginSenha}
               onChange={(e) => setLoginSenha(e.target.value)}
             />
-
-            <a href="#" className="forgot-password">
-              Esqueci minha senha
-            </a>
+            <div className="link-recuperar-senha"> 
+                <Link to="/recuperar-senha" className="forgot-password">
+                    Esqueci minha senha
+                </Link>
+            </div>
+            {/* --- Fim da alteração --- */}
 
             <button type="button" className="btn btn-yellow" onClick={handleLogin}>
               ENTRAR

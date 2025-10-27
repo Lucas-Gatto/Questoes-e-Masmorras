@@ -9,6 +9,7 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 1rem;
+  align-items: center;
 }
 
 /* Botão de encerrar aventura */
@@ -25,15 +26,21 @@
 
 /* Conteúdo central */
 .conteudo-central {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  margin-top: 5rem;
+  height: 100%; /* ocupa toda a altura disponível */
 }
+
 
 /* Título e subtítulo */
 .titulo {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
   color: #ff9900;
+  font-family: 'MedievalSharp', cursive;
+  justify-content: center;
 }
 
 .subtitulo {
@@ -50,7 +57,12 @@
   max-width: 600px;
   margin: 0 auto;
   color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
+
+
 }
 
 /* Texto da pergunta */
@@ -70,7 +82,7 @@
 
 /* Botões de opção */
 .btn-opcao {
-  padding: 1rem 2rem;
+  padding: 1rem 3rem;
   font-size: 1.1rem;
   font-weight: bold;
   border: none;
@@ -87,7 +99,7 @@
 
 .btn-opcao.yellow {
   background-color: #f1c40f;
-  color: black;
+
 }
 
 .btn-opcao.green {

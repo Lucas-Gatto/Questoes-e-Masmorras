@@ -1,33 +1,39 @@
 input {
-    padding: 12px 20px;
-    border: none;
-    border-radius: 25px;
-    width: 100%;
-    background-color: #b48326;
-    color: white;
-    box-sizing: border-box;
-    font-size: 1rem;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 25px;
+  width: 100%;
+  background-color: var(--input_amarelo);
+  color: white;
+  box-sizing: border-box;
+  font-size: 1rem;
+  margin-top: 10px;
 }
 
 ::placeholder {
-    color: white;
+  color: white;
 }
 
 .btn-entrar-aventura {
-    background-color: #007BFF;
-    color: #ffffff;
-    padding: 12px;
-    font-family: 'MedievalSharp', cursive;
-
+  background-color: var(--azul);
+  color: #ffffff;
+  padding: 12px;
+  font-family: "MedievalSharp", cursive;
 }
 
 .btn-entrar-aventura-container {
-    margin-top: 30px;
+  margin-top: 30px;
 }
 
 .titulo-aventura {
   font-size: 1.5rem;
-  color: #c68700;
+  color: var(--titulo);
   text-align: center;
   margin-bottom: 20px;
+}
+
+.nomePersonagem {
+  font-size: 1.1rem;
+  margin-top: 15px;
+  font-family: "MedievalSharp", cursive;
 }

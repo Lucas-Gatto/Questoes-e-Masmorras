@@ -97,9 +97,6 @@ const SalaArrastavel = ({
       >
         {index + 1}
       </span>
-          value={sala.tipo || "Enigma"}
-          onChange={(e) => handleSalaChange(sala.id, "tipo", e.target.value)}
-        >
       <label className="sala-label-nome">
         Nome da sala:
         <input

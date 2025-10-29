@@ -254,7 +254,7 @@ const EditarSala = () => {
               />
             </div>
             <div className="form-group">
-              <label>Opções de resposta (configuração em breve)</label>
+              <p>Opções de resposta (configuração em breve)</p>
               <div className="opcoes-container">
                 {/* No futuro, mapear sala.opcoes aqui e torná-los inputs */}
                 <button className="btn-opcao red">Opção 1</button>

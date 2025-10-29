@@ -309,7 +309,9 @@ const EditarSala = () => {
       {renderFormBody()}
       {/* Botões comuns: Imagem e Salvar */}
       <div className="form-group">
-        <label>Imagem</label>
+        <label htmlFor={`upload-${sala.id}`} className="visually-hidden">
+          Imagem
+        </label>
         <div className="botoes-sala-container">
           <button
             className="btn-sala btn-imagem"
@@ -326,6 +328,7 @@ const EditarSala = () => {
       <input
         type="file"
         ref={fileInputRef}
+        id={`upload-${sala.id}`}
         onChange={handleFileChange}
         style={{ display: "none" }} // Mantém escondido
         accept="image/png, image/jpeg, image/jpg, image/gif" // Aceita formatos comuns

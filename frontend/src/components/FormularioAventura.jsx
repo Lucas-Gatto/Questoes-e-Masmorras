@@ -97,26 +97,33 @@ const SalaArrastavel = ({
       >
         {index + 1}
       </span>
-      <label className="sala-label-nome">Nome da sala:</label>
-      <input
-        aria-label="Nome da sala"
-        type="text"
-        className="sala-input-nome"
-        value={sala.nome || ""}
-        onChange={(e) => handleSalaChange(sala.id, "nome", e.target.value)}
-      />
-      <label className="sala-label-tipo">Tipo de sala:</label>
-      <div className="sala-tipo-container">
-        <select
-          aria-label="Tipo da sala"
-          className="sala-select-tipo"
           value={sala.tipo || "Enigma"}
           onChange={(e) => handleSalaChange(sala.id, "tipo", e.target.value)}
         >
-          <option value="Enigma">Enigma</option>
-          <option value="Alternativa">Alternativa</option>
-          <option value="Monstro">Monstro</option>
-        </select>
+      <label className="sala-label-nome">
+        Nome da sala:
+        <input
+          aria-label="Nome da sala"
+          type="text"
+          className="sala-input-nome"
+          value={sala.nome || ""}
+          onChange={(e) => handleSalaChange(sala.id, "nome", e.target.value)}
+        />
+      </label>
+      <div className="sala-label-tipo">
+        <label htmlFor={`salaTipo-${sala.id}`}>Tipo de sala:</label>
+        <div className="sala-tipo-container">
+          <select
+            id={`salaTipo-${sala.id}`}
+            className="sala-select-tipo"
+            value={sala.tipo || "Enigma"}
+            onChange={(e) => handleSalaChange(sala.id, "tipo", e.target.value)}
+          >
+            <option value="Enigma">Enigma</option>
+            <option value="Alternativa">Alternativa</option>
+            <option value="Monstro">Monstro</option>
+          </select>
+        </div>
       </div>
       <div className="sala-acoes">
         <img
@@ -303,8 +310,14 @@ const FormularioAventura = ({
           onChange={handleTituloChange}
           aria-label="Título da Aventura"
         />
-        <div className="stepper-container">
-          <label htmlFor="stepper-input">Quantidade de salas</label>
+        <div
+          className="stepper-container"
+          role="group"
+          aria-labelledby="salas-label"
+        >
+          <span id="salas-label" className="salas-label">
+            Quantidade de salas
+          </span>
           <div className="stepper-controls">
             <button
               onClick={() => handleNumSalasChange(aventura.salas.length - 1)}

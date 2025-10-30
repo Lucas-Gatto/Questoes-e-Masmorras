@@ -20,25 +20,30 @@ const IniciarAventura = () => {
   const [alunos, setAlunos] = useState([]);
   const [sessaoCriada, setSessaoCriada] = useState(false);
 
-  // Efeito para carregar dados da aventura
+  // Efeito para carregar dados da aventura do backend
   useEffect(() => {
-    console.log(`[IniciarAventura useEffect] Carregando dados para aventura ID: ${aventuraId}`); // Log
-    try {
-      const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
-      const aventuraAtual = aventurasSalvas.find(a => a.id === Number(aventuraId));
-
-      if (aventuraAtual) {
-        console.log("[IniciarAventura useEffect] Aventura encontrada:", aventuraAtual); // Log
-        setAventura(aventuraAtual);
-      } else {
-        console.warn(`[IniciarAventura useEffect] Aventura com ID ${aventuraId} não encontrada.`); // Log
-        alert("Aventura não encontrada!");
+    console.log(`[IniciarAventura useEffect] Carregando dados do backend para aventura ID: ${aventuraId}`);
+    const carregar = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/aventuras/${aventuraId}`, { credentials: 'include' });
+        if (res.status === 401) {
+          alert('Sua sessão expirou. Faça login novamente.');
+          navigate('/');
+          return;
+        }
+        if (!res.ok) {
+          alert('Aventura não encontrada!');
+          navigate('/suas-aventuras');
+          return;
+        }
+        const data = await res.json();
+        setAventura(data);
+      } catch (error) {
+        console.error('Erro ao carregar dados da aventura em IniciarAventura:', error);
         navigate('/suas-aventuras');
       }
-    } catch (error) {
-      console.error("Erro ao carregar dados da aventura em IniciarAventura:", error);
-      navigate('/suas-aventuras');
-    }
+    };
+    carregar();
   }, [aventuraId, navigate]);
 
 
@@ -107,10 +112,10 @@ const IniciarAventura = () => {
   // Função para navegar para a tela de jogo
   const handleStartGame = () => {
     if (aventura) {
-      console.log(`Iniciando a aventura "${aventura.titulo}"... Navegando para /aventura/${aventura.id}/jogar`); // Log
-      navigate(`/aventura/${aventura.id}/jogar`);
+      console.log(`Iniciando a aventura "${aventura.titulo}"... Navegando para /aventura/${aventuraId}/jogar`);
+      navigate(`/aventura/${aventuraId}/jogar`);
     } else {
-       console.error("handleStartGame chamado, mas 'aventura' é nula."); // Log de erro
+      console.error("handleStartGame chamado, mas 'aventura' é nula.");
     }
   };
 
@@ -142,7 +147,7 @@ const IniciarAventura = () => {
             <div className="info-conexao">
               <p>Ou acesse pelo link:</p>
               <div className="link-acesso">
-                {joinUrl || `www.site.com/${aventura.id}`}
+                {joinUrl || `www.site.com/${aventuraId}`}
               </div>
               <div style={{ color: '#C68700', fontSize: '0.9rem' }}>
                 {sessao?.codigo ? `Código: ${sessao.codigo}` : 'Crie a sessão para gerar o código'}              </div>

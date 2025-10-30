@@ -4,34 +4,49 @@ import Aventura from "../components/aventura.jsx"; // Verifique extensão .jsx
 import "./suas-aventuras.css";
 
 const SuasAventuras = () => {
-  const [aventuras, setAventuras] = useState(() => {
-    // Carrega do localStorage ao iniciar
-    try {
-      const dadosSalvos = localStorage.getItem("minhas_aventuras");
-      return dadosSalvos ? JSON.parse(dadosSalvos) : [];
-    } catch (error) {
-      console.error("Erro ao ler aventuras do localStorage:", error);
-      return [];
-    }
-  });
+  const [aventuras, setAventuras] = useState([]);
 
   const navigate = useNavigate();
 
-  // Salva no localStorage sempre que 'aventuras' mudar
+  // Carrega aventuras do backend (apenas do usuário logado)
   useEffect(() => {
-    try {
-      localStorage.setItem("minhas_aventuras", JSON.stringify(aventuras));
-    } catch (error) {
-      console.error("Erro ao salvar aventuras no localStorage:", error);
-    }
-  }, [aventuras]);
+    const carregarAventuras = async () => {
+      try {
+        const res = await fetch('http://localhost:3000/api/aventuras', { credentials: 'include' });
+        if (res.status === 401) {
+          alert('Sua sessão expirou. Faça login novamente.');
+          navigate('/');
+          return;
+        }
+        const lista = await res.json();
+        setAventuras(Array.isArray(lista) ? lista : []);
+      } catch (e) {
+        console.error('Falha ao carregar aventuras do backend:', e);
+        setAventuras([]);
+      }
+    };
+    carregarAventuras();
+  }, [navigate]);
 
-  // Função para deletar (ainda usando localStorage)
-  const handleDeleteAventura = (idParaDeletar) => {
-    if (window.confirm("Tem certeza que deseja excluir esta aventura?")) {
-      setAventuras((aventurasAtuais) =>
-        aventurasAtuais.filter((aventura) => aventura.id !== idParaDeletar)
-      );
+  // Deleta aventura no backend e atualiza estado
+  const handleDeleteAventura = async (backendId) => {
+    if (!window.confirm("Tem certeza que deseja excluir esta aventura?")) return;
+    try {
+      const res = await fetch(`http://localhost:3000/api/aventuras/${backendId}`, { method: 'DELETE', credentials: 'include' });
+      if (res.status === 401) {
+        alert('Sua sessão expirou. Faça login novamente.');
+        navigate('/');
+        return;
+      }
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data?.message || 'Erro ao excluir aventura');
+        return;
+      }
+      setAventuras((atual) => atual.filter((a) => a._id !== backendId));
+    } catch (e) {
+      console.error('Falha ao excluir aventura:', e);
+      alert('Falha ao excluir aventura.');
     }
   };
 
@@ -46,15 +61,11 @@ const SuasAventuras = () => {
         ) : (
           aventuras.map((aventura) => (
             <Aventura
-              key={aventura.id} // Usa ID numérico
+              key={aventura._id}
               titulo={aventura.titulo}
-              onDelete={() => handleDeleteAventura(aventura.id)}
-              onEdit={() => navigate(`/editar-aventura/${aventura.id}`)}
-              // --- 👇 CONSOLE.LOG ADICIONADO AQUI 👇 ---
-              onPlay={() => {
-                console.log(`Clicou em Play para aventura ID: ${aventura.id}. Navegando para /iniciar-aventura/${aventura.id}`);
-                navigate(`/iniciar-aventura/${aventura.id}`);
-              }}
+              onDelete={() => handleDeleteAventura(aventura._id)}
+              onEdit={() => navigate(`/editar-aventura/${aventura._id}`)}
+              onPlay={() => navigate(`/iniciar-aventura/${aventura._id}`)}
             />
           ))
         )}

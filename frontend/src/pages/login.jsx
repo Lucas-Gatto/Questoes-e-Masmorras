@@ -30,6 +30,16 @@ function Login() {
       const data = await res.json();
       if (res.ok) {
         console.log("Login OK:", data);
+        // Limpa dados locais para evitar que outro usuário veja aventuras anteriores
+        try {
+          localStorage.removeItem('minhas_aventuras');
+          localStorage.removeItem('draft_aventura_id');
+          localStorage.removeItem('sessao_atual');
+          localStorage.removeItem('sessao_codigo');
+          localStorage.removeItem('aluno_nome');
+        } catch (e) {
+          console.warn('Falha ao limpar localStorage após login:', e);
+        }
         navigate("/suas-aventuras");
       } else {
         alert(data.message);

@@ -6,6 +6,7 @@ const EditarSala = () => {
   const { aventuraId, salaId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const backendId = location.state?.backendId || null;
 
   // Estado LOCAL apenas para a sala sendo editada NESTA tela
   const [editingSala, setEditingSala] = useState(null);
@@ -16,7 +17,7 @@ const EditarSala = () => {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const tipoFromUrl = queryParams.get('tipo');
-    // const isNewParam = queryParams.get('isNew'); // Pode ler se precisar
+    const isNewParam = queryParams.get('isNew') === 'true';
 
     // 1. Tenta pegar os dados passados via navegação (location.state)
     const passedSalaData = location.state?.salaData;
@@ -95,7 +96,7 @@ const EditarSala = () => {
 
   // --- Funções de Manipulação ---
 
-  // Salva o objeto 'editingSala' de volta no localStorage
+  // Salva o objeto 'editingSala' e sincroniza (prioriza backend quando possível)
   const handleSalvar = () => {
     if (!editingSala) {
       console.error("Tentativa de salvar com 'editingSala' nula.");
@@ -103,6 +104,57 @@ const EditarSala = () => {
       return;
     }
     try {
+      // Se temos backendId, atualizamos diretamente no backend sem depender do localStorage
+      if (backendId) {
+        (async () => {
+          try {
+            const resGet = await fetch(`http://localhost:3000/api/aventuras/${backendId}`, { credentials: 'include' });
+            if (resGet.status === 401) {
+              alert('Sua sessão expirou. Faça login novamente.');
+              navigate('/');
+              return;
+            }
+            if (!resGet.ok) {
+              alert('Aventura não encontrada para atualizar sala.');
+              return;
+            }
+            const aventuraDoc = await resGet.json();
+            const salasExistentes = Array.isArray(aventuraDoc.salas) ? aventuraDoc.salas : [];
+            const salasAtualizadas = salasExistentes.map((s) => (
+              Number(s.id) === Number(salaId) ? editingSala : s
+            ));
+            const payload = {
+              titulo: aventuraDoc.titulo,
+              salas: salasAtualizadas,
+              perguntas: aventuraDoc.perguntas || [],
+            };
+            const resPut = await fetch(`http://localhost:3000/api/aventuras/${backendId}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify(payload),
+            });
+            if (resPut.status === 401) {
+              alert('Sua sessão expirou. Faça login novamente.');
+              navigate('/');
+              return;
+            }
+            if (!resPut.ok) {
+              const txt = await resPut.text().catch(() => '');
+              console.warn('[EditarSala] Falha ao salvar sala no backend. Status:', resPut.status, txt);
+              alert('Erro ao salvar a sala.');
+              return;
+            }
+            alert('Sala atualizada com sucesso!');
+            navigate(-1);
+          } catch (e) {
+            console.error('[EditarSala] Erro ao atualizar sala no backend:', e);
+            alert('Erro ao salvar a sala.');
+          }
+        })();
+        return; // Evita cair na lógica de localStorage
+      }
+
       // 1. Lê a lista ATUAL do localStorage
       const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
       console.log("handleSalvar: Lendo do storage ANTES de salvar:", aventurasSalvas); // Log
@@ -146,7 +198,7 @@ const EditarSala = () => {
       console.log("handleSalvar: Salvando de volta no storage:", aventurasAtualizadas);
       localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasAtualizadas));
 
-      // 4. Sincroniza com backend: PUT se houver backendId, senão tenta criar via POST
+      // 4. Sincroniza com backend: PUT se houver backendId
       try {
         const aventuraAtualizada = aventurasAtualizadas.find(a => a.id === Number(aventuraId));
         const payload = {
@@ -171,7 +223,8 @@ const EditarSala = () => {
               console.warn('[EditarSala] Falha ao sincronizar alterações no backend. Status:', res.status, txt);
             }
           }).catch(err => console.warn('[EditarSala] Erro de rede ao sincronizar no backend:', err));
-        } else {
+        } else if (!isNewParam) {
+          // Em fluxos antigos (sem backendId), criar no backend
           fetch('http://localhost:3000/api/aventuras', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -201,6 +254,9 @@ const EditarSala = () => {
               console.warn('[EditarSala] Falha ao atualizar backendId no localStorage:', e);
             }
           }).catch(err => console.warn('[EditarSala] Erro de rede ao criar aventura no backend:', err));
+        } else {
+          // Fluxo de criação (isNew=true): não cria no backend aqui para evitar duplicidade.
+          console.log('[EditarSala] Fluxo de criação: apenas atualizou rascunho local, sem POST no backend.');
         }
       } catch (e) {
         console.warn('[EditarSala] Erro ao preparar sincronização com backend:', e);

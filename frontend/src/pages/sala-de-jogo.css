@@ -131,6 +131,12 @@
   align-items: center;
   justify-content: center; /* Centraliza texto se for curto */
   font-size: 1rem;
+  transition: filter 0.2s ease; /* Transição suave ao revelar */
+}
+/* Estado borrado da resposta (visível apenas ao professor ao clicar em Revelar) */
+.resposta-enigma.borrada {
+  filter: blur(10px);
+  user-select: none; /* Evita seleção acidental */
 }
 /* Força botões a ocuparem toda a célula da grid */
 .botoes-grid-enigma .btn-jogo { width: 100%; }

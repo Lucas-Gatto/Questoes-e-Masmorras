@@ -36,6 +36,7 @@ const SalaDeJogo = () => {
   const [aventura, setAventura] = useState(null); // Estado para a aventura carregada
   const [salaAtualIndex, setSalaAtualIndex] = useState(0); // Índice da sala atual
   const [sessaoAtual, setSessaoAtual] = useState(null);
+  const [respostaRevelada, setRespostaRevelada] = useState(false); // Controle de revelação da resposta (Enigma)
 
   // Efeito para carregar a aventura do localStorage ao montar
   useEffect(() => {
@@ -62,6 +63,11 @@ const SalaDeJogo = () => {
       if (s && s.id) setSessaoAtual(s);
     } catch {}
   }, [aventuraId, navigate]); // Dependências: Roda se o ID mudar
+
+  // Reseta a revelação da resposta ao trocar de sala
+  useEffect(() => {
+    setRespostaRevelada(false);
+  }, [salaAtualIndex]);
 
   // Navega para a próxima sala se não for a última
   const handleAvancarSala = () => {
@@ -99,8 +105,8 @@ const SalaDeJogo = () => {
             <p className="texto-sala">{sala.enigma || "Enigma não preenchido"}</p>
             {renderImagem(sala)} {/* Renderiza imagem ou placeholder */}
             <div className="botoes-grid-enigma">
-              <div className="resposta-enigma">{sala.resposta || "Resposta não preenchida"}</div>
-              <button className="btn-jogo azul">Revelar</button>
+              <div className={`resposta-enigma ${respostaRevelada ? '' : 'borrada'}`}>{sala.resposta || "Resposta não preenchida"}</div>
+              <button className="btn-jogo azul" onClick={() => setRespostaRevelada(true)} disabled={respostaRevelada}>Revelar</button>
               <button className="btn-jogo dourado">Selecionar Respondente</button>
               {/* Botão Avançar/Finalizar foi movido para fora */}
             </div>

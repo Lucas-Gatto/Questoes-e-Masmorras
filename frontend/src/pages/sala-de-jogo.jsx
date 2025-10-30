@@ -35,6 +35,7 @@ const SalaDeJogo = () => {
 
   const [aventura, setAventura] = useState(null); // Estado para a aventura carregada
   const [salaAtualIndex, setSalaAtualIndex] = useState(0); // Índice da sala atual
+  const [sessaoAtual, setSessaoAtual] = useState(null);
 
   // Efeito para carregar a aventura do localStorage ao montar
   useEffect(() => {
@@ -55,12 +56,24 @@ const SalaDeJogo = () => {
       alert("Erro ao carregar dados da aventura.");
       navigate('/suas-aventuras'); // Redireciona em caso de erro
     }
+    // carrega sessão atual se existir
+    try {
+      const s = JSON.parse(localStorage.getItem('sessao_atual')) || null;
+      if (s && s.id) setSessaoAtual(s);
+    } catch {}
   }, [aventuraId, navigate]); // Dependências: Roda se o ID mudar
 
   // Navega para a próxima sala se não for a última
   const handleAvancarSala = () => {
     if (aventura && salaAtualIndex < aventura.salas.length - 1) {
       setSalaAtualIndex(prevIndex => prevIndex + 1); // Incrementa o índice
+            // se houver sessão do professor, sincroniza com backend
+      if (sessaoAtual?.id) {
+        fetch(`http://localhost:3000/api/sessoes/${sessaoAtual.id}/advance`, {
+          method: 'PUT',
+          credentials: 'include',
+        }).catch(() => {});
+      }
     } else {
       // Se já está na última sala, não faz nada (botão Finalizar é que age)
       console.warn("Tentativa de avançar além da última sala.");

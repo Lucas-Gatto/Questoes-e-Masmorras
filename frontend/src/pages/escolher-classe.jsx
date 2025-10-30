@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom'; // useParams para pegar ID da aventura se necessário
+import { useNavigate } from 'react-router-dom';
 import './escolher-classe.css';
 
 // --- Imagens das Classes (ajuste os caminhos/nomes) ---
@@ -36,11 +36,31 @@ const EscolherClasse = () => {
     setSelectedClassKey(classKey);
   };
 
-  const handleConfirm = () => {
-    // TODO: Lógica futura para salvar a classe escolhida e ir para a próxima tela (SalasAluno?)
-    console.log(`Classe selecionada: ${selectedClassKey}`);
-    alert(`Classe ${classesInfo[selectedClassKey]?.nome} selecionada! Próxima etapa a implementar.`);
-    // Exemplo: navigate(`/aventura/${aventuraId}/jogar-aluno`);
+    const handleConfirm = async () => {
+    const params = new URLSearchParams(window.location.search);
+    const codigo = params.get('codigo');
+    const nome = decodeURIComponent(params.get('nome') || '');
+    const classe = selectedClassKey;
+    if (!codigo || !nome) {
+      alert('Sessão inválida. Volte ao link da aventura.');
+      return;
+    }
+    try {
+      const res = await fetch(`http://localhost:3000/api/sessoes/by-code/${codigo}/alunos/${encodeURIComponent(nome)}/classe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ classe }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data?.message || 'Erro ao salvar classe');
+        return;
+      }
+      alert(`Classe ${classesInfo[selectedClassKey]?.nome} selecionada!`);
+      navigate(`/salas-aluno?codigo=${codigo}`);
+    } catch (err) {
+      alert('Erro ao salvar classe');
+    }
   };
 
   const selectedClassData = classesInfo[selectedClassKey];

@@ -5,20 +5,35 @@ import SalaMonstro from '../components/sala-monstro-aluno';
 
 const SalasAluno = () => {
   const [salaAtual, setSalaAtual] = useState(null);
+  const [codigoSessao, setCodigoSessao] = useState('');
+  const [snapshot, setSnapshot] = useState(null);
+  const [indiceSala, setIndiceSala] = useState(0);
 
   useEffect(() => {
-    const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
+    const params = new URLSearchParams(window.location.search);
+    const c = params.get('codigo') || localStorage.getItem('sessao_codigo') || '';
+    setCodigoSessao(c);
+    if (!c) return;
 
-    if (aventurasSalvas.length > 0) {
-      const ultimaAventura = aventurasSalvas[aventurasSalvas.length - 1];
-
-      // Aqui você pode escolher qual sala mostrar — neste exemplo, a primeira
-      const primeiraSala = ultimaAventura.salas[0];
-
-      if (primeiraSala) {
-        setSalaAtual(primeiraSala);
+    const poll = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/sessoes/by-code/${c}`);
+        if (res.ok) {
+          const data = await res.json();
+          setSnapshot(data.aventuraSnapshot || null);
+          const idx = Number(data.currentSalaIndex || 0);
+          setIndiceSala(idx);
+          const sala = data?.aventuraSnapshot?.salas?.[idx] || null;
+          setSalaAtual(sala);
+        }
+      } catch (e) {
+        // silencioso
       }
-    }
+    };
+
+    const intervalId = setInterval(poll, 2000);
+    poll();
+    return () => clearInterval(intervalId);
   }, []);
 
   const renderizarSala = () => {

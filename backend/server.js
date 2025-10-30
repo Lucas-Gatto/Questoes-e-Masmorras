@@ -37,9 +37,11 @@ app.use((req, res, next) => {
 // Rotas
 const userRoutes = require('./routes/userRoute');
 const aventuraRoutes = require('./routes/aventuraRoute');
+const sessoesRoutes = require('./routes/sessoesRoute');
 
 app.use('/api/user', userRoutes);
 app.use('/api/aventuras', aventuraRoutes); // rota das aventuras
+app.use('/api/sessoes', sessoesRoutes); // rota das sessões
 
 // Porta do servidor
 const PORT = process.env.PORT || 3000;

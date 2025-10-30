@@ -78,9 +78,26 @@ const NovaAventura = () => {
         body: JSON.stringify(payload),
       });
 
+      if (res.status === 401) {
+        alert('Sua sessão expirou. Faça login novamente.');
+        navigate('/');
+        return;
+      }
       if (res.ok) {
         const data = await res.json();
         console.log('[NovaAventura] Aventura salva no backend com sucesso:', data);
+        // Atualiza a aventura local para incluir o ID do backend
+        try {
+          const aventurasExistentes = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
+          const idx = aventurasExistentes.findIndex(a => a.id === aventura.id);
+          if (idx > -1) {
+            aventurasExistentes[idx] = { ...aventurasExistentes[idx], backendId: data._id };
+            localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasExistentes));
+            console.log('[NovaAventura] backendId sincronizado no localStorage:', data._id);
+          }
+        } catch (e) {
+          console.warn('[NovaAventura] Falha ao sincronizar backendId no localStorage:', e);
+        }
       } else {
         const errText = await res.text().catch(() => '');
         console.error('[NovaAventura] Falha ao salvar no backend. Status:', res.status, 'Body:', errText);

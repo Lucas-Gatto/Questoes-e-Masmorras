@@ -47,6 +47,61 @@ const EditarAventura = () => {
           a.id === Number(id) ? aventura : a // Substitui a aventura editada
         );
         localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasAtualizadas));
+        // Sincroniza no backend: PUT se houver backendId, senão tenta criar via POST
+        const aventuraAtualizada = aventurasAtualizadas.find(a => a.id === Number(id));
+        const payload = {
+          titulo: aventuraAtualizada.titulo,
+          salas: aventuraAtualizada.salas,
+          perguntas: aventuraAtualizada.perguntas,
+        };
+        if (aventuraAtualizada?.backendId) {
+          fetch(`http://localhost:3000/api/aventuras/${aventuraAtualizada.backendId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(payload),
+          }).then(async res => {
+            if (res.status === 401) {
+              alert('Sua sessão expirou. Faça login novamente.');
+              navigate('/');
+              return;
+            }
+            if (!res.ok) {
+              const txt = await res.text().catch(() => '');
+              console.warn('[EditarAventura] Falha ao sincronizar no backend. Status:', res.status, txt);
+            }
+          }).catch(err => console.warn('[EditarAventura] Erro de rede ao sincronizar no backend:', err));
+        } else {
+          fetch('http://localhost:3000/api/aventuras', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(payload),
+          }).then(async res => {
+            if (res.status === 401) {
+              alert('Sua sessão expirou. Faça login novamente.');
+              navigate('/');
+              return;
+            }
+            if (!res.ok) {
+              const txt = await res.text().catch(() => '');
+              console.warn('[EditarAventura] Falha ao criar no backend. Status:', res.status, txt);
+              return;
+            }
+            const data = await res.json();
+            try {
+              const aventurasSalvas2 = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
+              const idx2 = aventurasSalvas2.findIndex(a => a.id === Number(id));
+              if (idx2 > -1) {
+                aventurasSalvas2[idx2] = { ...aventurasSalvas2[idx2], backendId: data._id };
+                localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasSalvas2));
+                console.log('[EditarAventura] backendId criado e sincronizado:', data._id);
+              }
+            } catch (e) {
+              console.warn('[EditarAventura] Falha ao atualizar backendId no localStorage:', e);
+            }
+          }).catch(err => console.warn('[EditarAventura] Erro de rede ao criar aventura no backend:', err));
+        }
         alert('Aventura atualizada com sucesso!');
         navigate('/suas-aventuras'); // Volta para a lista principal após salvar
     } catch (error) {

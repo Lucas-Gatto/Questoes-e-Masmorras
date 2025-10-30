@@ -72,8 +72,10 @@ const EditarSala = () => {
         // Define padrões para todos os campos para evitar undefined
         texto: '', vidaMonstro: 'Média', enigma: '', resposta: '', imagem: '',
         ...salaInicial,     // Carrega dados da origem (state ou storage)
-        tipo: tipoFromUrl,  // Garante tipo da URL
-        opcoes: opcoesFinais // Usa as opções garantidas
+        // Mantém o tipo existente se a URL não informar um válido
+        tipo: (['Enigma','Alternativa','Monstro'].includes(tipoFromUrl) ? tipoFromUrl : salaInicial.tipo),
+        opcoes: opcoesFinais, // Usa as opções garantidas
+        opcaoCorretaId: salaInicial.opcaoCorretaId ?? null, // inicializa correta
       });
 
       // Atualiza nome do botão de imagem se já houver uma
@@ -143,6 +145,66 @@ const EditarSala = () => {
       // 3. Salva a lista COMPLETA E ATUALIZADA de volta
       console.log("handleSalvar: Salvando de volta no storage:", aventurasAtualizadas);
       localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasAtualizadas));
+
+      // 4. Sincroniza com backend: PUT se houver backendId, senão tenta criar via POST
+      try {
+        const aventuraAtualizada = aventurasAtualizadas.find(a => a.id === Number(aventuraId));
+        const payload = {
+          titulo: aventuraAtualizada.titulo,
+          salas: aventuraAtualizada.salas,
+          perguntas: aventuraAtualizada.perguntas,
+        };
+        if (aventuraAtualizada?.backendId) {
+          fetch(`http://localhost:3000/api/aventuras/${aventuraAtualizada.backendId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(payload),
+          }).then(async res => {
+            if (res.status === 401) {
+              alert('Sua sessão expirou. Faça login novamente.');
+              navigate('/');
+              return;
+            }
+            if (!res.ok) {
+              const txt = await res.text().catch(() => '');
+              console.warn('[EditarSala] Falha ao sincronizar alterações no backend. Status:', res.status, txt);
+            }
+          }).catch(err => console.warn('[EditarSala] Erro de rede ao sincronizar no backend:', err));
+        } else {
+          fetch('http://localhost:3000/api/aventuras', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(payload),
+          }).then(async res => {
+            if (res.status === 401) {
+              alert('Sua sessão expirou. Faça login novamente.');
+              navigate('/');
+              return;
+            }
+            if (!res.ok) {
+              const txt = await res.text().catch(() => '');
+              console.warn('[EditarSala] Falha ao criar aventura no backend. Status:', res.status, txt);
+              return;
+            }
+            const data = await res.json();
+            try {
+              const aventurasSalvas2 = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
+              const idx2 = aventurasSalvas2.findIndex(a => a.id === Number(aventuraId));
+              if (idx2 > -1) {
+                aventurasSalvas2[idx2] = { ...aventurasSalvas2[idx2], backendId: data._id };
+                localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasSalvas2));
+                console.log('[EditarSala] backendId criado e sincronizado:', data._id);
+              }
+            } catch (e) {
+              console.warn('[EditarSala] Falha ao atualizar backendId no localStorage:', e);
+            }
+          }).catch(err => console.warn('[EditarSala] Erro de rede ao criar aventura no backend:', err));
+        }
+      } catch (e) {
+        console.warn('[EditarSala] Erro ao preparar sincronização com backend:', e);
+      }
       alert('Sala atualizada com sucesso!');
       navigate(-1); // Volta para a página anterior (Nova ou Editar Aventura)
 
@@ -172,6 +234,14 @@ const EditarSala = () => {
       );
       return { ...salaAtual, opcoes: novasOpcoes };
     });
+  };
+
+  // Marca qual opção é a correta na sala Alternativa
+  const handleOpcaoCorretaSelect = (opcaoId) => {
+    setEditingSala(salaAtual => ({
+      ...salaAtual,
+      opcaoCorretaId: opcaoId,
+    }));
   };
 
   // Ativado pelo clique no botão 'Upload de Imagem'
@@ -306,6 +376,16 @@ const EditarSala = () => {
                         onChange={(e) => handleOpcaoChange(idOpcao, e.target.value)} // Atualiza o estado
                         placeholder={`Digite o texto da opção ${idOpcao}...`}
                       />
+                      <label className="opcao-correta-label">
+                        <input
+                          type="radio"
+                          name="opcao-correta"
+                          className="opcao-correta-radio"
+                          checked={editingSala.opcaoCorretaId === idOpcao}
+                          onChange={() => handleOpcaoCorretaSelect(idOpcao)}
+                        />
+                        Correta
+                      </label>
                     </div>
                   );
                 })}

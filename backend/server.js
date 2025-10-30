@@ -11,8 +11,19 @@ connectDB();
 app.use(express.json());
 
 // Configurar CORS (importante usar apenas UMA vez!)
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+];
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: function (origin, callback) {
+    // Permite também requisições de ferramentas (sem origin)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS not allowed for origin: ' + origin));
+    }
+  },
   credentials: true, // 🔥 permite cookies/sessão do front
 }));
 

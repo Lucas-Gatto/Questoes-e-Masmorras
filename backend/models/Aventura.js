@@ -16,7 +16,8 @@ const PerguntaSchema = new Schema({
 // Sub-schema para as Opções da sala 'Alternativa'
 const OpcaoSchema = new Schema({
   id: Number, // Podemos usar um ID simples (1, 2, 3, 4) ou gerado no front
-  texto: { type: String, required: true, default: '' },
+  // Permite vazio durante edição; validação de conteúdo pode ser feita no front
+  texto: { type: String, default: '' },
   // Futuramente: cor: { type: String }, ehCorreta: { type: Boolean }
 });
 
@@ -38,6 +39,9 @@ const SalaSchema = new Schema({
   
   // Campo específico para Alternativa, usando o OpcaoSchema
   opcoes: { type: [OpcaoSchema], default: [] }, // Array das 4 opções
+
+  // Indica qual opção é a correta na sala de alternativas
+  opcaoCorretaId: { type: Number, default: null },
 
   // Campo de Imagem (string Base64)
   imagem: { type: String, default: '' },

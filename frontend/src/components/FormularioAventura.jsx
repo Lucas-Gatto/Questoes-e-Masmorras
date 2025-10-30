@@ -34,9 +34,13 @@ const SalaArrastavel = ({
           aventurasSalvas.push(aventura); // Insere nova aventura (rascunho)
         }
         localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasSalvas));
-        // Marca o ID do rascunho atual para que NovaAventura recarregue ele ao voltar
-        localStorage.setItem('draft_aventura_id', String(aventura.id));
-        console.log('[SalaArrastavel] Autosave realizado e draft_aventura_id marcado:', aventura.id);
+        // Marca o ID do rascunho SOMENTE quando estiver no fluxo de criação (isNew=true)
+        if (isNew) {
+          localStorage.setItem('draft_aventura_id', String(aventura.id));
+          console.log('[SalaArrastavel] Autosave (nova aventura) e draft_aventura_id marcado:', aventura.id);
+        } else {
+          console.log('[SalaArrastavel] Autosave realizado (edição). draft_aventura_id não alterado.');
+        }
       } else {
         console.warn('[SalaArrastavel] Aventura sem ID ao tentar autosave.');
       }

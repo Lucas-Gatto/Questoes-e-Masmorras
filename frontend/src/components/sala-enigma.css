@@ -29,12 +29,12 @@
 }
 
 .quadro h1 {
-  color: gold;
+  color: var(--titulo);
   margin-bottom: 10px;
 }
 
 .quadro h2 {
-  color: gold;
+  color: var(--subtitulo);
   font-size: 1.4rem;
   margin-bottom: 15px;
 }

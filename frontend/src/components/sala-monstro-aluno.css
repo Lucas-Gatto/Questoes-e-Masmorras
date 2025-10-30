@@ -29,7 +29,7 @@
 .titulo {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
-  color: #ff9900;
+  color: var(--titulo);
 }
 
 .subtitulo {

@@ -31,12 +31,12 @@ const corsOptions = {
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+// Express 5 não aceita '*' em path-to-regexp; usa regex para capturar todas
+app.options(/.*/, cors(corsOptions));
 
 // Configurar sessão (sem JWT)
 const isProd = process.env.NODE_ENV === 'production';

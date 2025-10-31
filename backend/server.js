@@ -9,6 +9,8 @@ const app = express();
 // Conectar ao MongoDB
 connectDB();
 app.use(express.json());
+// Necessário para que cookies "secure" funcionem atrás de proxy (Render)
+app.set('trust proxy', 1);
 
 // Configurar CORS (importante usar apenas UMA vez!)
 const allowedOrigins = [
@@ -30,12 +32,14 @@ app.use(cors({
 }));
 
 // Configurar sessão (sem JWT)
+const isProd = process.env.NODE_ENV === 'production';
 app.use(session({
-  secret: 'segredo-muito-seguro-aqui', // troque por algo melhor  
+  secret: process.env.SESSION_SECRET || 'segredo-muito-seguro-aqui',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // true se for HTTPS
+    secure: isProd, // exige HTTPS em produção
+    sameSite: isProd ? 'none' : 'lax', // necessário para cookies entre domínios
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24, // 1 dia
   },

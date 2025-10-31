@@ -14,7 +14,7 @@ const ResultadosAventura = () => {
   useEffect(() => {
     const carregar = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/aventuras/${aventuraId}`, { credentials: 'include' });
+        const res = await fetch(`https://questoes-e-masmorras.onrender.com/api/aventuras/${aventuraId}`, { credentials: 'include' });
         if (res.status === 401) {
           alert('Sua sessão expirou. Faça login novamente.');
           navigate('/');

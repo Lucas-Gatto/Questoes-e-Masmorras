@@ -42,7 +42,7 @@ const SalaDeJogo = () => {
   useEffect(() => {
     const carregar = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/aventuras/${aventuraId}`, { credentials: 'include' });
+        const res = await fetch(`https://questoes-e-masmorras.onrender.com/api/aventuras/${aventuraId}`, { credentials: 'include' });
         if (res.status === 401) {
           alert('Sua sessão expirou. Faça login novamente.');
           navigate('/');
@@ -86,7 +86,7 @@ const SalaDeJogo = () => {
       setSalaAtualIndex(prevIndex => prevIndex + 1); // Incrementa o índice
             // se houver sessão do professor, sincroniza com backend
       if (sessaoAtual?.id) {
-        fetch(`http://localhost:3000/api/sessoes/${sessaoAtual.id}/advance`, {
+        fetch(`https://questoes-e-masmorras.onrender.com/api/sessoes/${sessaoAtual.id}/advance`, {
           method: 'PUT',
           credentials: 'include',
         }).catch(() => {});
@@ -102,7 +102,7 @@ const SalaDeJogo = () => {
     try {
       // Se houver sessão do professor, marca como finalizada no backend
       if (sessaoAtual?.id) {
-        await fetch(`http://localhost:3000/api/sessoes/${sessaoAtual.id}/finish`, {
+        await fetch(`https://questoes-e-masmorras.onrender.com/api/sessoes/${sessaoAtual.id}/finish`, {
           method: 'PUT',
           credentials: 'include',
         });

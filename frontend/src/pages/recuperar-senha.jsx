@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'; // Link para voltar ao log
 import './recuperar-senha.css'; // Novo CSS
 
 // Defina a URL base da sua API (se ainda não tiver importado)
-const API_URL = 'http://localhost:3000/api'; // Ajuste a porta se necessário
+const API_URL = 'https://questoes-e-masmorras.onrender.com/api';
 
 const RecuperarSenha = () => {
   const navigate = useNavigate();

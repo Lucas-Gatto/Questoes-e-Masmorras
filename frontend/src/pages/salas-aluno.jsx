@@ -17,7 +17,7 @@ const SalasAluno = () => {
 
     const poll = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/sessoes/by-code/${c}`);
+  const res = await fetch(`https://questoes-e-masmorras.onrender.com/api/sessoes/by-code/${c}`);
         if (res.ok) {
           const data = await res.json();
           // Se a sessão terminou, redireciona para avaliação

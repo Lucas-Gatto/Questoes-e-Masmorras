@@ -13,7 +13,7 @@ const EditarAventura = () => {
   useEffect(() => {
     const carregar = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/aventuras/${id}`, { credentials: 'include' });
+        const res = await fetch(`https://questoes-e-masmorras.onrender.com/api/aventuras/${id}`, { credentials: 'include' });
         if (res.status === 401) {
           alert('Sua sessão expirou. Faça login novamente.');
           navigate('/');
@@ -51,7 +51,7 @@ const EditarAventura = () => {
         salas: aventura.salas,
         perguntas: aventura.perguntas,
       };
-      fetch(`http://localhost:3000/api/aventuras/${aventura.backendId || id}`, {
+      fetch(`https://questoes-e-masmorras.onrender.com/api/aventuras/${aventura.backendId || id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -84,7 +84,7 @@ const EditarAventura = () => {
   const handleDelete = () => {
     if (!window.confirm('Tem certeza que deseja excluir esta aventura?')) return;
     try {
-      fetch(`http://localhost:3000/api/aventuras/${aventura?.backendId || id}`, {
+      fetch(`https://questoes-e-masmorras.onrender.com/api/aventuras/${aventura?.backendId || id}`, {
         method: 'DELETE',
         credentials: 'include',
       }).then(async res => {

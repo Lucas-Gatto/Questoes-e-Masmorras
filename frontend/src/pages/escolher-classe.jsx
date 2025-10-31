@@ -46,7 +46,7 @@ const EscolherClasse = () => {
       return;
     }
     try {
-      const res = await fetch(`http://localhost:3000/api/sessoes/by-code/${codigo}/alunos/${encodeURIComponent(nome)}/classe`, {
+      const res = await fetch(`https://questoes-e-masmorras.onrender.com/api/sessoes/by-code/${codigo}/alunos/${encodeURIComponent(nome)}/classe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ classe }),

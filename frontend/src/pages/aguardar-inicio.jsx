@@ -26,7 +26,7 @@ const AguardarInicio = () => {
     // Polling para verificar se a sessão foi iniciada
     const poll = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/sessoes/by-code/${codigo}`);
+        const res = await fetch(`https://questoes-e-masmorras.onrender.com/api/sessoes/by-code/${codigo}`);
         if (res.ok) {
           const data = await res.json();
           

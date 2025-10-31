@@ -71,7 +71,7 @@ const NovaAventura = () => {
         perguntas: aventura.perguntas,
       };
 
-      const res = await fetch('http://localhost:3000/api/aventuras', {
+      const res = await fetch('https://questoes-e-masmorras.onrender.com/api/aventuras', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // garante envio do cookie de sessão

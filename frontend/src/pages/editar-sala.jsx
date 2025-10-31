@@ -93,7 +93,7 @@ const EditarSala = () => {
         (async () => {
           try {
             const resGet = await fetch(
-              `http://localhost:3000/api/aventuras/${backendId}`,
+              `https://questoes-e-masmorras.onrender.com/api/aventuras/${backendId}`,
               { credentials: "include" }
             );
             if (resGet.status === 401) {
@@ -118,7 +118,7 @@ const EditarSala = () => {
               perguntas: aventuraDoc.perguntas || [],
             };
             const resPut = await fetch(
-              `http://localhost:3000/api/aventuras/${backendId}`,
+              `https://questoes-e-masmorras.onrender.com/api/aventuras/${backendId}`,
               {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },

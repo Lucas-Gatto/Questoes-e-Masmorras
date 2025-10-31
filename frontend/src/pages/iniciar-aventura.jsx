@@ -26,7 +26,7 @@ const IniciarAventura = () => {
     const carregar = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3000/api/aventuras/${aventuraId}`,
+          `https://questoes-e-masmorras.onrender.com/api/aventuras/${aventuraId}`,
           { credentials: "include" }
         );
         if (res.status === 401) {
@@ -57,7 +57,7 @@ const IniciarAventura = () => {
   const handleCriarSessao = async () => {
     if (!aventura) return;
     try {
-      const res = await fetch('http://localhost:3000/api/sessoes', {
+      const res = await fetch('https://questoes-e-masmorras.onrender.com/api/sessoes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -94,7 +94,7 @@ const IniciarAventura = () => {
     // atualiza lista de alunos a cada 2s
     const intervalId = setInterval(async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/sessoes/${sessaoId}`, { credentials: 'include' });
+        const res = await fetch(`https://questoes-e-masmorras.onrender.com/api/sessoes/${sessaoId}`, { credentials: 'include' });
         if (res.ok) {
           const s = await res.json();
           setAlunos(Array.isArray(s.alunos) ? s.alunos : []);
@@ -123,7 +123,7 @@ const IniciarAventura = () => {
           `Iniciando a aventura "${aventura.titulo}"... Chamando backend para iniciar sessão`
         );
         const res = await fetch(
-          `http://localhost:3000/api/sessoes/${sessao.id}/start`,
+          `https://questoes-e-masmorras.onrender.com/api/sessoes/${sessao.id}/start`,
           {
             method: "PUT",
             credentials: "include",

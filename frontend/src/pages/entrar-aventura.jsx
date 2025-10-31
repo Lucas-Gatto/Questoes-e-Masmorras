@@ -13,7 +13,7 @@ const EntrarAventura = () => {
     const c = params.get("codigo") || "";
     setCodigo(c);
     if (c) {
-      fetch(`http://localhost:3000/api/sessoes/by-code/${c}`)
+      fetch(`https://questoes-e-masmorras.onrender.com/api/sessoes/by-code/${c}`)
         .then((r) => r.json())
         .then((data) => {
           if (data?.aventuraSnapshot?.titulo)
@@ -51,7 +51,7 @@ const EntrarAventura = () => {
             }
             try {
               const res = await fetch(
-                `http://localhost:3000/api/sessoes/by-code/${codigo}/alunos`,
+                `https://questoes-e-masmorras.onrender.com/api/sessoes/by-code/${codigo}/alunos`,
                 {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },

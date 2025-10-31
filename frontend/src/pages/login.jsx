@@ -20,7 +20,7 @@ function Login() {
   //Função de login
   const handleLogin = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/user/login", {
+      const res = await fetch("https://questoes-e-masmorras.onrender.com/api/user/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -52,7 +52,7 @@ function Login() {
   //Função de cadastro
   const handleCadastro = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/user/cadastrar", {
+      const res = await fetch("https://questoes-e-masmorras.onrender.com/api/user/cadastrar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

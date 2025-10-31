@@ -14,12 +14,16 @@ app.use(express.json());
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
-  'https://questoes-e-masmorras.vercel.app/',
+  'https://questoes-e-masmorras.vercel.app',
 ];
 app.use(cors({
   origin: function (origin, callback) {
     // Permite também requisições de ferramentas (sem origin)
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin) {
+      return callback(null, true);
+    }
+    const normalized = origin.replace(/\/$/, ''); // remove barra final
+    if (allowedOrigins.includes(normalized)) {
       callback(null, true);
     } else {
       callback(new Error('CORS not allowed for origin: ' + origin));
@@ -29,13 +33,15 @@ app.use(cors({
 }));
 
 // Configurar sessão (sem JWT)
+app.set('trust proxy', 1); // necessário para cookies "secure" atrás de proxy (Render)
 app.use(session({
   secret: 'segredo-muito-seguro-aqui', // troque por algo melhor  
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // true se for HTTPS
+    secure: process.env.NODE_ENV === 'production', // cookies "secure" em produção (HTTPS)
     httpOnly: true,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // necessário para cross-site Vercel↔Render
     maxAge: 1000 * 60 * 60 * 24, // 1 dia
   },
 }));

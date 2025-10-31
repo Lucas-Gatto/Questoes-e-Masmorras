@@ -14,12 +14,13 @@ app.use(express.json());
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
-  'https://questoes-e-masmorras.vercel.app/',
+  'https://questoes-e-masmorras.vercel.app',
 ];
 app.use(cors({
   origin: function (origin, callback) {
     // Permite também requisições de ferramentas (sem origin)
-    if (!origin || allowedOrigins.includes(origin)) {
+    const normalized = origin ? origin.replace(/\/$/, '') : origin;
+    if (!origin || allowedOrigins.includes(normalized)) {
       callback(null, true);
     } else {
       callback(new Error('CORS not allowed for origin: ' + origin));

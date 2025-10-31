@@ -7,9 +7,9 @@ const LayoutLogado = () => {
   return (
     <>
       <Headerlogado />
-      <div className="main-content">
+      <main className="main-content">
         <Outlet />
-      </div>
+      </main>
       <Footer />
     </>
   );

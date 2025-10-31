@@ -1,36 +1,34 @@
 .header {
-    height: 60px;
-    background-color: #000000;
-    color: rgb(247, 182, 5);
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
+  height: 60px;
+  background-color: #000000;
+  color: rgb(247, 182, 5);
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
 
-    font-family: 'MedievalSharp', cursive;
-    padding: 0px 30px;
-
+  font-family: "MedievalSharp", cursive;
+  padding: 0px 30px;
 }
 
 a {
-
-    color: rgb(247, 182, 5);
-    text-decoration: inherit;
+  color: rgb(247, 182, 5);
+  text-decoration: inherit;
 }
 
 .logo {
-    height: 40px;
+  height: 40px;
 }
 
 @media (max-width: 600px) {
   header {
-    padding: 0 15px; 
+    padding: 0 15px;
 
-  header h1 { 
-    font-size: 1.5rem; 
-  }
+    header h1 {
+      font-size: 1.5rem;
+    }
 
-  .logo {
-    height: 35px; 
+    .logo {
+      height: 35px;
+    }
   }
-}
 }

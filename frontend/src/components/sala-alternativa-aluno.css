@@ -4,7 +4,7 @@
   width: 100%;
   height: 100vh;
   color: white;
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -38,15 +38,14 @@
 .titulo {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
-  color: #ff9900;
+  color: var(--titulo);
   font-family: 'MedievalSharp', cursive;
-  justify-content: center;
 }
 
 .subtitulo {
   font-size: 1.5rem;
   margin-bottom: 2rem;
-  color: #ff9900;
+  color: #000000;
 }
 
 /* Quadro com fundo preto transparente */
@@ -94,20 +93,19 @@
 
 /* Cores dos botões */
 .btn-opcao.red {
-  background-color: #e74c3c;
+  background-color: var(--alternativa_vermelha);
 }
 
 .btn-opcao.yellow {
-  background-color: #f1c40f;
-
+  background-color: var(--alternativa_amarela);
 }
 
 .btn-opcao.green {
-  background-color: #2ecc71;
+  background-color: var(--alternativa_verde);
 }
 
 .btn-opcao.blue {
-  background-color: #3498db;
+  background-color: var(--alternativa_azul);
 }
 
 /* Rodapé */

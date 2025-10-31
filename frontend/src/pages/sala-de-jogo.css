@@ -3,35 +3,33 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  /* background-color: #YourBackgroundColor; Se precisar de cor de fundo */
 }
 .sala-de-jogo-main {
   flex-grow: 1;
   display: flex;
   padding: 40px 20px;
   gap: 20px;
-  align-items: flex-start; /* Alinha painel e barra no topo */
+  align-items: flex-start;
   justify-content: center;
 }
 
 /* Barra de Progresso Lateral */
 .progresso-barra-container {
   width: 20px;
-  /* Altura pode ser fixa ou % da viewport */
-  height: 60vh; /* Exemplo: 60% da altura da tela */
+  height: 60vh;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 10px;
-  position: relative; /* Necessário para o preenchimento absoluto */
-  overflow: hidden; /* Esconde o excesso da barra interna */
-  margin-top: 50px; /* Ajuste para alinhar com o painel */
+  position: relative;
+  overflow: hidden;
+  margin-top: 50px;
 }
 .progresso-barra-preenchimento {
   width: 100%;
-  background-color: #007BFF; /* Azul */
+  background-color: var(--azul);
   position: absolute;
-  bottom: 0; /* Começa de baixo */
+  bottom: 0;
   left: 0;
-  transition: height 0.5s ease-in-out; /* Animação suave */
+  transition: height 0.5s ease-in-out;
 }
 
 /* Painel Central da Sala */
@@ -40,21 +38,21 @@
   max-width: 900px;
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 25px;
-  padding: 20px 30px 30px 30px; /* Aumenta padding inferior */
+  padding: 20px 30px 30px 30px;
   color: white;
   font-family: Arial, sans-serif;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra sutil */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 .sala-titulo-aventura {
-  font-family: 'MedievalSharp', cursive;
+  font-family: "MedievalSharp", cursive;
   font-size: 1.8rem;
-  color: #C68700;
+  color: var(--titulo);
   text-align: center;
   margin-top: 0;
   margin-bottom: 5px;
 }
 .sala-titulo-nome {
-  color: #C68700;
+  color: #eda200;
   text-align: center;
   font-size: 1.2rem;
   margin-bottom: 25px;
@@ -63,17 +61,17 @@
 .texto-sala {
   text-align: center;
   margin-bottom: 20px;
-  line-height: 1.5; /* Melhora legibilidade */
+  line-height: 1.5;
 }
 
 /* Container e Fallback da Imagem */
 .imagem-container {
   width: 100%;
-  max-width: 400px; /* Limita largura máxima da imagem */
-  height: 200px; /* Altura fixa ou use aspect-ratio */
+  max-width: 400px;
+  height: 200px;
   background-color: #222;
   border-radius: 10px;
-  margin: 0 auto 25px auto; /* Centraliza e adiciona margem inferior */
+  margin: 0 auto 25px auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,7 +80,7 @@
 .imagem-container img {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* 'cover' preenche, 'contain' mostra inteira */
+  object-fit: contain;
 }
 .imagem-fallback-text {
   color: #555;
@@ -90,13 +88,12 @@
   font-style: italic;
 }
 
-
 /* Botões Genéricos */
 .btn-jogo {
-  padding: 10px 25px; /* Ajuste padding */
+  padding: 10px 25px;
   border: none;
   border-radius: 10px;
-  font-family: 'MedievalSharp', cursive;
+  font-family: "MedievalSharp", cursive;
   font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
@@ -105,47 +102,39 @@
   text-align: center;
 }
 .btn-jogo:hover { opacity: 0.9; }
-.btn-jogo:active { transform: scale(0.98); } /* Efeito de clique */
-.btn-jogo.vermelho { background-color: #a42828; }
-.btn-jogo.azul { background-color: #2c5b96; }
-.btn-jogo.dourado { background-color: #b4850c; }
-
+.btn-jogo:active { transform: scale(0.98); }
+.btn-jogo.vermelho { background-color: var(--alternativa_vermelha); }
+.btn-jogo.azul { background-color: var(--alternativa_azul); }
+.btn-jogo.dourado { background-color: var(--alternativa_amarela); }
 
 /* Estilos Específicos: ENIGMA */
-
 .botoes-grid-enigma {
   display: grid;
-  /* Duas colunas: resposta (maior), botões (menor) */
   grid-template-columns: 2.5fr 1fr;
-  /* Duas linhas para empilhar os botões */
   grid-template-rows: auto auto;
   gap: 15px;
-  align-items: stretch; /* Faz todos terem a mesma altura na linha */
+  align-items: stretch;
 }
 .resposta-enigma {
-  grid-row: 1 / 3; /* Ocupa as duas linhas da grid */
+  grid-row: 1 / 3;
   background-color: #333;
   border-radius: 10px;
   padding: 15px;
   display: flex;
   align-items: center;
-  justify-content: center; /* Centraliza texto se for curto */
+  justify-content: center;
   font-size: 1rem;
-  transition: filter 0.2s ease; /* Transição suave ao revelar */
+  transition: filter 0.2s ease;
 }
-/* Estado borrado da resposta (visível apenas ao professor ao clicar em Revelar) */
 .resposta-enigma.borrada {
   filter: blur(10px);
-  user-select: none; /* Evita seleção acidental */
+  user-select: none;
 }
-/* Força botões a ocuparem toda a célula da grid */
 .botoes-grid-enigma .btn-jogo { width: 100%; }
-
 
 /* Estilos Específicos: ALTERNATIVA */
 .botoes-grid-alternativa {
   display: grid;
-  /* Três colunas iguais */
   grid-template-columns: 1fr 1fr 1fr;
   gap: 15px;
 }
@@ -153,18 +142,20 @@
   padding: 12px;
   border-radius: 10px;
   border: 2px solid rgba(0, 0, 0, 0.3);
-  color: white; font-weight: bold; cursor: pointer;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
   transition: transform 0.1s;
 }
 .btn-opcao-jogo:active { transform: scale(0.98); }
-.btn-opcao-jogo.red { background-color: #a42828; }
-.btn-opcao-jogo.yellow { background-color: #b4850c; }
-.btn-opcao-jogo.green { background-color: #2e8540; }
-.btn-opcao-jogo.blue { background-color: #2c5b96; }
+.btn-opcao-jogo.red { background-color: var(--alternativa_vermelha); }
+.btn-opcao-jogo.yellow { background-color: var(--alternativa_amarela); }
+.btn-opcao-jogo.green { background-color: var(--alternativa_verde); }
+.btn-opcao-jogo.blue { background-color: var(--alternativa_azul); }
 
 /* Destaque visual para alternativa correta ao revelar */
 .btn-opcao-jogo.correta {
-  border-color: #2e8540; /* Verde para indicar correção */
+  border-color: #2e8540;
   box-shadow: 0 0 14px rgba(46, 133, 64, 0.7);
   position: relative;
 }
@@ -185,51 +176,43 @@
   font-size: 14px;
   border: 2px solid rgba(0, 0, 0, 0.2);
 }
-/* Faz botão Revelar e Avançar ocuparem toda a célula */
 .botoes-grid-alternativa .btn-jogo { width: 100%; }
-
 
 /* Estilos Específicos: MONSTRO */
 .monstro-grid {
   display: grid;
-  /* Duas colunas: imagem (fixa), status (flexível) */
   grid-template-columns: 250px 1fr;
-  gap: 25px; /* Aumenta o espaço */
+  gap: 25px;
   margin-bottom: 25px;
-  align-items: center; /* Alinha verticalmente */
+  align-items: center;
 }
 .monstro-imagem-container {
   width: 250px;
   height: 200px;
   border-radius: 10px;
-  /* Estilos da imagem já estão em .imagem-container img */
 }
 .monstro-status {
   display: flex;
   flex-direction: column;
-  justify-content: space-around; /* Distribui espaço vertical */
-  gap: 15px; /* Aumenta espaço entre elementos */
-  height: 100%; /* Ocupa altura da grid */
+  justify-content: space-around;
+  gap: 15px;
+  height: 100%;
 }
-.vida-monstro-container span { display: block; margin-bottom: 5px; font-size: 0.9em; opacity: 0.8;}
+.vida-monstro-container span { display: block; margin-bottom: 5px; font-size: 0.9em; opacity: 0.8; }
 .vida-barra {
   width: 100%;
   height: 25px;
   background-color: #555;
   border-radius: 10px;
-  overflow: hidden; /* Garante que preenchimento não vaze */
+  overflow: hidden;
 }
-.vida-preenchimento { height: 100%; background-color: #f4c20d; border-radius: 10px; transition: width 0.3s ease; }
+.vida-preenchimento { height: 100%; background-color: var(--titulo); border-radius: 10px; transition: width 0.3s ease; }
 .pergunta-nivel, .turno-jogador { display: flex; align-items: center; gap: 10px; }
-.pergunta-nivel span strong { color: #f4c20d; } /* Destaca o número */
 .dado-icone { font-size: 2.5rem; line-height: 1; }
 .turno-jogador span { opacity: 0.8; }
-.nome-personagem { background-color: #5C481A; padding: 8px 15px; border-radius: 20px; flex-grow: 1; text-align: center; }
-.btn-pular { background-color: #555; border: none; color: white; padding: 8px 20px; border-radius: 20px; cursor: pointer; transition: background-color 0.2s; }
+.nome-personagem { background-color: var(--input_amarelo); padding: 8px 15px; border-radius: 20px; flex-grow: 1; text-align: center; }
+.btn-pular { background-color: var(--cinza); border: none; color: white; padding: 8px 20px; border-radius: 20px; cursor: pointer; transition: background-color 0.2s; }
 .btn-pular:hover { background-color: #777; }
-/* Esconde o botão finalizar antigo (se a classe ainda existir) */
-.conteudo-monstro .btn-finalizar-aventura { display: none; }
-
 
 /* Container e Botões de Navegação (Avançar/Finalizar) */
 .botoes-navegacao-sala {
@@ -237,12 +220,12 @@
   padding-top: 20px;
   border-top: 1px solid #555;
   display: flex;
-  justify-content: flex-end; /* Alinha à direita */
+  justify-content: flex-end;
 }
 .btn-finalizar-aventura-bottom,
 .btn-avancar-sala-bottom {
   width: auto;
-  min-width: 180px; /* Largura mínima */
+  min-width: 180px;
   padding: 12px 40px;
 }
 .btn-avancar-sala-bottom:disabled {
@@ -264,6 +247,4 @@
   cursor: default;
   font-style: italic;
 }
-.botoes-grid-alternativa .btn-opcao-jogo.placeholder:active {
-    transform: none; 
-}
+.botoes-grid-alternativa .btn-opcao-jogo.placeholder:active { transform: none; }

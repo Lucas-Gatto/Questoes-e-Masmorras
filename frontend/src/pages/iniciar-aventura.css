@@ -26,9 +26,9 @@
 }
 
 .aventura-titulo-iniciar {
-  font-family: 'MedievalSharp', cursive;
+  font-family: "MedievalSharp", cursive;
   font-size: 2.2rem;
-  color: #C68700;
+  color: var(--titulo);
   margin-bottom: 30px;
 }
 
@@ -64,7 +64,7 @@
 }
 
 .link-acesso {
-  background-color: #5C481A;
+  background-color: var(--input_amarelo);
   padding: 10px 20px;
   border-radius: 20px;
   font-weight: bold;

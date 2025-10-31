@@ -7,7 +7,7 @@
 .escolher-classe-main {
   flex-grow: 1;
   display: flex;
-  align-items: center; /* Centraliza painel verticalmente */
+  align-items: center;
   justify-content: center;
   padding: 40px 20px;
 }
@@ -15,7 +15,7 @@
 /* Painel Central */
 .escolher-classe-painel {
   width: 90%;
-  max-width: 900px; /* Ajuste se necessário */
+  max-width: 900px;
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 25px;
   padding: 30px 40px;
@@ -28,86 +28,86 @@
 .titulo-aventura-escolha {
   font-family: 'MedievalSharp', cursive;
   font-size: 1.8rem;
-  color: #C68700;
+  color: var(--titulo);
   margin-top: 0;
   margin-bottom: 5px;
 }
 
 .titulo-escolha {
-  color: #C68700;
+  color: var(--subtitulo);
   font-size: 1.3rem;
-  margin-bottom: 35px; /* Mais espaço antes das classes */
+  margin-bottom: 35px;
   font-weight: bold;
 }
 
 /* Container das Imagens das Classes */
 .classes-container {
   display: flex;
-  justify-content: center; /* Centraliza as imagens */
-  align-items: center; /* Alinha verticalmente */
-  gap: 30px; /* Espaço entre as imagens */
-  margin-bottom: 40px; /* Espaço antes da área de info */
-  flex-wrap: wrap; /* Permite quebrar linha em telas pequenas */
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
 }
 
 .classe-item {
   cursor: pointer;
   transition: transform 0.2s ease-out, filter 0.2s;
-  padding: 10px; /* Espaço clicável */
-  border-radius: 10px; /* Borda levemente arredondada */
-  border: 3px solid transparent; /* Borda invisível para manter o espaço */
+  padding: 10px;
+  border-radius: 10px;
+  border: 3px solid transparent;
 }
 
 .classe-item:hover {
-  filter: brightness(1.2); /* Efeito de brilho ao passar o mouse */
+  filter: brightness(1.2);
 }
 
 .classe-item.selected {
-  transform: scale(1.15); /* Aumenta a imagem selecionada */
-  border: 3px solid #f4c20d; /* Borda dourada na selecionada */
-  background-color: rgba(244, 194, 13, 0.1); /* Fundo sutil */
+  transform: scale(1.15);
+  border: 3px solid #f4c20d;
+  background-color: rgba(244, 194, 13, 0.1);
 }
 
 .classe-imagem {
-  width: 150px; /* Tamanho das imagens */
-  height: auto; /* Mantém proporção */
-  max-height: 200px; /* Limita altura */
-  object-fit: contain; /* Garante que a imagem caiba */
-  display: block; /* Remove espaço extra abaixo da imagem */
+  width: 150px;
+  height: auto;
+  max-height: 200px;
+  object-fit: contain;
+  display: block;
 }
 
 /* Área de Informações da Classe e Botão */
 .info-classe-container {
-  display: flex; /* Alinha os itens lado a lado */
-  align-items: center; /* Alinha verticalmente */
-  justify-content: center; /* Centraliza horizontalmente */
-  gap: 20px; /* Espaço entre os elementos */
-  flex-wrap: wrap; /* Permite quebrar linha em telas pequenas */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
 .nome-classe-display,
 .descricao-classe-display {
-  background-color: #5C481A; /* Fundo marrom/dourado */
+  background-color: var(--input_amarelo);
   padding: 12px 20px;
   border-radius: 15px;
   color: white;
   font-family: Arial, sans-serif;
   font-size: 1rem;
   border: none;
-  text-align: left; /* Alinha texto à esquerda dentro do campo */
+  text-align: left;
 }
 
 .nome-classe-display {
   font-weight: bold;
-  min-width: 120px; /* Largura mínima */
-  text-align: center; /* Nome centralizado */
+  min-width: 120px;
+  text-align: center;
 }
 
 .descricao-classe-display {
-  flex-grow: 1; /* Ocupa o espaço disponível */
-  min-width: 250px; /* Largura mínima */
-  height: 50px; /* Altura fixa (ajuste se necessário) */
-  display: flex; /* Para centralizar verticalmente texto curto */
+  flex-grow: 1;
+  min-width: 250px;
+  height: 50px;
+  display: flex;
   align-items: center;
 }
 
@@ -116,13 +116,13 @@
   border: none;
   border-radius: 10px;
   font-family: 'MedievalSharp', cursive;
-  font-size: 1.2rem; /* Ajuste tamanho */
+  font-size: 1.2rem;
   font-weight: bold;
   cursor: pointer;
   color: white;
-  background-color: #007BFF; /* Azul */
+  background-color: var(--azul);
   transition: opacity 0.2s, transform 0.1s;
-  height: 50px; /* Mesma altura da descrição */
+  height: 50px;
 }
 .btn-confirmar-escolha:hover { opacity: 0.9; }
 .btn-confirmar-escolha:active { transform: scale(0.98); }
@@ -130,16 +130,14 @@
 /* Ajuste Responsivo */
 @media (max-width: 768px) {
   .info-classe-container {
-    flex-direction: column; /* Empilha em telas menores */
-    align-items: stretch; /* Faz ocupar largura total */
+    flex-direction: column;
+    align-items: stretch;
   }
   .nome-classe-display,
   .descricao-classe-display,
   .btn-confirmar-escolha {
-    width: 100%; /* Ocupa largura total */
+    width: 100%;
     text-align: center;
   }
-  .descricao-classe-display {
-    justify-content: center; /* Centraliza texto */
-  }
+  .descricao-classe-display { justify-content: center; }
 }

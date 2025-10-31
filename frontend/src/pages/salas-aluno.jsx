@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import SalaEnigma from '../components/sala-enigma-aluno';
-import SalaAlternativa from '../components/sala-alternativa-aluno';
-import SalaMonstro from '../components/sala-monstro-aluno';
+import React, { useState, useEffect } from "react";
+import SalaEnigma from "../components/sala-enigma-aluno";
+import SalaAlternativa from "../components/sala-alternativa-aluno";
+import SalaMonstro from "../components/sala-monstro-aluno";
 
 const SalasAluno = () => {
   const [salaAtual, setSalaAtual] = useState(null);
@@ -43,7 +43,7 @@ const SalasAluno = () => {
 
   const renderizarSala = () => {
     if (!salaAtual) {
-      return <p style={{ color: 'white' }}>Carregando sala...</p>;
+      return <p style={{ color: "white" }}>Carregando sala...</p>;
     }
 
     // Passa o título da aventura do snapshot para os componentes
@@ -57,15 +57,12 @@ const SalasAluno = () => {
       case 'Alternativa':
         return <SalaAlternativa sala={salaAtual} aventuraTitulo={aventuraTitulo} />;
       default:
-        return <p style={{ color: 'white' }}>Tipo de sala desconhecido.</p>;
+        return <p style={{ color: "white" }}>Tipo de sala desconhecido.</p>;
     }
   };
 
-  return (
-    <div className="salas-aluno-container">
-      {renderizarSala()}
-    </div>
-  );
+  // Evita landmark <main> aninhado dentro do LayoutAluno
+  return <div className="salas-aluno-container">{renderizarSala()}</div>;
 };
 
 export default SalasAluno;

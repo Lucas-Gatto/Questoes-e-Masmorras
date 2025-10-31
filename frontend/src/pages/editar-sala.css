@@ -16,9 +16,9 @@
 }
 
 .editar-sala-titulo {
-  font-family: 'MedievalSharp', cursive;
+  font-family: "MedievalSharp", cursive;
   font-size: 2.2rem;
-  color: #C68700;
+  color: var(--titulo);
   text-align: center;
   margin-bottom: 10px;
 }
@@ -31,7 +31,7 @@
   gap: 8px; /* Espaço entre label e input */
 }
 
-.form-group label {
+.form-group p {
   font-size: 0.9rem;
   opacity: 0.8;
   padding-left: 10px;
@@ -55,7 +55,7 @@
 
 .input-nome-sala,
 .select-vida-monstro {
-  background-color: #5C481A; /* Fundo Dourado/Marrom */
+  background-color: var(--input_amarelo);
 }
 
 .textarea-texto-sala,
@@ -78,8 +78,8 @@
   background-size: 12px;
   padding-right: 40px;
   cursor: pointer;
+  cursor: pointer;
 }
-
 
 /* === ESTILOS PARA SALA 'ALTERNATIVA' (Inputs Editáveis) === */
 .opcoes-container-editavel {
@@ -129,7 +129,6 @@
 /* Remove os botões de opção antigos se o seletor ainda existir */
 .opcoes-container { display: none; }
 
-
 /* === BOTÕES DE AÇÃO PADRÃO (Imagem/Salvar) === */
 .botoes-sala-container {
   display: grid;
@@ -142,7 +141,7 @@
   padding: 12px 30px;
   border: none;
   border-radius: 10px;
-  font-family: 'MedievalSharp', cursive;
+  font-family: "MedievalSharp", cursive;
   font-size: 1.3rem;
   font-weight: bold;
   cursor: pointer;
@@ -154,14 +153,14 @@
 .btn-sala:active { transform: scale(0.98); }
 
 .btn-imagem {
-  background-color: #6c757d; /* Cinza */
+  background-color: var(--cinza);
   font-family: Arial, sans-serif; /* Fonte normal */
-  font-size: 1rem;            /* Tamanho menor */
-  text-overflow: ellipsis;    /* Adiciona '...' se o nome for longo */
+  font-size: 1rem; /* Tamanho menor */
+  text-overflow: ellipsis; /* Adiciona '...' se o nome for longo */
   overflow: hidden;
   white-space: nowrap;
 }
 
 .btn-salvar {
-  background-color: #007BFF; /* Azul */
+  background-color: var(--azul);
 }

@@ -14,7 +14,7 @@
 .titulo-pagina {
   font-family: "MedievalSharp", cursive;
   font-size: 2.2rem;
-  color: #eeb600 !important;
+  color: var(--titulo) !important;
   text-align: center;
   margin-bottom: 30px;
 }
@@ -33,7 +33,7 @@
   flex-grow: 1;
   padding: 12px 20px;
   border: none;
-  background-color: #6b5224;
+  background-color: var(--input_amarelo);
   box-shadow: 0 0 20px rgba(235, 181, 2, 0.338);
   color: white;
   font-family: Arial, sans-serif;
@@ -52,7 +52,7 @@
   gap: 8px;
 }
 
-.stepper-container label {
+.stepper-container span {
   font-size: 0.9rem;
   opacity: 0.8;
 }
@@ -79,7 +79,7 @@
   height: 38px;
   border-radius: 20%;
   border: none;
-  background-color: #0037ff;
+  background-color: var(--azul);
   color: white;
   font-size: 1.8rem;
   font-weight: bold;
@@ -93,7 +93,7 @@
 }
 
 .stepper-controls button:first-child {
-  background-color: #a90f1e;
+  background-color: var(--vermelho);
 }
 
 .stepper-controls button:hover {
@@ -117,7 +117,7 @@
 .sala-item {
   background-color: #5353539e;
   border-radius: 10px;
-  padding: 15px;
+  padding: 20px;
   display: grid;
   align-items: center;
   gap: 10px 15px;
@@ -125,7 +125,7 @@
   grid-template-rows: auto auto;
   grid-template-areas:
     "numero label-nome label-tipo ."
-    "numero input-nome input-tipo acoes";
+    "numero label-nome label-tipo acoes";
   cursor: grab;
 }
 
@@ -154,11 +154,16 @@
   grid-area: label-tipo;
 }
 
-.sala-input-nome { grid-area: input-nome; }
-.sala-tipo-container { grid-area: input-tipo; }
+.sala-input-nome {
+  grid-area: input-nome;
+  margin-top: 8px;
+}
+.sala-tipo-container {
+  grid-area: input-tipo;
+  margin-top: 6px;
+}
 .sala-acoes {
   grid-area: acoes;
-
 }
 
 .sala-input-nome,
@@ -174,7 +179,7 @@
 }
 
 .sala-select-tipo {
-  background-color: #6b5224;
+  background-color: var(--input_amarelo);
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -196,7 +201,7 @@
   height: 20px;
   cursor: pointer;
   opacity: 0.7;
- filter: invert(1) brightness(2);
+  filter: invert(1) brightness(2);
 }
 .sala-acoes img:hover {
   opacity: 1;
@@ -255,11 +260,9 @@
   color: white;
   font-size: 1rem;
   box-sizing: border-box;
-  
 }
 
-.sub-pergunta-item img
-{
+.sub-pergunta-item img {
   filter: invert(1) brightness(2);
 }
 
@@ -325,11 +328,11 @@
 }
 
 .btn-deletar {
-  background-color: #a90f1e;
+  background-color: var(--vermelho);
 }
 
 .btn-concluir {
-  background-color: #0037ff;
+  background-color: var(--azul);
 }
 
 @media (max-width: 800px) {

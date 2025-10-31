@@ -43,7 +43,7 @@
 .auth-box h2 {
   font-family: "MedievalSharp", cursive;
   font-size: 2.5rem;
-  color: white;
+  color: var(--titulo);
   text-align: center;
   margin-bottom: 25px;
 }
@@ -67,7 +67,7 @@
   border: none;
   border-radius: 25px;
   width: 100%;
-  background-color: #6b5224;
+  background-color: var(--input_amarelo);
   color: white;
   box-sizing: border-box;
   font-family: "MedievalSharp", cursive;
@@ -103,12 +103,12 @@
 }
 
 .btn.btn-yellow {
-  background-color: #f1c40f;
+  background-color: var(--titulo);
   color: #000;
 }
 
 .btn.btn-red {
-  background-color: #fd6453;
+  background-color: var(--letras_vermelhas);
   color: #000000;
 }
 

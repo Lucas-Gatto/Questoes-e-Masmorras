@@ -3,7 +3,7 @@
   width: 100%;
   height: 100vh;
   color: white;
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -29,13 +29,13 @@
 .titulo {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
-  color: #ff9900;
+  color: var(--titulo);
 }
 
 .subtitulo {
   font-size: 1.5rem;
   margin-bottom: 2rem;
-  color: #ff9900;
+  color: var(--titulo);
 }
 
 .quadro-transparente {

@@ -1,14 +1,13 @@
 .container-sala {
-  background: url('../assets/fundo-parede.png') center/cover no-repeat;
+  background: url("../assets/fundo-parede.png") center/cover no-repeat;
   min-height: 100vh;
   color: #fff;
-  font-family: 'MedievalSharp', cursive;
+  font-family: "MedievalSharp", cursive;
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin-top: 1px;
 }
-
 
 .logo {
   font-size: 1.8rem;
@@ -16,7 +15,6 @@
 }
 
 .conteudo {
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -31,12 +29,12 @@
 }
 
 .quadro h1 {
-  color: gold;
+  color: var(--titulo);
   margin-bottom: 10px;
 }
 
 .quadro h2 {
-  color: gold;
+  color: var(--subtitulo);
   font-size: 1.4rem;
   margin-bottom: 15px;
 }

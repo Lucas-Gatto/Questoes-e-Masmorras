@@ -17,7 +17,7 @@
 .aventuras-page-container h1 {
   font-family: "MedievalSharp", cursive;
   font-size: 2.5rem;
-  color: #c68700;
+  color: var(--titulo);
   margin-bottom: 30px;
 }
 

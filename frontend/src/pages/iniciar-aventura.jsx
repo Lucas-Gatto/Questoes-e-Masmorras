@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import HeaderAventura from '../components/HeaderAventura.jsx';
-import Footer from '../components/footer.jsx';
-import playIcon from '../assets/play.png';
-import './iniciar-aventura.css';
-import QRCodeLib from 'qrcode';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import HeaderAventura from "../components/HeaderAventura.jsx";
+import Footer from "../components/footer.jsx";
+import playIcon from "../assets/play.png";
+import "./iniciar-aventura.css";
+import QRCodeLib from "qrcode";
 
 const IniciarAventura = () => {
-  // --- 👇 CONSOLE.LOG ADICIONADO AQUI 👇 ---
   console.log("Componente IniciarAventura começou a renderizar.");
-  // --- FIM DA ADIÇÃO ---
 
   const { aventuraId } = useParams();
   const navigate = useNavigate();
@@ -22,25 +20,33 @@ const IniciarAventura = () => {
 
   // Efeito para carregar dados da aventura do backend
   useEffect(() => {
-    console.log(`[IniciarAventura useEffect] Carregando dados do backend para aventura ID: ${aventuraId}`);
+    console.log(
+      `[IniciarAventura useEffect] Carregando dados do backend para aventura ID: ${aventuraId}`
+    );
     const carregar = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/aventuras/${aventuraId}`, { credentials: 'include' });
+        const res = await fetch(
+          `http://localhost:3000/api/aventuras/${aventuraId}`,
+          { credentials: "include" }
+        );
         if (res.status === 401) {
-          alert('Sua sessão expirou. Faça login novamente.');
-          navigate('/');
+          alert("Sua sessão expirou. Faça login novamente.");
+          navigate("/");
           return;
         }
         if (!res.ok) {
-          alert('Aventura não encontrada!');
-          navigate('/suas-aventuras');
+          alert("Aventura não encontrada!");
+          navigate("/suas-aventuras");
           return;
         }
         const data = await res.json();
         setAventura(data);
       } catch (error) {
-        console.error('Erro ao carregar dados da aventura em IniciarAventura:', error);
-        navigate('/suas-aventuras');
+        console.error(
+          "Erro ao carregar dados da aventura em IniciarAventura:",
+          error
+        );
+        navigate("/suas-aventuras");
       }
     };
     carregar();
@@ -109,40 +115,55 @@ const IniciarAventura = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aventura, sessaoCriada]);
 
-  // Função para navegar para a tela de jogo
+  // Função para iniciar a sessão e navegar para a tela de jogo
   const handleStartGame = async () => {
     if (aventura && sessao?.id) {
       try {
-        console.log(`Iniciando a aventura "${aventura.titulo}"... Chamando backend para iniciar sessão`);
-        // Chama o backend para iniciar a sessão (muda status para 'active')
-        const res = await fetch(`http://localhost:3000/api/sessoes/${sessao.id}/start`, {
-          method: 'PUT',
-          credentials: 'include',
-        });
-        
+        console.log(
+          `Iniciando a aventura "${aventura.titulo}"... Chamando backend para iniciar sessão`
+        );
+        const res = await fetch(
+          `http://localhost:3000/api/sessoes/${sessao.id}/start`,
+          {
+            method: "PUT",
+            credentials: "include",
+          }
+        );
         if (!res.ok) {
-          console.error('Erro ao iniciar sessão no backend');
-          alert('Erro ao iniciar a aventura. Tente novamente.');
+          console.error("Erro ao iniciar sessão no backend");
+          alert("Erro ao iniciar a aventura. Tente novamente.");
           return;
         }
-        
-        console.log('Sessão iniciada com sucesso. Navegando para /aventura/${aventuraId}/jogar');
+        console.log(
+          `Sessão iniciada com sucesso. Navegando para /aventura/${aventuraId}/jogar`
+        );
         navigate(`/aventura/${aventuraId}/jogar`);
       } catch (error) {
-        console.error('Erro ao iniciar sessão:', error);
-        alert('Erro ao iniciar a aventura. Tente novamente.');
+        console.error("Erro ao iniciar sessão:", error);
+        alert("Erro ao iniciar a aventura. Tente novamente.");
       }
     } else {
-      console.error("handleStartGame chamado, mas 'aventura' ou 'sessao' é nula.");
+      console.error(
+        "handleStartGame chamado, mas 'aventura' ou 'sessao' é nula."
+      );
     }
   };
 
   // Tela de carregamento
   if (!aventura) {
     return (
-        <div style={{ backgroundColor: '#212529', minHeight: '100vh', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            Carregando lobby da aventura... (Verifique o console F12)
-        </div>
+      <div
+        style={{
+          backgroundColor: "#212529",
+          minHeight: "100vh",
+          color: "white",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        Carregando lobby da aventura... (Verifique o console F12)
+      </div>
     );
   }
 
@@ -172,9 +193,9 @@ const IniciarAventura = () => {
               <p>Clique para iniciar aventura:</p>
               <img
                 src={playIcon}
-                alt="Iniciar Aventura"
+                alt="Botão de play"
                 className="play-button-iniciar"
-                onClick={handleStartGame} 
+                onClick={handleStartGame}
                 role="button"
               />
             </div>

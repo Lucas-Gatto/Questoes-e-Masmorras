@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import './editar-sala.css';
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import "./editar-sala.css";
 
 const EditarSala = () => {
   const { aventuraId, salaId } = useParams();
@@ -8,338 +8,216 @@ const EditarSala = () => {
   const location = useLocation();
   const backendId = location.state?.backendId || null;
 
-  // Estado LOCAL apenas para a sala sendo editada NESTA tela
+  // Estado LOCAL para a sala sendo editada
   const [editingSala, setEditingSala] = useState(null);
-  const fileInputRef = useRef(null); // Referência para o input de arquivo escondido
-  const [fileName, setFileName] = useState('Upload de Imagem ☁️'); // Nome do arquivo no botão
+  const fileInputRef = useRef(null);
+  const [fileName, setFileName] = useState("Upload de Imagem ☁️");
 
-  // --- useEffect para Carregar Dados da Sala ---
+  // Carrega dados iniciais da sala (state ou localStorage)
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const tipoFromUrl = queryParams.get('tipo');
-    const isNewParam = queryParams.get('isNew') === 'true';
+    const tipoFromUrl = queryParams.get("tipo");
 
-    // 1. Tenta pegar os dados passados via navegação (location.state)
     const passedSalaData = location.state?.salaData;
-    console.log("[EditarSala useEffect] Sala data passada via location.state:", passedSalaData);
+    let salaInicial = null;
 
-    let salaInicial = null; // Armazenará os dados carregados
-    let origemDados = 'Nenhum'; // Para log
-
-    // 2. Verifica se os dados passados correspondem ao ID da URL
     if (passedSalaData && passedSalaData.id === Number(salaId)) {
-      console.log("[EditarSala useEffect] Usando sala data do location.state");
       salaInicial = passedSalaData;
-      origemDados = 'State';
     } else {
-      // 3. FALLBACK: Carrega do localStorage
-      console.log("[EditarSala useEffect] Não encontrou state válido ou ID não bateu, carregando do localStorage...");
       try {
-        const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
-        const aventuraAtual = aventurasSalvas.find(a => a.id === Number(aventuraId));
+        const aventurasSalvas =
+          JSON.parse(localStorage.getItem("minhas_aventuras")) || [];
+        const aventuraAtual = aventurasSalvas.find(
+          (a) => a.id === Number(aventuraId)
+        );
         if (aventuraAtual) {
-          const salaDoStorage = (aventuraAtual.salas || []).find(s => s.id === Number(salaId)); // Garante que salas exista
-          if (salaDoStorage) {
-            salaInicial = salaDoStorage;
-            origemDados = 'LocalStorage';
-            console.log("[EditarSala useEffect] Sala carregada do localStorage.");
-          }
+          const salaDoStorage = (aventuraAtual.salas || []).find(
+            (s) => s.id === Number(salaId)
+          );
+          if (salaDoStorage) salaInicial = salaDoStorage;
         }
       } catch (error) {
-        console.error("Erro no fallback ao carregar do localStorage:", error);
-        // Não define salaInicial, cairá no erro abaixo
+        console.error(
+          "Erro no fallback ao carregar do localStorage:",
+          error
+        );
       }
     }
 
-    // 4. Processa a sala carregada (ou falha)
     if (salaInicial) {
-      // Garante que 'opcoes' exista e tenha 4 itens com IDs e texto
       const opcoesPadrao = [
-        { id: 1, texto: '' }, { id: 2, texto: '' }, { id: 3, texto: '' }, { id: 4, texto: '' },
+        { id: 1, texto: "" },
+        { id: 2, texto: "" },
+        { id: 3, texto: "" },
+        { id: 4, texto: "" },
       ];
-      // Mescla opções salvas com o padrão para garantir 4 opções com IDs corretos
       const opcoesFinais = opcoesPadrao.map((opcaoDefault) => {
         const opcaoExistente = Array.isArray(salaInicial.opcoes)
-          ? salaInicial.opcoes.find(o => o.id === opcaoDefault.id)
+          ? salaInicial.opcoes.find((o) => o.id === opcaoDefault.id)
           : null;
         return {
-          ...opcaoDefault, // Garante id: 1, 2, 3, 4
-          texto: opcaoExistente ? (opcaoExistente.texto || '') : '', // Pega texto existente ou vazio
+          ...opcaoDefault,
+          texto: opcaoExistente ? opcaoExistente.texto || "" : "",
         };
       });
 
-      // Define o estado LOCAL 'editingSala'
       setEditingSala({
-        // Define padrões para todos os campos para evitar undefined
-        texto: '', vidaMonstro: 'Média', enigma: '', resposta: '', imagem: '',
-        ...salaInicial,     // Carrega dados da origem (state ou storage)
-        // Mantém o tipo existente se a URL não informar um válido
-        tipo: (['Enigma','Alternativa','Monstro'].includes(tipoFromUrl) ? tipoFromUrl : salaInicial.tipo),
-        opcoes: opcoesFinais, // Usa as opções garantidas
-        opcaoCorretaId: salaInicial.opcaoCorretaId ?? null, // inicializa correta
+        texto: "",
+        vidaMonstro: "Média",
+        enigma: "",
+        resposta: "",
+        imagem: "",
+        ...salaInicial,
+        tipo:
+          ["Enigma", "Alternativa", "Monstro"].includes(tipoFromUrl)
+            ? tipoFromUrl
+            : salaInicial.tipo,
+        opcoes: opcoesFinais,
+        opcaoCorretaId: salaInicial.opcaoCorretaId ?? null,
       });
-
-      // Atualiza nome do botão de imagem se já houver uma
-      if (salaInicial.imagem) {
-        setFileName("Imagem salva");
-      }
-      console.log(`[EditarSala useEffect] Estado 'editingSala' definido. Origem: ${origemDados}`);
+      if (salaInicial.imagem) setFileName("Imagem salva");
     } else {
-      // Se não conseguiu carregar de nenhuma fonte
-      console.error(`[EditarSala useEffect] Falha ao carregar dados para Sala ID ${salaId} da Aventura ID ${aventuraId}`);
-      alert('Erro: Não foi possível carregar os dados desta sala.');
-      navigate(-1); // Volta se não conseguir carregar
+      alert("Erro: Não foi possível carregar os dados desta sala.");
+      navigate(-1);
     }
+  }, [aventuraId, salaId, navigate, location]);
 
-  }, [aventuraId, salaId, navigate, location]); // location garante releitura do state
-
-
-  // --- Funções de Manipulação ---
-
-  // Salva o objeto 'editingSala' e sincroniza (prioriza backend quando possível)
+  // Salva sala no backend (se possível) ou localStorage
   const handleSalvar = () => {
     if (!editingSala) {
-      console.error("Tentativa de salvar com 'editingSala' nula.");
       alert("Erro: Dados da sala não carregados.");
       return;
     }
     try {
-      // Se temos backendId, atualizamos diretamente no backend sem depender do localStorage
       if (backendId) {
         (async () => {
           try {
-            const resGet = await fetch(`http://localhost:3000/api/aventuras/${backendId}`, { credentials: 'include' });
+            const resGet = await fetch(
+              `http://localhost:3000/api/aventuras/${backendId}`,
+              { credentials: "include" }
+            );
             if (resGet.status === 401) {
-              alert('Sua sessão expirou. Faça login novamente.');
-              navigate('/');
+              alert("Sua sessão expirou. Faça login novamente.");
+              navigate("/");
               return;
             }
             if (!resGet.ok) {
-              alert('Aventura não encontrada para atualizar sala.');
+              alert("Aventura não encontrada para atualizar sala.");
               return;
             }
             const aventuraDoc = await resGet.json();
-            const salasExistentes = Array.isArray(aventuraDoc.salas) ? aventuraDoc.salas : [];
-            const salasAtualizadas = salasExistentes.map((s) => (
+            const salasExistentes = Array.isArray(aventuraDoc.salas)
+              ? aventuraDoc.salas
+              : [];
+            const salasAtualizadas = salasExistentes.map((s) =>
               Number(s.id) === Number(salaId) ? editingSala : s
-            ));
+            );
             const payload = {
               titulo: aventuraDoc.titulo,
               salas: salasAtualizadas,
               perguntas: aventuraDoc.perguntas || [],
             };
-            const resPut = await fetch(`http://localhost:3000/api/aventuras/${backendId}`, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
-              body: JSON.stringify(payload),
-            });
+            const resPut = await fetch(
+              `http://localhost:3000/api/aventuras/${backendId}`,
+              {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify(payload),
+              }
+            );
             if (resPut.status === 401) {
-              alert('Sua sessão expirou. Faça login novamente.');
-              navigate('/');
+              alert("Sua sessão expirou. Faça login novamente.");
+              navigate("/");
               return;
             }
             if (!resPut.ok) {
-              const txt = await resPut.text().catch(() => '');
-              console.warn('[EditarSala] Falha ao salvar sala no backend. Status:', resPut.status, txt);
-              alert('Erro ao salvar a sala.');
+              const txt = await resPut.text().catch(() => "");
+              console.warn(
+                "[EditarSala] Falha ao salvar sala no backend. Status:",
+                resPut.status,
+                txt
+              );
+              alert("Erro ao salvar a sala.");
               return;
             }
-            alert('Sala atualizada com sucesso!');
+            alert("Sala atualizada com sucesso!");
             navigate(-1);
           } catch (e) {
-            console.error('[EditarSala] Erro ao atualizar sala no backend:', e);
-            alert('Erro ao salvar a sala.');
+            console.error("[EditarSala] Erro ao atualizar sala no backend:", e);
+            alert("Erro ao salvar a sala.");
           }
         })();
-        return; // Evita cair na lógica de localStorage
-      }
-
-      // 1. Lê a lista ATUAL do localStorage
-      const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
-      console.log("handleSalvar: Lendo do storage ANTES de salvar:", aventurasSalvas); // Log
-
-      // 2. Mapeia para encontrar e atualizar
-      let aventuraEncontrada = false;
-      let salaEncontradaParaUpdate = false; // Flag para verificar
-
-      const aventurasAtualizadas = aventurasSalvas.map(aventura => {
-        if (aventura.id === Number(aventuraId)) {
-          aventuraEncontrada = true;
-          const salasExistentes = aventura.salas || [];
-          // Mapeia as salas para substituir a correta
-          const salasAtualizadas = salasExistentes.map(s => {
-            if (s.id === Number(salaId)) {
-              salaEncontradaParaUpdate = true;
-              return editingSala; // Substitui pela sala do estado local
-            }
-            return s;
-          });
-          // Retorna a aventura com a lista de salas atualizada
-          return { ...aventura, salas: salasAtualizadas };
-        }
-        return aventura; // Retorna as outras aventuras sem modificação
-      });
-
-      // Tratamento de erros caso algo não seja encontrado
-      if (!aventuraEncontrada) {
-        console.error(`handleSalvar: Aventura ID ${aventuraId} não foi encontrada no localStorage. Nada será salvo.`);
-        alert("Erro crítico: A aventura principal não foi encontrada no armazenamento.");
-        navigate('/suas-aventuras'); // Redireciona por segurança
         return;
       }
-      if (!salaEncontradaParaUpdate) {
-        // Isso não deveria acontecer se o carregamento inicial funcionou, mas é uma segurança
-        console.warn(`handleSalvar: Sala ID ${salaId} não encontrada na Aventura ID ${aventuraId} durante o map. Verifique a lógica.`);
-        alert("Atenção: A sala que você editou não foi encontrada na aventura salva. Suas alterações podem não ter sido aplicadas.");
-      }
 
-      // 3. Salva a lista COMPLETA E ATUALIZADA de volta
-      console.log("handleSalvar: Salvando de volta no storage:", aventurasAtualizadas);
-      localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasAtualizadas));
-
-      // 4. Sincroniza com backend: PUT se houver backendId
-      try {
-        const aventuraAtualizada = aventurasAtualizadas.find(a => a.id === Number(aventuraId));
-        const payload = {
-          titulo: aventuraAtualizada.titulo,
-          salas: aventuraAtualizada.salas,
-          perguntas: aventuraAtualizada.perguntas,
-        };
-        if (aventuraAtualizada?.backendId) {
-          fetch(`http://localhost:3000/api/aventuras/${aventuraAtualizada.backendId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify(payload),
-          }).then(async res => {
-            if (res.status === 401) {
-              alert('Sua sessão expirou. Faça login novamente.');
-              navigate('/');
-              return;
-            }
-            if (!res.ok) {
-              const txt = await res.text().catch(() => '');
-              console.warn('[EditarSala] Falha ao sincronizar alterações no backend. Status:', res.status, txt);
-            }
-          }).catch(err => console.warn('[EditarSala] Erro de rede ao sincronizar no backend:', err));
-        } else if (!isNewParam) {
-          // Em fluxos antigos (sem backendId), criar no backend
-          fetch('http://localhost:3000/api/aventuras', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify(payload),
-          }).then(async res => {
-            if (res.status === 401) {
-              alert('Sua sessão expirou. Faça login novamente.');
-              navigate('/');
-              return;
-            }
-            if (!res.ok) {
-              const txt = await res.text().catch(() => '');
-              console.warn('[EditarSala] Falha ao criar aventura no backend. Status:', res.status, txt);
-              return;
-            }
-            const data = await res.json();
-            try {
-              const aventurasSalvas2 = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
-              const idx2 = aventurasSalvas2.findIndex(a => a.id === Number(aventuraId));
-              if (idx2 > -1) {
-                aventurasSalvas2[idx2] = { ...aventurasSalvas2[idx2], backendId: data._id };
-                localStorage.setItem('minhas_aventuras', JSON.stringify(aventurasSalvas2));
-                console.log('[EditarSala] backendId criado e sincronizado:', data._id);
-              }
-            } catch (e) {
-              console.warn('[EditarSala] Falha ao atualizar backendId no localStorage:', e);
-            }
-          }).catch(err => console.warn('[EditarSala] Erro de rede ao criar aventura no backend:', err));
-        } else {
-          // Fluxo de criação (isNew=true): não cria no backend aqui para evitar duplicidade.
-          console.log('[EditarSala] Fluxo de criação: apenas atualizou rascunho local, sem POST no backend.');
+      const aventurasSalvas =
+        JSON.parse(localStorage.getItem("minhas_aventuras")) || [];
+      const aventurasAtualizadas = aventurasSalvas.map((aventura) => {
+        if (Number(aventura.id) === Number(aventuraId)) {
+          const salasAtualizadas = (aventura.salas || []).map((s) =>
+            Number(s.id) === Number(salaId) ? editingSala : s
+          );
+          return { ...aventura, salas: salasAtualizadas };
         }
-      } catch (e) {
-        console.warn('[EditarSala] Erro ao preparar sincronização com backend:', e);
-      }
-      alert('Sala atualizada com sucesso!');
-      navigate(-1); // Volta para a página anterior (Nova ou Editar Aventura)
-
+        return aventura;
+      });
+      localStorage.setItem(
+        "minhas_aventuras",
+        JSON.stringify(aventurasAtualizadas)
+      );
+      alert("Sala atualizada com sucesso!");
+      navigate(-1);
     } catch (error) {
-      console.error("Erro ao salvar a sala no localStorage:", error);
-      alert("Ocorreu um erro ao salvar a sala.");
+      console.error("Erro ao salvar sala:", error);
+      alert("Erro ao salvar a sala.");
     }
   };
 
-  // Atualiza qualquer campo do objeto 'editingSala' no estado local
   const handleInputChange = (campo, valor) => {
-    setEditingSala(salaAtual => {
-      if (!salaAtual) return null; // Segurança
-      return { ...salaAtual, [campo]: valor };
-    });
+    setEditingSala((salaAtual) => ({ ...salaAtual, [campo]: valor }));
   };
 
-  // Atualiza o texto de uma opção específica no estado local 'editingSala'
   const handleOpcaoChange = (opcaoId, novoTexto) => {
-    setEditingSala(salaAtual => {
-      if (!salaAtual || !Array.isArray(salaAtual.opcoes)) {
-          console.error("handleOpcaoChange: Estado da sala ou opções inválido.");
-          return salaAtual;
-      }
-      const novasOpcoes = salaAtual.opcoes.map(opcao =>
-          opcao.id === opcaoId ? { ...opcao, texto: novoTexto } : opcao
-      );
-      return { ...salaAtual, opcoes: novasOpcoes };
-    });
+    setEditingSala((salaAtual) => ({
+      ...salaAtual,
+      opcoes: salaAtual.opcoes.map((o) =>
+        o.id === opcaoId ? { ...o, texto: novoTexto } : o
+      ),
+    }));
   };
 
-  // Marca qual opção é a correta na sala Alternativa
   const handleOpcaoCorretaSelect = (opcaoId) => {
-    setEditingSala(salaAtual => ({
+    setEditingSala((salaAtual) => ({
       ...salaAtual,
       opcaoCorretaId: opcaoId,
     }));
   };
 
-  // Ativado pelo clique no botão 'Upload de Imagem'
   const handleImageUploadClick = (e) => {
     e.preventDefault();
     if (fileInputRef.current) {
-      fileInputRef.current.value = null; // Reseta para permitir selecionar o mesmo arquivo
-      fileInputRef.current.click(); // Dispara o clique no input escondido
+      fileInputRef.current.value = null;
+      fileInputRef.current.click();
     }
   };
 
-  // Ativado quando um arquivo é selecionado no input de arquivo
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        // Callback executado após a leitura do arquivo
-        handleInputChange('imagem', reader.result); // Salva a imagem como Base64 no estado
-        setFileName(file.name); // Atualiza o nome no botão
-      };
-      reader.onerror = (error) => { // Adiciona tratamento de erro
-        console.error("Erro ao ler o arquivo:", error);
-        alert("Erro ao carregar a imagem.");
-        setFileName('Upload de Imagem ☁️'); // Reseta o nome do botão
-      };
-      reader.readAsDataURL(file); // Inicia a leitura/conversão para Base64
-    } else {
-       setFileName('Upload de Imagem ☁️'); // Reseta se nenhum arquivo for selecionado
-    }
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const imagemDataUrl = reader.result;
+      setEditingSala((salaAtual) => ({ ...salaAtual, imagem: imagemDataUrl }));
+      setFileName(file.name);
+    };
+    reader.readAsDataURL(file);
   };
 
-  // --- Renderização Condicional do Corpo do Formulário ---
   const renderFormBody = () => {
-    // Não renderiza nada se a sala ainda não foi carregada
-    if (!editingSala) return <p>Carregando formulário...</p>; // Mensagem mais clara
-
-    console.log("[renderFormBody] Renderizando para sala.tipo:", editingSala.tipo);
-
+    if (!editingSala) return <p>Carregando formulário...</p>;
     switch (editingSala.tipo) {
-      // --- Layout para ENIGMA ---
-      case 'Enigma':
+      case "Enigma":
         return (
           <>
             <div className="form-group">
@@ -347,10 +225,10 @@ const EditarSala = () => {
               <textarea
                 id="enigma-sala"
                 className="textarea-texto-sala"
-                value={editingSala.enigma || ''} // Usa '' como fallback
-                onChange={(e) => handleInputChange('enigma', e.target.value)}
+                value={editingSala.enigma || ""}
                 rows="3"
                 placeholder="Digite o enigma aqui..."
+                onChange={(e) => handleInputChange("enigma", e.target.value)}
               />
             </div>
             <div className="form-group">
@@ -359,15 +237,14 @@ const EditarSala = () => {
                 id="resposta-enigma"
                 type="text"
                 className="input-resposta-enigma"
-                value={editingSala.resposta || ''} // Usa '' como fallback
-                onChange={(e) => handleInputChange('resposta', e.target.value)}
+                value={editingSala.resposta || ""}
                 placeholder="Digite a resposta aqui..."
+                onChange={(e) => handleInputChange("resposta", e.target.value)}
               />
             </div>
           </>
         );
-      // --- Layout para MONSTRO ---
-      case 'Monstro':
+      case "Monstro":
         return (
           <>
             <div className="form-group">
@@ -375,10 +252,10 @@ const EditarSala = () => {
               <textarea
                 id="texto-sala"
                 className="textarea-texto-sala"
-                value={editingSala.texto || ''} // Usa '' como fallback
-                onChange={(e) => handleInputChange('texto', e.target.value)}
+                value={editingSala.texto || ""}
                 rows="5"
                 placeholder="Digite a descrição do monstro/ambiente..."
+                onChange={(e) => handleInputChange("texto", e.target.value)}
               />
             </div>
             <div className="form-group">
@@ -386,8 +263,10 @@ const EditarSala = () => {
               <select
                 id="vida-monstro"
                 className="select-vida-monstro"
-                value={editingSala.vidaMonstro || 'Média'} // Usa 'Média' como fallback
-                onChange={(e) => handleInputChange('vidaMonstro', e.target.value)}
+                value={editingSala.vidaMonstro || "Média"}
+                onChange={(e) =>
+                  handleInputChange("vidaMonstro", e.target.value)
+                }
               >
                 <option value="Baixa">Baixa</option>
                 <option value="Média">Média</option>
@@ -397,8 +276,7 @@ const EditarSala = () => {
             </div>
           </>
         );
-      // --- Layout para ALTERNATIVA ---
-      case 'Alternativa':
+      case "Alternativa":
         return (
           <>
             <div className="form-group">
@@ -406,104 +284,118 @@ const EditarSala = () => {
               <textarea
                 id="texto-sala"
                 className="textarea-texto-sala"
-                value={editingSala.texto || ''} // Usa '' como fallback
-                onChange={(e) => handleInputChange('texto', e.target.value)}
+                value={editingSala.texto || ""}
                 rows="5"
                 placeholder="Digite a descrição da situação/pergunta..."
+                onChange={(e) => handleInputChange("texto", e.target.value)}
               />
             </div>
             <div className="form-group">
               <label>Opções de resposta</label>
               <div className="opcoes-container-editavel">
-                {/* Mapeia o array 'opcoes' para criar os inputs */}
-                {(editingSala.opcoes || []).map((opcao, index) => { // Garante que opcoes exista
-                  const cores = ['red', 'yellow', 'green', 'blue'];
-                  const corClasse = cores[index % cores.length];
-                  // Usa o ID da opção (1 a 4) garantido pelo useEffect
-                  const idOpcao = opcao.id;
-                  return (
-                    <div key={idOpcao} className={`opcao-item ${corClasse}`}>
-                      <label htmlFor={`opcao-texto-${idOpcao}`} className="opcao-label">Opção {idOpcao}:</label>
-                      <input
-                        type="text"
-                        id={`opcao-texto-${idOpcao}`}
-                        className="input-opcao-texto"
-                        value={opcao.texto || ''} // Mostra o texto atual
-                        onChange={(e) => handleOpcaoChange(idOpcao, e.target.value)} // Atualiza o estado
-                        placeholder={`Digite o texto da opção ${idOpcao}...`}
-                      />
-                      <label className="opcao-correta-label">
+                {editingSala.opcoes.map((opcao) => (
+                  <div
+                    key={opcao.id}
+                    className={`opcao-item ${
+                      ["red", "yellow", "green", "blue"][
+                        (opcao.id - 1) % 4
+                      ]
+                    }`}
+                  >
+                    <label className="opcao-label" htmlFor={`opcao-${opcao.id}`}>
+                      Opção {opcao.id}
+                    </label>
+                    <input
+                      id={`opcao-${opcao.id}`}
+                      type="text"
+                      className="input-opcao-texto"
+                      value={opcao.texto}
+                      placeholder={`Texto da opção ${opcao.id}`}
+                      onChange={(e) =>
+                        handleOpcaoChange(opcao.id, e.target.value)
+                      }
+                    />
+                    <div>
+                      <label>
                         <input
                           type="radio"
                           name="opcao-correta"
-                          className="opcao-correta-radio"
-                          checked={editingSala.opcaoCorretaId === idOpcao}
-                          onChange={() => handleOpcaoCorretaSelect(idOpcao)}
+                          checked={editingSala.opcaoCorretaId === opcao.id}
+                          onChange={() => handleOpcaoCorretaSelect(opcao.id)}
                         />
-                        Correta
+                        Alternativa correta
                       </label>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             </div>
           </>
         );
       default:
-        console.error(`[renderFormBody] Tipo de sala inválido ou não reconhecido: "${editingSala.tipo}".`);
-        return <p style={{ color: 'red', fontWeight: 'bold' }}>Erro: Tipo de sala inválido.</p>;
+        return (
+          <p style={{ color: "red", fontWeight: "bold" }}>
+            Erro: Tipo de sala inválido.
+          </p>
+        );
     }
   };
 
-  // --- Tela de carregamento ---
   if (!editingSala) {
     return (
-      <div style={{ backgroundColor: '#212529', minHeight: '100vh', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div
+        style={{
+          backgroundColor: "#212529",
+          minHeight: "100vh",
+          color: "white",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         Carregando sala... (Verifique o console F12 se travar aqui)
       </div>
     );
   }
 
-  // --- JSX Principal ---
   return (
     <div className="editar-sala-container">
-      <h1 className="editar-sala-titulo">Editar {editingSala.nome || 'Sala'}</h1> {/* Usa fallback */}
+      <h1 className="editar-sala-titulo">Editar {editingSala.nome || "Sala"}</h1>
 
-      {/* Campo comum: Nome da Sala */}
       <div className="form-group">
         <label htmlFor="nome-sala">Nome da sala</label>
         <input
           id="nome-sala"
           type="text"
           className="input-nome-sala"
-          value={editingSala.nome || ''} // Usa fallback
-          onChange={(e) => handleInputChange('nome', e.target.value)}
+          value={editingSala.nome || ""}
+          onChange={(e) => handleInputChange("nome", e.target.value)}
         />
       </div>
 
-      {/* Renderiza o corpo do formulário específico do tipo de sala */}
       {renderFormBody()}
 
-      {/* Botões comuns: Imagem e Salvar */}
       <div className="form-group">
-        <label>Imagem</label>
+        <label htmlFor={`upload-${editingSala.id}`} className="visually-hidden">
+          Imagem
+        </label>
         <div className="botoes-sala-container">
           <button className="btn-sala btn-imagem" onClick={handleImageUploadClick}>
             {fileName}
           </button>
           <button className="btn-sala btn-salvar" onClick={handleSalvar}>
-            Editar
+            Salvar
           </button>
         </div>
       </div>
 
-      {/* Input de arquivo escondido */}
       <input
         type="file"
         ref={fileInputRef}
+        id={`upload-${editingSala.id}`}
         onChange={handleFileChange}
-        style={{ display: 'none' }} // Mantém escondido
-        accept="image/png, image/jpeg, image/jpg, image/gif" // Aceita formatos comuns
+        style={{ display: "none" }}
+        accept="image/png, image/jpeg, image/jpg, image/gif"
       />
     </div>
   );

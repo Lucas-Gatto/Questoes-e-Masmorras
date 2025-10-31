@@ -20,7 +20,8 @@ import EntrarAventura from './pages/entrar-aventura.jsx';
 import EscolherClasse from './pages/escolher-classe.jsx';
 import SalasAluno from './pages/salas-aluno.jsx';
 import ResultadosAventura from './pages/resultados-aventura.jsx';
-import Avaliacao from './pages/avaliacao.jsx'; 
+import Avaliacao from './pages/avaliacao.jsx';
+import AguardarInicio from './pages/aguardar-inicio.jsx'; 
 import RecuperarSenha from './pages/recuperar-senha.jsx'; 
 import ResetSenha from './pages/reset-senha.jsx';
 
@@ -56,6 +57,7 @@ function App() {
           <Route element={<LayoutAluno />}>
             <Route path='/entrar-aventura' element={<EntrarAventura />} />
             <Route path='/escolher-classe' element={<EscolherClasse />} />
+            <Route path='/aguardar-inicio' element={<AguardarInicio />} />
             <Route path='/salas-aluno' element={<SalasAluno />} />
            <Route path='/avaliacao' element={<Avaliacao/>} />
              {/* Adicione outras rotas do aluno aqui dentro se necessário */}

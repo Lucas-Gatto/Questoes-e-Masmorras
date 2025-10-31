@@ -26,6 +26,9 @@ const SessaoSchema = new mongoose.Schema({
   },
   currentSalaIndex: { type: Number, default: 0 },
   alunos: [AlunoSchema],
+  // Avaliações (média e quantidade)
+  avaliacaoMedia: { type: Number, default: 0 },
+  avaliacaoCount: { type: Number, default: 0 },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 }, { timestamps: true });
 

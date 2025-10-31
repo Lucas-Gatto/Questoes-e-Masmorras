@@ -98,7 +98,19 @@ const SalaDeJogo = () => {
   };
 
   // Navega para a tela de resultados ao finalizar
-  const handleFinalizarAventura = () => {
+  const handleFinalizarAventura = async () => {
+    try {
+      // Se houver sessão do professor, marca como finalizada no backend
+      if (sessaoAtual?.id) {
+        await fetch(`http://localhost:3000/api/sessoes/${sessaoAtual.id}/finish`, {
+          method: 'PUT',
+          credentials: 'include',
+        });
+      }
+    } catch (e) {
+      // Falhas não impedem navegação para resultados
+      console.warn('Falha ao finalizar sessão no backend:', e);
+    }
     console.log("Aventura finalizada. Navegando para resultados...");
     navigate(`/aventura/${aventuraId}/resultados`); // Navega para a rota de resultados
   }

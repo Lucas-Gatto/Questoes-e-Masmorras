@@ -126,3 +126,50 @@ exports.startSessao = async (req, res) => {
     res.status(500).json({ message: 'Erro ao iniciar sessão', details: err?.message });
   }
 };
+
+// Finaliza a sessão explicitamente (independente do índice atual)
+exports.finishSessao = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const sessao = await Sessao.findById(id);
+    if (!sessao) return res.status(404).json({ message: 'Sessão não encontrada' });
+    const totalSalas = Array.isArray(sessao.aventuraSnapshot?.salas) ? sessao.aventuraSnapshot.salas.length : 0;
+    if (totalSalas > 0) {
+      sessao.currentSalaIndex = totalSalas - 1;
+    }
+    sessao.status = 'finished';
+    await sessao.save();
+    res.json({ status: sessao.status, currentSalaIndex: sessao.currentSalaIndex });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao finalizar sessão', details: err?.message });
+  }
+};
+
+// Registrar avaliação (1 a 5 estrelas) por código e atualizar média incremental
+exports.avaliarSessaoByCode = async (req, res) => {
+  try {
+    const { codigo } = req.params;
+    const { estrelas } = req.body;
+    const valor = Number(estrelas);
+    if (!Number.isFinite(valor) || valor < 1 || valor > 5) {
+      return res.status(400).json({ message: 'Estrelas inválidas. Use um valor de 1 a 5.' });
+    }
+
+    const sessao = await Sessao.findOne({ codigo });
+    if (!sessao) return res.status(404).json({ message: 'Sessão não encontrada' });
+
+    const novoCount = (sessao.avaliacaoCount || 0) + 1;
+    const novaMedia = ((sessao.avaliacaoMedia || 0) * (sessao.avaliacaoCount || 0) + valor) / novoCount;
+    sessao.avaliacaoCount = novoCount;
+    sessao.avaliacaoMedia = novaMedia;
+    await sessao.save();
+
+    return res.status(200).json({
+      codigo: sessao.codigo,
+      avaliacaoMedia: sessao.avaliacaoMedia,
+      avaliacaoCount: sessao.avaliacaoCount,
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao registrar avaliação', details: err?.message });
+  }
+};

@@ -57,7 +57,7 @@ const EscolherClasse = () => {
         return;
       }
       alert(`Classe ${classesInfo[selectedClassKey]?.nome} selecionada!`);
-      navigate(`/salas-aluno?codigo=${codigo}`);
+      navigate(`/aguardar-inicio?codigo=${codigo}&nome=${encodeURIComponent(nome)}`);
     } catch (err) {
       alert('Erro ao salvar classe');
     }

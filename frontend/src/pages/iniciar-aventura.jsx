@@ -110,12 +110,30 @@ const IniciarAventura = () => {
   }, [aventura, sessaoCriada]);
 
   // Função para navegar para a tela de jogo
-  const handleStartGame = () => {
-    if (aventura) {
-      console.log(`Iniciando a aventura "${aventura.titulo}"... Navegando para /aventura/${aventuraId}/jogar`);
-      navigate(`/aventura/${aventuraId}/jogar`);
+  const handleStartGame = async () => {
+    if (aventura && sessao?.id) {
+      try {
+        console.log(`Iniciando a aventura "${aventura.titulo}"... Chamando backend para iniciar sessão`);
+        // Chama o backend para iniciar a sessão (muda status para 'active')
+        const res = await fetch(`http://localhost:3000/api/sessoes/${sessao.id}/start`, {
+          method: 'PUT',
+          credentials: 'include',
+        });
+        
+        if (!res.ok) {
+          console.error('Erro ao iniciar sessão no backend');
+          alert('Erro ao iniciar a aventura. Tente novamente.');
+          return;
+        }
+        
+        console.log('Sessão iniciada com sucesso. Navegando para /aventura/${aventuraId}/jogar');
+        navigate(`/aventura/${aventuraId}/jogar`);
+      } catch (error) {
+        console.error('Erro ao iniciar sessão:', error);
+        alert('Erro ao iniciar a aventura. Tente novamente.');
+      }
     } else {
-      console.error("handleStartGame chamado, mas 'aventura' é nula.");
+      console.error("handleStartGame chamado, mas 'aventura' ou 'sessao' é nula.");
     }
   };
 

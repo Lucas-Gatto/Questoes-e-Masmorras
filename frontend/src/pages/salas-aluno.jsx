@@ -20,6 +20,11 @@ const SalasAluno = () => {
         const res = await fetch(`http://localhost:3000/api/sessoes/by-code/${c}`);
         if (res.ok) {
           const data = await res.json();
+          // Se a sessão terminou, redireciona para avaliação
+          if (data?.status === 'finished') {
+            window.location.href = '/avaliacao';
+            return;
+          }
           setSnapshot(data.aventuraSnapshot || null);
           const idx = Number(data.currentSalaIndex || 0);
           setIndiceSala(idx);

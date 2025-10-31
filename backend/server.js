@@ -17,10 +17,11 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'https://questoes-e-masmorras.vercel.app',
-];
-app.use(cors({
+  process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : null,
+].filter(Boolean);
+
+const corsOptions = {
   origin: function (origin, callback) {
-    // Permite também requisições de ferramentas (sem origin)
     const normalized = origin ? origin.replace(/\/$/, '') : origin;
     if (!origin || allowedOrigins.includes(normalized)) {
       callback(null, true);
@@ -28,8 +29,14 @@ app.use(cors({
       callback(new Error('CORS not allowed for origin: ' + origin));
     }
   },
-  credentials: true, // 🔥 permite cookies/sessão do front
-}));
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Configurar sessão (sem JWT)
 const isProd = process.env.NODE_ENV === 'production';

@@ -191,11 +191,12 @@ const SalaDeJogo = () => {
                  // Usa o texto real da opção salva, ou um placeholder se vazio/não existir
                  const textoOpcao = opcao?.texto?.trim() ? opcao.texto : `Opção ${index + 1} (vazio)`;
                  const idOpcao = opcao?.id != null ? opcao.id : index + 1; // Garante um ID
+                 const isCorreta = respostaRevelada && sala?.opcaoCorretaId === idOpcao; // destaca se revelado e id bate
 
                  return (
                     <button
                         key={idOpcao}
-                        className={`btn-opcao-jogo ${corClasse}`}
+                        className={`btn-opcao-jogo ${corClasse} ${isCorreta ? 'correta' : ''}`}
                         // onClick={() => handleAlgumaAcaoProfessor(idOpcao)} // Ação futura do professor
                         title={opcao?.texto || `Opção ${index + 1}`} // Mostra texto completo no hover
                     >
@@ -216,7 +217,7 @@ const SalaDeJogo = () => {
               })}
 
               {/* Mantém o botão Revelar */}
-              <button className="btn-jogo azul">Revelar</button>
+              <button className="btn-jogo azul" onClick={() => setRespostaRevelada(true)} disabled={respostaRevelada}>Revelar</button>
 
               {/* Mensagem se não houver opções */}
               {(!sala?.opcoes || sala.opcoes.length === 0) && (

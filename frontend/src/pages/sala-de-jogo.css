@@ -161,6 +161,30 @@
 .btn-opcao-jogo.yellow { background-color: #b4850c; }
 .btn-opcao-jogo.green { background-color: #2e8540; }
 .btn-opcao-jogo.blue { background-color: #2c5b96; }
+
+/* Destaque visual para alternativa correta ao revelar */
+.btn-opcao-jogo.correta {
+  border-color: #2e8540; /* Verde para indicar correção */
+  box-shadow: 0 0 14px rgba(46, 133, 64, 0.7);
+  position: relative;
+}
+.btn-opcao-jogo.correta::after {
+  content: "✓";
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #2e8540;
+  color: #fff;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+}
 /* Faz botão Revelar e Avançar ocuparem toda a célula */
 .botoes-grid-alternativa .btn-jogo { width: 100%; }
 

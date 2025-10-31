@@ -41,13 +41,16 @@ const SalasAluno = () => {
       return <p style={{ color: 'white' }}>Carregando sala...</p>;
     }
 
+    // Passa o título da aventura do snapshot para os componentes
+    const aventuraTitulo = snapshot?.titulo || "Aventura";
+
     switch (salaAtual.tipo) {
       case 'Enigma':
-        return <SalaEnigma sala={salaAtual} />;
+        return <SalaEnigma sala={salaAtual} aventuraTitulo={aventuraTitulo} />;
       case 'Monstro':
-        return <SalaMonstro sala={salaAtual} />;
+        return <SalaMonstro sala={salaAtual} aventuraTitulo={aventuraTitulo} />;
       case 'Alternativa':
-        return <SalaAlternativa sala={salaAtual} />;
+        return <SalaAlternativa sala={salaAtual} aventuraTitulo={aventuraTitulo} />;
       default:
         return <p style={{ color: 'white' }}>Tipo de sala desconhecido.</p>;
     }

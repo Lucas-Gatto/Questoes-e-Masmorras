@@ -10,25 +10,32 @@ const ResultadosAventura = () => {
   const [aventura, setAventura] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Carrega os dados básicos da aventura (título) do localStorage
+  // Carrega os dados da aventura do backend usando o _id da URL
   useEffect(() => {
-    try {
-      const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
-      const aventuraAtual = aventurasSalvas.find(a => a.id === Number(aventuraId));
-
-      if (aventuraAtual) {
-        setAventura(aventuraAtual);
-      } else {
-        console.error(`Aventura com ID ${aventuraId} não encontrada para exibir resultados.`);
-        alert("Erro: Aventura não encontrada.");
-        navigate('/suas-aventuras'); // Volta se não achar
+    const carregar = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/aventuras/${aventuraId}`, { credentials: 'include' });
+        if (res.status === 401) {
+          alert('Sua sessão expirou. Faça login novamente.');
+          navigate('/');
+          return;
+        }
+        if (!res.ok) {
+          console.error(`Aventura com ID ${aventuraId} não encontrada para exibir resultados.`);
+          alert('Erro: Aventura não encontrada.');
+          navigate('/suas-aventuras');
+          return;
+        }
+        const data = await res.json();
+        setAventura(data);
+      } catch (error) {
+        console.error('Erro ao carregar dados da aventura para resultados:', error);
+        navigate('/suas-aventuras');
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Erro ao carregar dados da aventura para resultados:", error);
-      navigate('/suas-aventuras');
-    } finally {
-      setIsLoading(false);
-    }
+    };
+    carregar();
   }, [aventuraId, navigate]);
 
   // --- DADOS DE EXEMPLO PARA A TABELA ---

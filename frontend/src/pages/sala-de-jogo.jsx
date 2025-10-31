@@ -38,31 +38,42 @@ const SalaDeJogo = () => {
   const [sessaoAtual, setSessaoAtual] = useState(null);
   const [respostaRevelada, setRespostaRevelada] = useState(false); // Controle de revelação da resposta (Enigma)
 
-  // Efeito para carregar a aventura do localStorage ao montar
+  // Efeito para carregar a aventura do backend ao montar
   useEffect(() => {
-    try {
-      const aventurasSalvas = JSON.parse(localStorage.getItem('minhas_aventuras')) || [];
-      const aventuraAtual = aventurasSalvas.find(a => a.id === Number(aventuraId));
-
-      // Valida se a aventura foi encontrada e se tem salas
-      if (aventuraAtual && aventuraAtual.salas && aventuraAtual.salas.length > 0) {
-        setAventura(aventuraAtual); // Define a aventura no estado
-        setSalaAtualIndex(0); // Garante que começa na primeira sala
-      } else {
-        alert("Aventura não encontrada ou não possui salas para jogar!");
-        navigate('/suas-aventuras'); // Redireciona se inválido
+    const carregar = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/aventuras/${aventuraId}`, { credentials: 'include' });
+        if (res.status === 401) {
+          alert('Sua sessão expirou. Faça login novamente.');
+          navigate('/');
+          return;
+        }
+        if (!res.ok) {
+          alert('Aventura não encontrada ou não possui salas para jogar!');
+          navigate('/suas-aventuras');
+          return;
+        }
+        const data = await res.json();
+        if (Array.isArray(data.salas) && data.salas.length > 0) {
+          setAventura(data);
+          setSalaAtualIndex(0);
+        } else {
+          alert('Aventura não encontrada ou não possui salas para jogar!');
+          navigate('/suas-aventuras');
+        }
+      } catch (error) {
+        console.error('Erro ao carregar a aventura do backend:', error);
+        alert('Erro ao carregar dados da aventura.');
+        navigate('/suas-aventuras');
       }
-    } catch (error) {
-      console.error("Erro ao carregar a aventura:", error);
-      alert("Erro ao carregar dados da aventura.");
-      navigate('/suas-aventuras'); // Redireciona em caso de erro
-    }
-    // carrega sessão atual se existir
-    try {
-      const s = JSON.parse(localStorage.getItem('sessao_atual')) || null;
-      if (s && s.id) setSessaoAtual(s);
-    } catch {}
-  }, [aventuraId, navigate]); // Dependências: Roda se o ID mudar
+      // carrega sessão atual se existir
+      try {
+        const s = JSON.parse(localStorage.getItem('sessao_atual')) || null;
+        if (s && s.id) setSessaoAtual(s);
+      } catch {}
+    };
+    carregar();
+  }, [aventuraId, navigate]);
 
   // Reseta a revelação da resposta ao trocar de sala
   useEffect(() => {

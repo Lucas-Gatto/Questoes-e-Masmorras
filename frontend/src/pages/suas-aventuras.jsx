@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Aventura from "../components/aventura.jsx"; // Verifique extensão .jsx
 import "./suas-aventuras.css";
+import API_URL from "../config";
 
 const SuasAventuras = () => {
   const [aventuras, setAventuras] = useState([]);
@@ -12,7 +13,7 @@ const SuasAventuras = () => {
   useEffect(() => {
     const carregarAventuras = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/aventuras', { credentials: 'include' });
+        const res = await fetch(`${API_URL}/aventuras`, { credentials: 'include' });
         if (res.status === 401) {
           alert('Sua sessão expirou. Faça login novamente.');
           navigate('/');
@@ -32,7 +33,7 @@ const SuasAventuras = () => {
   const handleDeleteAventura = async (backendId) => {
     if (!window.confirm("Tem certeza que deseja excluir esta aventura?")) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/aventuras/${backendId}`, { method: 'DELETE', credentials: 'include' });
+      const res = await fetch(`${API_URL}/aventuras/${backendId}`, { method: 'DELETE', credentials: 'include' });
       if (res.status === 401) {
         alert('Sua sessão expirou. Faça login novamente.');
         navigate('/');

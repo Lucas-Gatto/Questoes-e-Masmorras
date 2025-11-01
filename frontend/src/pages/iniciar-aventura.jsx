@@ -5,6 +5,7 @@ import Footer from "../components/footer.jsx";
 import playIcon from "../assets/play.png";
 import "./iniciar-aventura.css";
 import QRCodeLib from "qrcode";
+import API_URL from "../config";
 
 const IniciarAventura = () => {
   console.log("Componente IniciarAventura começou a renderizar.");
@@ -25,10 +26,7 @@ const IniciarAventura = () => {
     );
     const carregar = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:3000/api/aventuras/${aventuraId}`,
-          { credentials: "include" }
-        );
+        const res = await fetch(`${API_URL}/aventuras/${aventuraId}`, { credentials: "include" });
         if (res.status === 401) {
           alert("Sua sessão expirou. Faça login novamente.");
           navigate("/");
@@ -57,7 +55,7 @@ const IniciarAventura = () => {
   const handleCriarSessao = async () => {
     if (!aventura) return;
     try {
-      const res = await fetch('http://localhost:3000/api/sessoes', {
+      const res = await fetch(`${API_URL}/sessoes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -94,7 +92,7 @@ const IniciarAventura = () => {
     // atualiza lista de alunos a cada 2s
     const intervalId = setInterval(async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/sessoes/${sessaoId}`, { credentials: 'include' });
+        const res = await fetch(`${API_URL}/sessoes/${sessaoId}`, { credentials: 'include' });
         if (res.ok) {
           const s = await res.json();
           setAlunos(Array.isArray(s.alunos) ? s.alunos : []);
@@ -122,13 +120,10 @@ const IniciarAventura = () => {
         console.log(
           `Iniciando a aventura "${aventura.titulo}"... Chamando backend para iniciar sessão`
         );
-        const res = await fetch(
-          `http://localhost:3000/api/sessoes/${sessao.id}/start`,
-          {
-            method: "PUT",
-            credentials: "include",
-          }
-        );
+        const res = await fetch(`${API_URL}/sessoes/${sessao.id}/start`, {
+          method: "PUT",
+          credentials: "include",
+        });
         if (!res.ok) {
           console.error("Erro ao iniciar sessão no backend");
           alert("Erro ao iniciar a aventura. Tente novamente.");

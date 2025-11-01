@@ -9,32 +9,44 @@ const app = express();
 // Conectar ao MongoDB
 connectDB();
 app.use(express.json());
+// Necessário para que cookies "secure" funcionem atrás de proxy (Render)
+app.set('trust proxy', 1);
 
 // Configurar CORS (importante usar apenas UMA vez!)
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
-  'https://questoes-e-masmorras.vercel.app/',
-];
-app.use(cors({
+  'https://questoes-e-masmorras.vercel.app',
+  process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : null,
+].filter(Boolean);
+
+const corsOptions = {
   origin: function (origin, callback) {
-    // Permite também requisições de ferramentas (sem origin)
-    if (!origin || allowedOrigins.includes(origin)) {
+    const normalized = origin ? origin.replace(/\/$/, '') : origin;
+    if (!origin || allowedOrigins.includes(normalized)) {
       callback(null, true);
     } else {
       callback(new Error('CORS not allowed for origin: ' + origin));
     }
   },
-  credentials: true, // 🔥 permite cookies/sessão do front
-}));
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+// Express 5 não aceita '*' em path-to-regexp; usa regex para capturar todas
+app.options(/.*/, cors(corsOptions));
 
 // Configurar sessão (sem JWT)
+const isProd = process.env.NODE_ENV === 'production';
 app.use(session({
-  secret: 'segredo-muito-seguro-aqui', // troque por algo melhor  
+  secret: process.env.SESSION_SECRET || 'segredo-muito-seguro-aqui',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // true se for HTTPS
+    secure: isProd, // exige HTTPS em produção
+    sameSite: isProd ? 'none' : 'lax', // necessário para cookies entre domínios
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24, // 1 dia
   },

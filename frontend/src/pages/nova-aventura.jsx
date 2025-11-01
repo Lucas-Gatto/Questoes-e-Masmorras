@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FormularioAventura from '../components/FormularioAventura.jsx';
+import API_URL from "../config";
 
 const NovaAventura = () => {
   const navigate = useNavigate();
@@ -71,7 +72,7 @@ const NovaAventura = () => {
         perguntas: aventura.perguntas,
       };
 
-      const res = await fetch('http://localhost:3000/api/aventuras', {
+      const res = await fetch(`${API_URL}/aventuras`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // garante envio do cookie de sessão

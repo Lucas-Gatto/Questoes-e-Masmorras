@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './aguardar-inicio.css';
+import API_URL from "../config";
 
 const AguardarInicio = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const AguardarInicio = () => {
     // Polling para verificar se a sessão foi iniciada
     const poll = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/sessoes/by-code/${codigo}`);
+        const res = await fetch(`${API_URL}/sessoes/by-code/${codigo}`);
         if (res.ok) {
           const data = await res.json();
           

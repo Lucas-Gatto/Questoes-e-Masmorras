@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import HeaderAventura from '../components/HeaderAventura.jsx';
 import Footer from '../components/footer.jsx';
 import './resultados-aventura.css';
+import API_URL from "../config";
 
 const ResultadosAventura = () => {
   const { aventuraId } = useParams();
@@ -14,7 +15,7 @@ const ResultadosAventura = () => {
   useEffect(() => {
     const carregar = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/aventuras/${aventuraId}`, { credentials: 'include' });
+        const res = await fetch(`${API_URL}/aventuras/${aventuraId}`, { credentials: 'include' });
         if (res.status === 401) {
           alert('Sua sessão expirou. Faça login novamente.');
           navigate('/');

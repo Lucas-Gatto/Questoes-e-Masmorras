@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import SalaEnigma from "../components/sala-enigma-aluno";
 import SalaAlternativa from "../components/sala-alternativa-aluno";
 import SalaMonstro from "../components/sala-monstro-aluno";
+import API_URL from "../config";
 
 const SalasAluno = () => {
   const [salaAtual, setSalaAtual] = useState(null);
@@ -17,7 +18,7 @@ const SalasAluno = () => {
 
     const poll = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/sessoes/by-code/${c}`);
+  const res = await fetch(`${API_URL}/sessoes/by-code/${c}`);
         if (res.ok) {
           const data = await res.json();
           // Se a sessão terminou, redireciona para avaliação

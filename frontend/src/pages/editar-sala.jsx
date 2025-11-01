@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import "./editar-sala.css";
+import API_URL from "../config";
 
 const EditarSala = () => {
   const { aventuraId, salaId } = useParams();
@@ -92,10 +93,7 @@ const EditarSala = () => {
       if (backendId) {
         (async () => {
           try {
-            const resGet = await fetch(
-              `http://localhost:3000/api/aventuras/${backendId}`,
-              { credentials: "include" }
-            );
+            const resGet = await fetch(`${API_URL}/aventuras/${backendId}`, { credentials: "include" });
             if (resGet.status === 401) {
               alert("Sua sessão expirou. Faça login novamente.");
               navigate("/");
@@ -117,15 +115,12 @@ const EditarSala = () => {
               salas: salasAtualizadas,
               perguntas: aventuraDoc.perguntas || [],
             };
-            const resPut = await fetch(
-              `http://localhost:3000/api/aventuras/${backendId}`,
-              {
+            const resPut = await fetch(`${API_URL}/aventuras/${backendId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
                 body: JSON.stringify(payload),
-              }
-            );
+              });
             if (resPut.status === 401) {
               alert("Sua sessão expirou. Faça login novamente.");
               navigate("/");

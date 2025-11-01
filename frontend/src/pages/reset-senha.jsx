@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 //import './reset-senha.css'; // Crie o CSS no mesmo estilo da recuperar-senha
-const API_URL = 'http://localhost:3000/api';
+import API_URL from "../config";
 
 const ResetSenha = () => {
   const { token } = useParams(); // pega o token da URL

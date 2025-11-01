@@ -211,14 +211,85 @@
   margin-top: 30px;
 }
 
+.subtitulo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
 .subtitulo {
-  font-family: Arial, sans-serif;
-  font-size: 1rem;
-  opacity: 0.9;
-  margin-bottom: 15px;
-  text-align: left;
-  border-bottom: 1px solid #555;
-  padding-bottom: 10px;
+    font-size: 1.5rem;
+    color: var(--letras_amarelas);
+    margin: 0;
+    text-align: center;
+    line-height: 1; /* alinhar melhor com ícone ao lado */
+}
+
+/* Tooltip Styles */
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-icon {
+    width: 20px;
+    height: 20px;
+    background-color: var(--letras_amarelas);
+    color: var(--preto);
+    border-radius: 50%;
+    display: inline-flex; /* permite vertical-align */
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: help;
+    transition: background-color 0.3s ease;
+    vertical-align: middle; /* alinhar com texto */
+    position: relative;
+    top: -15px; /* pequeno ajuste fino para alinhamento perfeito */
+}
+
+.tooltip-icon:hover {
+    background-color: #ffcc00;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 300px;
+    background-color: rgba(0, 0, 0, 0.85); /* fundo preto com ~85% */
+    color: var(--branco);
+    text-align: left;
+    border-radius: 8px;
+    padding: 12px;
+    position: absolute;
+    z-index: 1000;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -150px;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    font-size: 14px;
+    line-height: 1.4;
+    border: 2px solid var(--letras_amarelas);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -8px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: var(--letras_amarelas) transparent transparent transparent;
+}
+
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
 }
 
 .pergunta-grupo {

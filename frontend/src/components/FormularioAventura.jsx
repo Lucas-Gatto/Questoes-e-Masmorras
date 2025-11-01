@@ -347,7 +347,15 @@ const FormularioAventura = ({
       </DndContext>
 
       <div className="perguntas-rolagem-container">
-        <h2 className="subtitulo">Perguntas de Rolagem</h2>
+        <div className="subtitulo-container">
+          <h2 className="subtitulo">Perguntas de Rolagem</h2>
+          <div className="tooltip-container">
+            <div className="tooltip-icon">?</div>
+            <div className="tooltip-text">
+              Perguntas de Rolagem são perguntas que variam em nível de dificuldade, onde: 1 deve ser perguntas mais difíceis e 6 perguntas mais fáceis. Você pode registrar quantas perguntas quiser por nível de dificuldade. Elas serão utilizadas exclusivamente em salas de monstro.
+            </div>
+          </div>
+        </div>
         {aventura.perguntas.map((pergunta, index) => (
           <div key={pergunta.id} className="pergunta-grupo">
             <span className="pergunta-grupo-numero">{index + 1}</span>

@@ -10,6 +10,12 @@ const Aventura = ({ titulo, onDelete, onEdit, onPlay }) => {
     <div className="fundo-aventura">
       <h2 className="subtitulo_aventura">{titulo}</h2>
       <div className="icons-container">
+        <img
+          src={edit}
+          alt="Edit Icon"
+          className="edit-icon"
+          onClick={onEdit}
+        />
         <div className="play-icon-background">
           {/* E precisa ser usado no onClick aqui */}
           <img
@@ -19,12 +25,6 @@ const Aventura = ({ titulo, onDelete, onEdit, onPlay }) => {
             onClick={onPlay}
           />
         </div>
-        <img
-          src={edit}
-          alt="Edit Icon"
-          className="edit-icon"
-          onClick={onEdit}
-        />
         <img
           src={del}
           alt="Delete Icon"

@@ -310,8 +310,8 @@ const EditarSala = () => {
                         handleOpcaoChange(opcao.id, e.target.value)
                       }
                     />
-                    <div>
-                      <label>
+                    <div className="opcao-correta-container">
+                      <label className="opcao-correta-label">
                         <input
                           type="radio"
                           name="opcao-correta"

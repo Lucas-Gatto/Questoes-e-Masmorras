@@ -164,3 +164,23 @@
 .btn-salvar {
   background-color: var(--azul);
 }
+
+/* Estilos para o radio button de alternativa correta */
+.opcao-correta-container {
+  margin-top: 8px;
+}
+
+.opcao-correta-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #eee;
+  cursor: pointer;
+}
+
+.opcao-correta-label input[type="radio"] {
+  margin: 0;
+  cursor: pointer;
+  width: 30px;
+}

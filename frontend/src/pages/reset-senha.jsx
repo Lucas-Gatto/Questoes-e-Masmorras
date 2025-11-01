@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 //import './reset-senha.css'; // Crie o CSS no mesmo estilo da recuperar-senha
-const API_URL = 'https://questoes-e-masmorras.onrender.com/api';
+import API_URL from "../config";
 
 const ResetSenha = () => {
   const { token } = useParams(); // pega o token da URL

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import HeaderAventura from '../components/HeaderAventura.jsx';
 import Footer from '../components/footer.jsx';
 import './sala-de-jogo.css';
+import API_URL from "../config";
 // Exemplo: import dadoIcon from '../assets/dado.png';
 
 // Função auxiliar para converter string de vida em porcentagem
@@ -42,7 +43,7 @@ const SalaDeJogo = () => {
   useEffect(() => {
     const carregar = async () => {
       try {
-        const res = await fetch(`https://questoes-e-masmorras.onrender.com/api/aventuras/${aventuraId}`, { credentials: 'include' });
+        const res = await fetch(`${API_URL}/aventuras/${aventuraId}`, { credentials: 'include' });
         if (res.status === 401) {
           alert('Sua sessão expirou. Faça login novamente.');
           navigate('/');
@@ -86,7 +87,7 @@ const SalaDeJogo = () => {
       setSalaAtualIndex(prevIndex => prevIndex + 1); // Incrementa o índice
             // se houver sessão do professor, sincroniza com backend
       if (sessaoAtual?.id) {
-        fetch(`https://questoes-e-masmorras.onrender.com/api/sessoes/${sessaoAtual.id}/advance`, {
+        fetch(`${API_URL}/sessoes/${sessaoAtual.id}/advance`, {
           method: 'PUT',
           credentials: 'include',
         }).catch(() => {});
@@ -102,7 +103,7 @@ const SalaDeJogo = () => {
     try {
       // Se houver sessão do professor, marca como finalizada no backend
       if (sessaoAtual?.id) {
-        await fetch(`https://questoes-e-masmorras.onrender.com/api/sessoes/${sessaoAtual.id}/finish`, {
+        await fetch(`${API_URL}/sessoes/${sessaoAtual.id}/finish`, {
           method: 'PUT',
           credentials: 'include',
         });

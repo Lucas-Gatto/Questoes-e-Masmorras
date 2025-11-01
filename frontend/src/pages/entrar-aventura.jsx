@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./entrar-aventura.css";
+import API_URL from "../config";
 
 const EntrarAventura = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const EntrarAventura = () => {
     const c = params.get("codigo") || "";
     setCodigo(c);
     if (c) {
-      fetch(`https://questoes-e-masmorras.onrender.com/api/sessoes/by-code/${c}`)
+      fetch(`${API_URL}/sessoes/by-code/${c}`)
         .then((r) => r.json())
         .then((data) => {
           if (data?.aventuraSnapshot?.titulo)
@@ -51,7 +52,7 @@ const EntrarAventura = () => {
             }
             try {
               const res = await fetch(
-                `https://questoes-e-masmorras.onrender.com/api/sessoes/by-code/${codigo}/alunos`,
+                `${API_URL}/sessoes/by-code/${codigo}/alunos`,
                 {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },

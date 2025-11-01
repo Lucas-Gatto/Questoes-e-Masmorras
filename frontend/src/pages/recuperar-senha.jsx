@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom'; // Link para voltar ao login
 import './recuperar-senha.css'; // Novo CSS
-
-// Defina a URL base da sua API (se ainda não tiver importado)
-const API_URL = 'https://questoes-e-masmorras.onrender.com/api';
+import API_URL from "../config";
 
 const RecuperarSenha = () => {
   const navigate = useNavigate();

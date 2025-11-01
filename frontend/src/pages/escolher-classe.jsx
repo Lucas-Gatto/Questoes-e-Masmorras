@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './escolher-classe.css';
+import API_URL from "../config";
 
 // --- Imagens das Classes (ajuste os caminhos/nomes) ---
 import magoImg from '../assets/mago.png'; // Exemplo
@@ -46,7 +47,7 @@ const EscolherClasse = () => {
       return;
     }
     try {
-      const res = await fetch(`https://questoes-e-masmorras.onrender.com/api/sessoes/by-code/${codigo}/alunos/${encodeURIComponent(nome)}/classe`, {
+      const res = await fetch(`${API_URL}/sessoes/by-code/${codigo}/alunos/${encodeURIComponent(nome)}/classe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ classe }),

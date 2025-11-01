@@ -3,6 +3,7 @@ import "./login.css";
 import bonecos from "../assets/bonecos.png";
 // 👇 1. Adicione 'Link' à importação aqui
 import { useNavigate, Link } from "react-router-dom";
+import API_URL from "../config";
 
 function Login() {
   //Constante de redirecionamento de página
@@ -20,7 +21,7 @@ function Login() {
   //Função de login
   const handleLogin = async () => {
     try {
-      const res = await fetch("https://questoes-e-masmorras.onrender.com/api/user/login", {
+      const res = await fetch(`${API_URL}/user/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -52,7 +53,7 @@ function Login() {
   //Função de cadastro
   const handleCadastro = async () => {
     try {
-      const res = await fetch("https://questoes-e-masmorras.onrender.com/api/user/cadastrar", {
+      const res = await fetch(`${API_URL}/user/cadastrar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

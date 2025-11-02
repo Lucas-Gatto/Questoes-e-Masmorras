@@ -111,7 +111,7 @@
   align-items: center;
 }
 
-.btn-confirmar-escolha {
+.btn-confirmar-escolha-classe {
   padding: 12px 30px;
   border: none;
   border-radius: 10px;
@@ -120,7 +120,7 @@
   font-weight: bold;
   cursor: pointer;
   color: white;
-  background-color: #007BFF; /* Azul */
+  background-color: #3f9a69; /* Azul */
   transition: opacity 0.2s, transform 0.1s;
   height: 50px; /* Mesma altura da descrição */
 }

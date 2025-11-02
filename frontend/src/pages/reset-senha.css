@@ -1,0 +1,151 @@
+/* Container principal (centraliza tudo) */
+.reset-senha-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 120px); /* altura menos header/footer, se houver */
+  padding: 20px;
+}
+
+/* Painel principal */
+.reset-senha-painel {
+  width: 100%;
+  max-width: 500px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 25px;
+  padding: 35px 45px;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Título da página */
+.reset-senha-painel h1 {
+  font-family: 'MedievalSharp', cursive;
+  font-size: 2rem;
+  color: #C68700; /* Dourado */
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+/* Texto de instrução */
+.reset-senha-painel p {
+  margin-bottom: 30px;
+  line-height: 1.5;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+/* Formulário */
+.form-reset {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Campos de senha */
+.form-reset input {
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 15px;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 1.1rem;
+  background-color: #333; /* Fundo escuro */
+  box-sizing: border-box;
+}
+
+.form-reset input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.form-reset input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Mensagens de feedback */
+.feedback-message {
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  margin-top: -5px;
+  margin-bottom: 5px;
+}
+.feedback-message.success {
+  background-color: rgba(40, 167, 69, 0.3);
+  color: #d4edda;
+  border: 1px solid #28a745;
+}
+.feedback-message.error {
+  background-color: rgba(220, 53, 69, 0.3);
+  color: #f8d7da;
+  border: 1px solid #dc3545;
+}
+
+/* Botão de envio */
+.form-reset button {
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  font-family: 'MedievalSharp', cursive;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  background-color: #007BFF;
+  transition: opacity 0.2s, transform 0.1s;
+  width: 100%;
+}
+
+.form-reset button:hover {
+  opacity: 0.9;
+}
+
+.form-reset button:active {
+  transform: scale(0.98);
+}
+
+.form-reset button:disabled {
+  background-color: #555;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-reset button:disabled:active {
+  transform: none;
+}
+
+/* Link de retorno */
+.link-voltar-login {
+  margin-top: 25px;
+  font-size: 0.9rem;
+}
+
+.link-voltar-login a {
+  color: #adb5bd;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.link-voltar-login a:hover {
+  color: #dee2e6;
+  text-decoration: underline;
+}
+
+/* Responsividade básica */
+@media (max-width: 480px) {
+  .reset-senha-painel {
+    padding: 25px 30px;
+  }
+  
+  .reset-senha-painel h1 {
+    font-size: 1.7rem;
+  }
+
+  .form-reset button {
+    font-size: 1.1rem;
+  }
+}

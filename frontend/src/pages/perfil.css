@@ -1,0 +1,68 @@
+.perfil-usuario-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 120px);
+  padding: 20px;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.perfil-usuario-painel {
+  width: 100%;
+  max-width: 500px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 25px;
+  padding: 35px 45px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.perfil-usuario-painel h1 {
+  font-family: 'MedievalSharp', cursive;
+  font-size: 2rem;
+  color: #C68700;
+  margin-bottom: 25px;
+}
+
+.info-usuario p {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.btn-editar-info {
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  font-family: 'MedievalSharp', cursive;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  background-color: #007BFF;
+  transition: opacity 0.2s, transform 0.1s;
+  width: 100%;
+}
+
+.btn-editar-info:hover {
+  opacity: 0.9;
+}
+
+.btn-editar-info:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 480px) {
+  .perfil-usuario-painel {
+    padding: 25px 30px;
+  }
+
+  .perfil-usuario-painel h1 {
+    font-size: 1.7rem;
+  }
+
+  .btn-editar-info {
+    font-size: 1.1rem;
+  }
+}

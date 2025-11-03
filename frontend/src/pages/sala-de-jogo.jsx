@@ -38,6 +38,8 @@ const SalaDeJogo = () => {
   const [salaAtualIndex, setSalaAtualIndex] = useState(0); // Índice da sala atual
   const [sessaoAtual, setSessaoAtual] = useState(null);
   const [respostaRevelada, setRespostaRevelada] = useState(false); // Controle de revelação da resposta (Enigma)
+  const [alunos, setAlunos] = useState([]); // Lista de alunos da sessão
+  const [showModalAlunos, setShowModalAlunos] = useState(false); // Controle do modal de seleção de alunos
 
   // Efeito para carregar a aventura do backend ao montar
   useEffect(() => {
@@ -116,6 +118,59 @@ const SalaDeJogo = () => {
     navigate(`/aventura/${aventuraId}/resultados`); // Navega para a rota de resultados
   }
 
+  // Carrega a lista de alunos da sessão atual
+  const carregarAlunos = async () => {
+    if (!sessaoAtual?.id) return;
+    try {
+      const res = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}`, { 
+        credentials: 'include' 
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setAlunos(Array.isArray(data.alunos) ? data.alunos : []);
+      }
+    } catch (e) {
+      console.warn('Erro ao carregar alunos:', e);
+    }
+  };
+
+  // Abre o modal de seleção de alunos
+  const handleSelecionarRespondente = () => {
+    carregarAlunos();
+    setShowModalAlunos(true);
+  };
+
+  // Seleciona um aluno como respondente e adiciona ponto
+  const handleSelecionarAluno = async (nomeAluno) => {
+    if (!sessaoAtual?.id) return;
+    try {
+      const res = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}/alunos/ponto`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ nomeAluno })
+      });
+      
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok) {
+        const data = contentType.includes('application/json') ? await res.json() : { message: await res.text() };
+        if (data?.aluno?.nome) {
+          alert(`Ponto adicionado para ${data.aluno.nome}! Total: ${data.aluno.pontos} pontos`);
+          setShowModalAlunos(false);
+          setAlunos(Array.isArray(data.alunos) ? data.alunos : alunos);
+        } else {
+          alert(typeof data.message === 'string' ? data.message : 'Operação concluída.');
+        }
+      } else {
+        const errorPayload = contentType.includes('application/json') ? await res.json() : { message: await res.text() };
+        alert(errorPayload?.message || 'Erro ao adicionar ponto');
+      }
+    } catch (e) {
+      console.error('Erro ao selecionar aluno:', e);
+      alert('Erro ao adicionar ponto ao aluno');
+    }
+  };
+
   // Renderiza o conteúdo principal da sala baseado no tipo
   const renderConteudoSala = (sala) => {
     // Segurança: Retorna mensagem se a sala for nula/indefinida
@@ -131,7 +186,7 @@ const SalaDeJogo = () => {
             <div className="botoes-grid-enigma">
               <div className={`resposta-enigma ${respostaRevelada ? '' : 'borrada'}`}>{sala.resposta || "Resposta não preenchida"}</div>
               <button className="btn-jogo azul" onClick={() => setRespostaRevelada(true)} disabled={respostaRevelada}>Revelar</button>
-              <button className="btn-jogo dourado">Selecionar Respondente</button>
+              <button className="btn-jogo dourado" onClick={handleSelecionarRespondente}>Selecionar Respondente</button>
               {/* Botão Avançar/Finalizar foi movido para fora */}
             </div>
           </div>
@@ -286,6 +341,32 @@ const SalaDeJogo = () => {
         </div>
       </main>
       <Footer />
+      
+      {/* Modal de Seleção de Alunos */}
+      {showModalAlunos && (
+        <div className="modal-overlay" onClick={() => setShowModalAlunos(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Selecionar Respondente</h3>
+              <button className="modal-close" onClick={() => setShowModalAlunos(false)}>×</button>
+            </div>
+            <div className="modal-body">
+              {alunos.length === 0 ? (
+                <p>Nenhum aluno encontrado na sessão.</p>
+              ) : (
+                <div className="alunos-list">
+                  {alunos.map((aluno, index) => (
+                    <div key={index} className="aluno-item" onClick={() => handleSelecionarAluno(aluno.nome)}>
+                      <span className="aluno-nome">{aluno.nome}</span>
+                      <span className="aluno-pontos">{aluno.pontos || 0} pontos</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

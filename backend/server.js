@@ -18,6 +18,7 @@ app.set('trust proxy', 1);
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
+  'http://localhost:5175',
   'https://questoes-e-masmorras.vercel.app',
   process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : null,
 ].filter(Boolean);

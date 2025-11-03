@@ -173,3 +173,41 @@ exports.avaliarSessaoByCode = async (req, res) => {
     res.status(500).json({ message: 'Erro ao registrar avaliação', details: err?.message });
   }
 };
+
+// Adicionar ponto a um aluno específico por nome (via body)
+exports.awardPontoAlunoByBody = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nomeAluno } = req.body;
+    
+    if (!nomeAluno || typeof nomeAluno !== 'string') {
+      return res.status(400).json({ message: 'Nome do aluno é obrigatório' });
+    }
+
+    const sessao = await Sessao.findById(id);
+    if (!sessao) return res.status(404).json({ message: 'Sessão não encontrada' });
+
+    // Encontra o aluno na lista
+    const aluno = sessao.alunos.find(a => a.nome.toLowerCase() === nomeAluno.toLowerCase());
+    if (!aluno) {
+      return res.status(404).json({ message: 'Aluno não encontrado nesta sessão' });
+    }
+
+    // Incrementa a pontuação do aluno
+    aluno.pontos = (aluno.pontos || 0) + 1;
+    
+    await sessao.save();
+    
+    res.status(200).json({ 
+      message: `Ponto adicionado para ${aluno.nome}`,
+      aluno: {
+        nome: aluno.nome,
+        pontos: aluno.pontos,
+        classe: aluno.classe
+      },
+      alunos: sessao.alunos
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao adicionar ponto', details: err?.message });
+  }
+};

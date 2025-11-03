@@ -42,3 +42,43 @@
 .signup-button:hover {
   transform: scale(1.05);
 }
+@media (max-width: 480px) {
+
+  .home-container {
+    padding: 10px; /* Menos espaço nas laterais da tela */
+  }
+
+  .img-pergaminho {
+    /* 1. Remove o padding horizontal gigante */
+    /* (Topo, Esquerda/Direita, Fundo) */
+    /* Ajuste '70px' e '50px' para alinhar o texto
+       verticalmente dentro da sua imagem de pergaminho */
+    padding: 70px 45px 50px 45px;
+    
+    /* 2. Deixa a altura ser automática */
+    min-height: auto;
+
+    /* 3. Força a imagem a esticar (a correção chave) */
+    background-size: 100% 100%;
+
+    /* 4. Garante que o div não ultrapasse a tela */
+    width: 100%;
+  }
+
+  .scroll-title {
+    font-size: 1.4rem; /* Fonte menor para celular */
+    margin-bottom: 10px;
+  }
+
+  .scroll-text {
+    font-size: 0.80rem; 
+    line-height: 1.6;
+    text-align: justify;
+  }
+
+  .signup-button {
+    font-size: 1.1rem; 
+    padding: 10px 30px;
+    margin-top: 20px;
+  }
+}

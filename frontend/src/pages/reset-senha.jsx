@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-//import './reset-senha.css'; // Crie o CSS no mesmo estilo da recuperar-senha
+import './reset-senha.css';
 import API_URL from "../config";
 import "../pages/reset-senha.css"
 

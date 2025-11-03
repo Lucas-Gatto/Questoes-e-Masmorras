@@ -20,7 +20,7 @@ const EditarUsuario = () => {
       return;
     }
 
-    // Simulação de sucesso local
+
     setTimeout(() => {
       setMessage('Informações atualizadas com sucesso!');
       setIsLoading(false);

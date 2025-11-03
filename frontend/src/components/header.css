@@ -1,13 +1,18 @@
+/*
+ * =============================================
+ * ESTILOS DE DESKTOP (Seu código original)
+ * =============================================
+ */
+
 .header {
   height: 60px;
   background-color: #000000;
   color: rgb(247, 182, 5);
   align-items: center;
   display: flex;
-  justify-content: space-between;
-
+  justify-content: space-between; /* Home | Logo | Login */
   font-family: "MedievalSharp", cursive;
-  padding: 0px 30px;
+  padding: 0px 30px; /* Padding de desktop */
 }
 
 a {
@@ -16,19 +21,29 @@ a {
 }
 
 .logo {
-  height: 40px;
+  height: 40px; /* Tamanho do logo no desktop */
 }
 
-@media (max-width: 600px) {
-  header {
+/*
+ * =============================================
+ * RESPONSIVIDADE PARA CELULAR (CORRIGIDO)
+ * =============================================
+ */
+@media (max-width: 480px) {
+  
+  /* Reduz o padding geral do header no celular */
+  .header {
     padding: 0 15px;
+  }
 
-    header h1 {
-      font-size: 1.5rem;
-    }
+  /* * Precisamos selecionar o 'h1' DENTRO do '.header' 
+   * (E não aninhar as regras como no SASS)
+   */
+  .header h1 {
+    font-size: 1.2rem; /* Fonte menor para 'Home' e 'Login' */
+  }
 
-    .logo {
-      height: 35px;
-    }
+  .logo {
+    height: 30px; /* Logo menor para caber */
   }
 }

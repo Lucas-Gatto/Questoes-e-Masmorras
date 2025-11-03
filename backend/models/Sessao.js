@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const AlunoSchema = new mongoose.Schema({
   nome: { type: String, required: true },
   classe: { type: String, default: '' },
+  pontos: { type: Number, default: 0 },
 }, { _id: false });
 
 const SalaSnapshotSchema = new mongoose.Schema({

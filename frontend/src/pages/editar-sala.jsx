@@ -197,16 +197,73 @@ const EditarSala = () => {
     }
   };
 
-  const handleFileChange = (e) => {
+  // Helper para comprimir/redimensionar imagens no cliente
+  const compressImage = (file, { maxWidth = 1600, maxHeight = 1200, quality = 0.8 } = {}) => {
+    return new Promise((resolve, reject) => {
+      try {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        img.onload = () => {
+          try {
+            let { width, height } = img;
+            const aspect = width / height;
+            // Ajusta dimensões mantendo proporção
+            if (width > maxWidth) {
+              width = maxWidth;
+              height = Math.round(width / aspect);
+            }
+            if (height > maxHeight) {
+              height = maxHeight;
+              width = Math.round(height * aspect);
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Converte para JPEG para melhor compactação
+            const dataUrl = canvas.toDataURL('image/jpeg', quality);
+            URL.revokeObjectURL(url);
+            resolve(dataUrl);
+          } catch (err) {
+            URL.revokeObjectURL(url);
+            reject(err);
+          }
+        };
+        img.onerror = reject;
+        img.src = url;
+      } catch (err) {
+        reject(err);
+      }
+    });
+  };
+
+  const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const imagemDataUrl = reader.result;
-      setEditingSala((salaAtual) => ({ ...salaAtual, imagem: imagemDataUrl }));
+
+    // Valida tipo
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor, selecione um arquivo de imagem.');
+      return;
+    }
+
+    // Tenta comprimir/redimensionar para reduzir payload
+    try {
+      const compressedDataUrl = await compressImage(file, { maxWidth: 1600, maxHeight: 1200, quality: 0.8 });
+      setEditingSala((salaAtual) => ({ ...salaAtual, imagem: compressedDataUrl }));
       setFileName(file.name);
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.warn('Falha ao comprimir imagem, usando arquivo original:', err);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setEditingSala((salaAtual) => ({ ...salaAtual, imagem: reader.result }));
+        setFileName(file.name);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const renderFormBody = () => {
@@ -374,6 +431,14 @@ const EditarSala = () => {
         <label htmlFor={`upload-${editingSala.id}`} className="visually-hidden">
           Imagem
         </label>
+        {editingSala.imagem && (
+          <div className="preview-imagem-sala" aria-live="polite">
+            <img
+              src={editingSala.imagem}
+              alt={`Pré-visualização da imagem da sala ${editingSala.nome || ''}`}
+            />
+          </div>
+        )}
         <div className="botoes-sala-container">
           <button className="btn-sala btn-imagem" onClick={handleImageUploadClick}>
             {fileName}

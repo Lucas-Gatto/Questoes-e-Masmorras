@@ -184,3 +184,18 @@
   cursor: pointer;
   width: 30px;
 }
+
+/* === PRÉ-VISUALIZAÇÃO DA IMAGEM DA SALA === */
+.preview-imagem-sala {
+  margin: 12px 0 8px;
+  display: flex;
+  justify-content: center;
+}
+
+.preview-imagem-sala img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 2px solid #444;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}

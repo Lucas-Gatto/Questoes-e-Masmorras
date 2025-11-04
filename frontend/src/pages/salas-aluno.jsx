@@ -3,6 +3,7 @@ import SalaEnigma from "../components/sala-enigma-aluno";
 import SalaAlternativa from "../components/sala-alternativa-aluno";
 import SalaMonstro from "../components/sala-monstro-aluno";
 import API_URL from "../config";
+import './sala-de-jogo.css';
 
 const SalasAluno = () => {
   const [salaAtual, setSalaAtual] = useState(null);
@@ -62,8 +63,24 @@ const SalasAluno = () => {
     }
   };
 
-  // Evita landmark <main> aninhado dentro do LayoutAluno
-  return <div className="salas-aluno-container">{renderizarSala()}</div>;
+  // Calcula progresso com segurança (mesma lógica da Sala de Jogo)
+  const totalSalas = Array.isArray(snapshot?.salas) ? snapshot.salas.length : 0;
+  const progresso = totalSalas > 0 ? ((indiceSala + 1) / totalSalas) * 100 : 0;
+
+  // Layout com barra de progresso lateral e conteúdo da sala
+  return (
+    <div className="sala-de-jogo-main" style={{ gap: 20, justifyContent: 'center' }}>
+      {/* Barra de Progresso (mesma estilização) */}
+      <div className="progresso-barra-container">
+        <div className="progresso-barra-preenchimento" style={{ height: `${progresso}%` }}></div>
+      </div>
+
+      {/* Conteúdo da sala do aluno */}
+      <div className="salas-aluno-container" style={{ width: '90%', maxWidth: 900 }}>
+        {renderizarSala()}
+      </div>
+    </div>
+  );
 };
 
 export default SalasAluno;

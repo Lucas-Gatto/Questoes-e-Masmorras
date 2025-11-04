@@ -20,6 +20,7 @@ const allowedOrigins = [
   'http://localhost:5174',
   'http://localhost:5175',
   'https://questoes-e-masmorras.vercel.app',
+  'https://questoes-e-masmorras.v2.vercel.app',
   'https://questoes-e-masmorras-k8nz.onrender.com',
   process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : null,
 ].filter(Boolean); // Remove valores nulos

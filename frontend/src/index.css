@@ -1,27 +1,20 @@
-/* Em: src/index.css */
 
-/* Remove todas as margens e paddings padrão do navegador */
 body, html, #root {
   margin: 0;
   padding: 0;
   width: 100%;
-  box-sizing: border-box; /* Garante que padding/border não aumentem o tamanho */
+  box-sizing: border-box; 
 }
 
 html {
-  /* --- ESTA É A CORREÇÃO --- */
-  /* Define o fundo de todo o navegador como preto.
-     As faixas brancas são o 'html' aparecendo. */
   background-color: #000000;
 }
 
 body {
-  min-height: 100vh; /* Garante que o corpo ocupe pelo menos a altura da tela */
-  font-family: Arial, sans-serif; /* Fonte padrão de fallback */
+  min-height: 100vh; 
+  font-family: Arial, sans-serif; 
   
-  /* Se o seu fundo de tijolo estiver aqui, mantenha-o */
-  /* Ex: background-image: url('./assets/background.jpg'); */
-  /* background-repeat: repeat; */
+
 }
 
 #root {

@@ -1,37 +1,53 @@
 import React from "react";
-import "./sala-monstro-aluno.css";
+// Usa estilos da página do mestre via salas-aluno.jsx
 
-const SalaMonstro = ({ sala, aventuraTitulo }) => {
+const getVidaPercentual = (vidaMonstro) => {
+  const map = { Baixa: 33, Média: 66, Alta: 100 };
+  return map[vidaMonstro] ?? 66;
+};
+
+const SalaMonstro = ({ sala }) => {
     // Se não há dados da sala, mostra carregamento
     if (!sala) {
-        return (
-            <div className="sala-monstro-wrapper">
-                <div className="conteudo-central">
-                    <div className="quadro-transparente">
-                        <p>Carregando sala...</p>
-                    </div>
-                </div>
-            </div>
-        );
+        return <p className="loading-sala">Carregando dados da sala...</p>;
     }
 
     return (
-        <div className="sala-monstro-wrapper">
-            <div className="conteudo-central">
-                <div className="quadro-transparente">
-                    <h1 className="titulo">{aventuraTitulo || "Aventura"}</h1>
-                    <h2 className="subtitulo">{sala.nome || "Sala"}</h2>
-                    <p className="texto-placeholder">
-                        {sala.texto || "Descrição da sala não disponível"}
-                    </p>
-                    {/* Renderiza imagem se disponível */}
-                    {sala.imagem && (
-                        <div className="imagem-monstro">
-                            <img src={sala.imagem} alt={`Imagem da sala ${sala.nome}`} />
-                        </div>
-                    )}
-                </div>
+        <div className="conteudo-monstro">
+          <p className="texto-sala">{sala.texto || "Descrição do monstro não preenchida."}</p>
+          <div className="monstro-grid">
+            <div className="monstro-imagem-container">
+              <div className="imagem-container">
+                {sala.imagem ? (
+                  <img src={sala.imagem} alt={`Imagem da sala ${sala.nome || ''}`} />
+                ) : (
+                  <span className="imagem-fallback-text">Imagem não disponível</span>
+                )}
+              </div>
             </div>
+            <div className="monstro-status">
+              <div className="vida-monstro-container">
+                <span>Vida do Monstro ({sala.vidaMonstro || 'Média'})</span>
+                <div className="vida-barra">
+                  <div
+                    className="vida-preenchimento"
+                    style={{ width: `${getVidaPercentual(sala.vidaMonstro)}%` }}
+                  ></div>
+                </div>
+              </div>
+              <div className="pergunta-nivel">
+                <span>Pergunta de Nível: <strong>2</strong></span>
+                <div className="dado-icone">🎲</div>
+              </div>
+              <div className="turno-jogador">
+                <span>Turno de:</span>
+                <div className="nome-personagem">Personagem 1</div>
+              </div>
+              <div className="timer-container-mestre">
+                <span>00:30</span>
+              </div>
+            </div>
+          </div>
         </div>
     );
 };

@@ -1,37 +1,29 @@
 import React from 'react';
-import './sala-enigma.css';
+// Usa estilos da página do mestre via salas-aluno.jsx
 
 
-const SalaEnigma = ({ sala, aventuraTitulo }) => {
+const SalaEnigma = ({ sala }) => {
   // Se não há dados da sala, mostra carregamento
   if (!sala) {
-    return (
-      <div className="container-sala">
-        <div className="conteudo">
-          <div className="quadro">
-            <p>Carregando sala...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <p className="loading-sala">Carregando dados da sala...</p>;
   }
 
   return (
-    <div className="container-sala">
-      <div className="conteudo">
-        <div className="quadro">
-          <h1>{aventuraTitulo || "Aventura"}</h1>
-          <h2>{sala.nome || "Sala"}</h2>
-          <p>
-            {sala.enigma || "Enigma não disponível"}
-          </p>
-          {/* Renderiza imagem se disponível */}
-          {sala.imagem && (
-            <div className="imagem-enigma">
-              <img src={sala.imagem} alt={`Imagem da sala ${sala.nome}`} />
-            </div>
-          )}
-        </div>
+    <div className="conteudo-enigma">
+      <p className="texto-sala">{sala.enigma || 'Enigma não preenchido'}</p>
+      <div className="imagem-container">
+        {sala.imagem ? (
+          <img src={sala.imagem} alt={`Imagem da sala ${sala.nome || ''}`} />
+        ) : (
+          <span className="imagem-fallback-text">Imagem não disponível</span>
+        )}
+      </div>
+      <div className="botoes-grid-enigma">
+        <div className="resposta-enigma">{sala.resposta || 'Resposta não preenchida'}</div>
+        {/* Mantém layout igual ao mestre; no aluno, botão sem ação */}
+        <button className="btn-jogo azul" disabled>
+          Revelar
+        </button>
       </div>
     </div>
   );

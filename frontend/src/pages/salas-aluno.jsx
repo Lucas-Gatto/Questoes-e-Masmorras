@@ -67,16 +67,19 @@ const SalasAluno = () => {
   const totalSalas = Array.isArray(snapshot?.salas) ? snapshot.salas.length : 0;
   const progresso = totalSalas > 0 ? ((indiceSala + 1) / totalSalas) * 100 : 0;
 
-  // Layout com barra de progresso lateral e conteúdo da sala
+  // Layout com barra de progresso lateral e painel central igual ao mestre
   return (
-    <div className="sala-de-jogo-main" style={{ gap: 20, justifyContent: 'center' }}>
+    <div className="sala-de-jogo-main">
       {/* Barra de Progresso (mesma estilização) */}
       <div className="progresso-barra-container">
         <div className="progresso-barra-preenchimento" style={{ height: `${progresso}%` }}></div>
       </div>
 
-      {/* Conteúdo da sala do aluno */}
-      <div className="salas-aluno-container" style={{ width: '90%', maxWidth: 900 }}>
+      {/* Painel Central (mesmo do mestre) */}
+      <div className="sala-painel">
+        <h1 className="sala-titulo-aventura">{snapshot?.titulo || 'Aventura Sem Título'}</h1>
+        <h2 className="sala-titulo-nome">{salaAtual?.nome || 'Carregando Sala...'}</h2>
+
         {renderizarSala()}
       </div>
     </div>

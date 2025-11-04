@@ -20,8 +20,9 @@ const allowedOrigins = [
   'http://localhost:5174',
   'http://localhost:5175',
   'https://questoes-e-masmorras.vercel.app',
+  'https://questoes-e-masmorras-k8nz.onrender.com',
   process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : null,
-].filter(Boolean);
+].filter(Boolean); // Remove valores nulos
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -32,13 +33,15 @@ const corsOptions = {
       callback(new Error('CORS not allowed for origin: ' + origin));
     }
   },
-  credentials: true,
+  credentials: true, // Permite cookies/sessão
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   optionsSuccessStatus: 204,
 };
 
+// Aplica CORS globalmente
 app.use(cors(corsOptions));
-// Express 5 não aceita '*' em path-to-regexp; usa regex para capturar todas
+
+// Permite pré-flight para qualquer rota
 app.options(/.*/, cors(corsOptions));
 
 // Configurar sessão (sem JWT)

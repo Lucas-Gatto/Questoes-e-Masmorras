@@ -90,7 +90,8 @@ const forgotPassword = async (req, res) => {
     await user.save();
 
     //Criar link de reset
-    const resetLink = `http://localhost:5173/reset-password/${token}`;
+    const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
+    const resetLink = `${CLIENT_URL}/reset-password/${token}`;
 
     //Criar transporter e enviar e-mail
     const transporter = createTransporter();

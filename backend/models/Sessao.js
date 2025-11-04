@@ -27,6 +27,8 @@ const SessaoSchema = new mongoose.Schema({
   },
   currentSalaIndex: { type: Number, default: 0 },
   alunos: [AlunoSchema],
+  // Flags por sala para revelar resposta do Enigma aos alunos
+  enigmaReveladoPorSala: { type: [Boolean], default: [] },
   // Avaliações (média e quantidade)
   avaliacaoMedia: { type: Number, default: 0 },
   avaliacaoCount: { type: Number, default: 0 },

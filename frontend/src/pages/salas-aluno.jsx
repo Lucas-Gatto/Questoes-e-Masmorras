@@ -10,6 +10,7 @@ const SalasAluno = () => {
   const [codigoSessao, setCodigoSessao] = useState('');
   const [snapshot, setSnapshot] = useState(null);
   const [indiceSala, setIndiceSala] = useState(0);
+  const [enigmaFlags, setEnigmaFlags] = useState([]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -32,6 +33,8 @@ const SalasAluno = () => {
           setIndiceSala(idx);
           const sala = data?.aventuraSnapshot?.salas?.[idx] || null;
           setSalaAtual(sala);
+          // Guarda flags de revelação, se houver
+          setEnigmaFlags(Array.isArray(data.enigmaReveladoPorSala) ? data.enigmaReveladoPorSala : []);
         }
       } catch (e) {
         // silencioso
@@ -51,9 +54,10 @@ const SalasAluno = () => {
     // Passa o título da aventura do snapshot para os componentes
     const aventuraTitulo = snapshot?.titulo || "Aventura";
 
+    const revelada = Array.isArray(enigmaFlags) && indiceSala >= 0 && indiceSala < enigmaFlags.length ? !!enigmaFlags[indiceSala] : false;
     switch (salaAtual.tipo) {
       case 'Enigma':
-        return <SalaEnigma sala={salaAtual} aventuraTitulo={aventuraTitulo} />;
+        return <SalaEnigma sala={salaAtual} aventuraTitulo={aventuraTitulo} revelada={revelada} />;
       case 'Monstro':
         return <SalaMonstro sala={salaAtual} aventuraTitulo={aventuraTitulo} />;
       case 'Alternativa':

@@ -132,6 +132,12 @@
 }
 .botoes-grid-enigma .btn-jogo { width: 100%; }
 
+.botoes-grid-enigma-aluno {
+  display: grid;
+  gap: 15px;
+  align-items: stretch;
+}
+
 /* Estilos Específicos: ALTERNATIVA */
 .botoes-grid-alternativa {
   display: grid;

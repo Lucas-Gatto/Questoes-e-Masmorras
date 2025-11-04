@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createSessao, getSessaoById, getSessaoByCode, addAlunoByCode, setClasseByCode, advanceSala, startSessao, finishSessao, avaliarSessaoByCode, awardPontoAlunoByBody } = require('../controllers/sessaoController');
+const { createSessao, getSessaoById, getSessaoByCode, addAlunoByCode, setClasseByCode, advanceSala, startSessao, finishSessao, avaliarSessaoByCode, awardPontoAlunoByBody, revealEnigma } = require('../controllers/sessaoController');
 const ensureAuth = require('../middleware/ensureAuth');
 
 // Rotas do aluno (públicas)
@@ -16,5 +16,6 @@ router.put('/:id/start', ensureAuth, startSessao);
 router.put('/:id/advance', ensureAuth, advanceSala);
 router.put('/:id/finish', ensureAuth, finishSessao);
 router.put('/:id/alunos/ponto', ensureAuth, awardPontoAlunoByBody);
+router.put('/:id/reveal-enigma', ensureAuth, revealEnigma);
 
 module.exports = router;

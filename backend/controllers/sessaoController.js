@@ -55,6 +55,7 @@ exports.getSessaoByCode = async (req, res) => {
       currentSalaIndex: sessao.currentSalaIndex,
       alunos: sessao.alunos,
       codigo: sessao.codigo,
+      enigmaReveladoPorSala: Array.isArray(sessao.enigmaReveladoPorSala) ? sessao.enigmaReveladoPorSala : [],
     });
   } catch (err) {
     res.status(500).json({ message: 'Erro ao buscar sessão', details: err?.message });
@@ -142,6 +143,40 @@ exports.finishSessao = async (req, res) => {
     res.json({ status: sessao.status, currentSalaIndex: sessao.currentSalaIndex });
   } catch (err) {
     res.status(500).json({ message: 'Erro ao finalizar sessão', details: err?.message });
+  }
+};
+
+// Revela resposta do Enigma para a sala atual, persistindo flag
+exports.revealEnigma = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const sessao = await Sessao.findById(id);
+    if (!sessao) return res.status(404).json({ message: 'Sessão não encontrada' });
+
+    const totalSalas = Array.isArray(sessao.aventuraSnapshot?.salas) ? sessao.aventuraSnapshot.salas.length : 0;
+    const idx = Number(sessao.currentSalaIndex || 0);
+
+    // Garante tamanho do array de flags
+    if (!Array.isArray(sessao.enigmaReveladoPorSala)) {
+      sessao.enigmaReveladoPorSala = [];
+    }
+    while (sessao.enigmaReveladoPorSala.length < totalSalas) {
+      sessao.enigmaReveladoPorSala.push(false);
+    }
+
+    // Marca a flag como revelada para a sala atual
+    if (idx >= 0 && idx < totalSalas) {
+      sessao.enigmaReveladoPorSala[idx] = true;
+    }
+
+    await sessao.save();
+
+    res.json({
+      currentSalaIndex: sessao.currentSalaIndex,
+      enigmaReveladoPorSala: sessao.enigmaReveladoPorSala,
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao revelar enigma', details: err?.message });
   }
 };
 

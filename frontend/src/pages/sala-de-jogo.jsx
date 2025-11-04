@@ -134,6 +134,21 @@ const SalaDeJogo = () => {
     }
   };
 
+  // Revela resposta do Enigma e sincroniza com backend
+  const handleRevelarEnigma = async () => {
+    setRespostaRevelada(true);
+    if (sessaoAtual?.id) {
+      try {
+        await fetch(`${API_URL}/sessoes/${sessaoAtual.id}/reveal-enigma`, {
+          method: 'PUT',
+          credentials: 'include',
+        });
+      } catch (e) {
+        // falha não impede UX local
+      }
+    }
+  };
+
   // Abre o modal de seleção de alunos
   const handleSelecionarRespondente = () => {
     carregarAlunos();
@@ -185,7 +200,7 @@ const SalaDeJogo = () => {
             {renderImagem(sala)} {/* Renderiza imagem ou placeholder */}
             <div className="botoes-grid-enigma">
               <div className={`resposta-enigma ${respostaRevelada ? '' : 'borrada'}`}>{sala.resposta || "Resposta não preenchida"}</div>
-              <button className="btn-jogo azul" onClick={() => setRespostaRevelada(true)} disabled={respostaRevelada}>Revelar</button>
+              <button className="btn-jogo azul" onClick={handleRevelarEnigma} disabled={respostaRevelada}>Revelar</button>
               <button className="btn-jogo dourado" onClick={handleSelecionarRespondente}>Selecionar Respondente</button>
               {/* Botão Avançar/Finalizar foi movido para fora */}
             </div>
@@ -273,7 +288,7 @@ const SalaDeJogo = () => {
               })}
 
               {/* Mantém o botão Revelar */}
-              <button className="btn-jogo azul" onClick={() => setRespostaRevelada(true)} disabled={respostaRevelada}>Revelar</button>
+              <button className="btn-jogo azul" onClick={handleRevelarEnigma} disabled={respostaRevelada}>Revelar</button>
 
               {/* Mensagem se não houver opções */}
               {(!sala?.opcoes || sala.opcoes.length === 0) && (

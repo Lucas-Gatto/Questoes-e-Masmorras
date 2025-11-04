@@ -2,7 +2,7 @@ import React from 'react';
 // Usa estilos da página do mestre via salas-aluno.jsx
 
 
-const SalaEnigma = ({ sala }) => {
+const SalaEnigma = ({ sala, revelada = false }) => {
   // Se não há dados da sala, mostra carregamento
   if (!sala) {
     return <p className="loading-sala">Carregando dados da sala...</p>;
@@ -18,12 +18,8 @@ const SalaEnigma = ({ sala }) => {
           <span className="imagem-fallback-text">Imagem não disponível</span>
         )}
       </div>
-      <div className="botoes-grid-enigma">
-        <div className="resposta-enigma">{sala.resposta || 'Resposta não preenchida'}</div>
-        {/* Mantém layout igual ao mestre; no aluno, botão sem ação */}
-        <button className="btn-jogo azul" disabled>
-          Revelar
-        </button>
+      <div className="botoes-grid-enigma-aluno">
+        <div className={`resposta-enigma ${revelada ? '' : 'borrada'}`}>{sala.resposta || 'Resposta não preenchida'}</div>
       </div>
     </div>
   );

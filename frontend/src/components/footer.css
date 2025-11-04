@@ -1,12 +1,36 @@
-footer {
-    height: 60px;
-    background-color: #000000;
-    color: rgb(241, 179, 10);
-    align-items: center;
-    display: flex;
-    justify-content: center;
+/*
+ * =============================================
+ * ESTILOS DE DESKTOP (Seu código original)
+ * =============================================
+ */
 
-    padding: 0px 30px;
-    position: relative;
-    
+footer {
+  height: 60px;
+  background-color: #000000;
+  color: rgb(241, 179, 10);
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  padding: 0px 30px;
+  position: relative;
+  /* Adiciona fonte para consistência */
+  font-family: Arial, sans-serif; 
+}
+
+/*
+ * =============================================
+ * RESPONSIVIDADE PARA CELULAR (NOVO)
+ * =============================================
+ */
+@media (max-width: 480px) {
+
+  footer {
+    padding: 0 10px; /* Reduz o padding lateral */
+  }
+
+  /* Seleciona o parágrafo dentro do footer */
+  footer p {
+    font-size: 0.8rem; /* Diminui a fonte do copyright */
+    text-align: center; /* Garante centralização se quebrar linha */
+  }
 }

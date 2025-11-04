@@ -25,6 +25,8 @@ import Avaliacao from "./pages/avaliacao.jsx";
 import AguardarInicio from "./pages/aguardar-inicio.jsx";
 import RecuperarSenha from "./pages/recuperar-senha.jsx";
 import ResetSenha from "./pages/reset-senha.jsx";
+import EditarUsuario from "./pages/alterar-informacoes.jsx";
+import PerfilUsuario from "./pages/perfil.jsx";
 
 function App() {
   return (
@@ -41,7 +43,9 @@ function App() {
 
           {/* --- GRUPO 2: Rotas de Gerenciamento (com LayoutLogado) --- */}
           <Route element={<LayoutLogado />}>
-            <Route path="/suas-aventuras" element={<SuasAventuras />} />
+          <Route path="/alterar-informacoes" element={<EditarUsuario/>}/>
+          <Route path="perfil" element={<PerfilUsuario/>}/>
+             <Route path="/suas-aventuras" element={<SuasAventuras />} />
             <Route path="/nova-aventura" element={<NovaAventura />} />
             <Route path="/editar-aventura/:id" element={<EditarAventura />} />
             <Route

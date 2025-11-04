@@ -1,16 +1,16 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Footer from "../footer";
-import HeaderAventura from "../HeaderAventura";
+import HeaderAluno from "../header-aluno";
 
 const LayoutAluno = () => {
   return (
     <>
-      <HeaderAventura />
+      <HeaderAluno/>
       <main className="main-content">
         <Outlet />
       </main>
-      <Footer />
+      <Footer/>
     </>
   );
 };

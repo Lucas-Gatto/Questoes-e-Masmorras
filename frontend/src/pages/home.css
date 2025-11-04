@@ -42,3 +42,40 @@
 .signup-button:hover {
   transform: scale(1.05);
 }
+@media (max-width: 480px) {
+
+  .home-container {
+    padding: 10px; 
+  }
+
+  .img-pergaminho {
+  
+    padding: 70px 45px 50px 45px;
+    
+
+    min-height: auto;
+
+    
+    background-size: 100% 100%;
+
+    
+    width: 100%;
+  }
+
+  .scroll-title {
+    font-size: 1.4rem; 
+    margin-bottom: 10px;
+  }
+
+  .scroll-text {
+    font-size: 0.80rem; 
+    line-height: 1.6;
+    text-align: justify;
+  }
+
+  .signup-button {
+    font-size: 1.1rem; 
+    padding: 10px 30px;
+    margin-top: 20px;
+  }
+}

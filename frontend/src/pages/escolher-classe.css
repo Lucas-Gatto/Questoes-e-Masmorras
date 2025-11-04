@@ -105,10 +105,11 @@
 
 .descricao-classe-display {
   flex-grow: 1;
-  min-width: 250px;
-  height: 50px;
+  min-width: 200px;
+  height: 30px;
   display: flex;
   align-items: center;
+  width: 100px;
 }
 
 .btn-confirmar-escolha {

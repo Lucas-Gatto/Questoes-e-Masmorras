@@ -46,3 +46,31 @@
 .header-right .logo {
   height: 40px;
 }
+
+@media (max-width: 480px) {
+
+  .header-logado-container {
+    padding: 0 15px; /* Reduz padding lateral */
+  }
+
+  .header-left {
+    gap: 15px; /* Reduz gap entre avatar e nav */
+  }
+
+  .avatar-placeholder {
+    width: 35px; /* Avatar ligeiramente menor */
+    height: 35px;
+  }
+
+  .header-nav {
+    gap: 20px; /* Reduz drasticamente o gap entre os links */
+  }
+
+  .header-nav a {
+    font-size: 1rem; /* 16px - Tamanho muito menor para celular */
+  }
+
+  .header-right .logo {
+    height: 30px; /* Logo menor */
+  }
+}

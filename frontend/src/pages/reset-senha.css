@@ -1,0 +1,116 @@
+.reset-senha-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 120px);
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: white;
+}
+
+.reset-senha-painel {
+  width: 100%;
+  max-width: 500px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 25px;
+  padding: 35px 45px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+
+.reset-senha-painel h1 {
+  font-family: 'MedievalSharp', cursive;
+  font-size: 2rem;
+  color: #C68700; 
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.reset-senha-painel p {
+  margin-bottom: 30px;
+  line-height: 1.5;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+.form-reset {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; 
+}
+
+
+.form-reset input[type="password"] {
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 15px;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 1.1rem;
+  box-sizing: border-box; 
+  background-color: #333; 
+}
+.form-reset input[type="password"]::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+.form-reset input[type="password"]:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.feedback-message {
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  margin-top: -10px;
+  margin-bottom: 5px;
+}
+.feedback-message.success {
+  background-color: rgba(40, 167, 69, 0.3);
+  color: #d4edda;
+  border: 1px solid #28a745;
+}
+.feedback-message.error {
+  background-color: rgba(220, 53, 69, 0.3);
+  color: #f8d7da;
+  border: 1px solid #dc3545;
+}
+
+.form-reset button[type="submit"] {
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  font-family: 'MedievalSharp', cursive;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  background-color: #007BFF; 
+  transition: opacity 0.2s, transform 0.1s;
+  width: 100%;
+}
+.form-reset button[type="submit"]:hover { opacity: 0.9; }
+.form-reset button[type="submit"]:active { transform: scale(0.98); }
+.form-reset button[type="submit"]:disabled {
+  background-color: #555;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.form-reset button[type="submit"]:disabled:active { transform: none; }
+
+
+.link-voltar-login {
+  margin-top: 25px;
+  font-size: 0.9rem;
+}
+.link-voltar-login a {
+  color: #adb5bd; 
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.link-voltar-login a:hover {
+  color: #dee2e6; 
+  text-decoration: underline;
+}

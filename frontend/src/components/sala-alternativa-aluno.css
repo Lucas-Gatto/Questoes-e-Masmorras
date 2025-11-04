@@ -12,6 +12,13 @@
   align-items: center;
 }
 
+.btn-opcao:hover {
+  filter: brightness(1.2); /* aumenta o brilho ao passar o mouse */
+  transform: scale(1.05);  /* opcional: dá efeito de aumento */
+  transition: all 0.2s ease; /* suaviza a animação */
+}
+
+
 /* Botão de encerrar aventura */
 .btn-encerrar {
   position: absolute;

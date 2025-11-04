@@ -73,9 +73,9 @@ const AguardarInicio = () => {
           </div>
 
           <div className="instrucoes">
-            <p>🎲 Seu professor está preparando a aventura</p>
-            <p>⚔️ Em breve você será redirecionado para a primeira sala</p>
-            <p>🏰 Mantenha esta tela aberta</p>
+            <p>Seu professor está preparando a aventura</p>
+            <p>Em breve você será redirecionado para a primeira sala</p>
+            <p>Mantenha esta tela aberta</p>
           </div>
         </div>
       </div>

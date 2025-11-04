@@ -141,9 +141,12 @@
 /* Estilos Específicos: ALTERNATIVA */
 .botoes-grid-alternativa {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr; /* 2 botões por linha */
   gap: 15px;
 }
+.botoes-grid-alternativa .btn-jogo { width: 100%; }
+/* Revelar (mestre) ocupa a linha inteira como terceira linha */
+.botoes-grid-alternativa .btn-jogo.azul { grid-column: 1 / -1; }
 .btn-opcao-jogo {
   padding: 12px;
   border-radius: 10px;
@@ -182,7 +185,7 @@
   font-size: 14px;
   border: 2px solid rgba(0, 0, 0, 0.2);
 }
-.botoes-grid-alternativa .btn-jogo { width: 100%; }
+/* regra movida acima e mantida */
 
 /* Estilos Específicos: MONSTRO */
 .monstro-grid {

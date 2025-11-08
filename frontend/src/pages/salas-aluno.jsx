@@ -54,10 +54,11 @@ const SalasAluno = () => {
     return () => { clearInterval(intervalId); };
   }, []);
 
-  // Atualiza timer local com base em turnEndsAt e avança turno automaticamente
+  // Atualiza timer local: apenas turno (30s)
   useEffect(() => {
     if (!codigoSessao) return;
     const tick = () => {
+      // Timer do turno
       if (!turnEndsAt) {
         setTimeLeft(0);
         return;

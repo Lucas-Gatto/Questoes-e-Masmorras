@@ -58,6 +58,7 @@ exports.getSessaoByCode = async (req, res) => {
       enigmaReveladoPorSala: Array.isArray(sessao.enigmaReveladoPorSala) ? sessao.enigmaReveladoPorSala : [],
       currentPlayerIndex: Number(sessao.currentPlayerIndex || 0),
       turnEndsAt: sessao.turnEndsAt || null,
+      readingEndsAt: sessao.readingEndsAt || null,
     });
   } catch (err) {
     res.status(500).json({ message: 'Erro ao buscar sessão', details: err?.message });
@@ -106,11 +107,16 @@ exports.advanceSala = async (req, res) => {
     if (sessao.currentSalaIndex < (sessao.aventuraSnapshot?.salas?.length || 0) - 1) {
       sessao.currentSalaIndex += 1;
       sessao.status = 'active';
+      // Ao trocar de sala: reinicia turno diretamente para 30s
+      sessao.currentPlayerIndex = 0;
+      const hasAlunos = Array.isArray(sessao.alunos) && sessao.alunos.length > 0;
+      sessao.readingEndsAt = null;
+      sessao.turnEndsAt = hasAlunos ? new Date(Date.now() + 30000) : null;
     } else {
       sessao.status = 'finished';
     }
     await sessao.save();
-    res.json({ currentSalaIndex: sessao.currentSalaIndex, status: sessao.status });
+    res.json({ currentSalaIndex: sessao.currentSalaIndex, status: sessao.status, currentPlayerIndex: sessao.currentPlayerIndex, readingEndsAt: sessao.readingEndsAt, turnEndsAt: sessao.turnEndsAt });
   } catch (err) {
     res.status(500).json({ message: 'Erro ao avançar sala', details: err?.message });
   }
@@ -126,9 +132,11 @@ exports.startSessao = async (req, res) => {
     // Inicializa turno
     sessao.currentPlayerIndex = 0;
     const hasAlunos = Array.isArray(sessao.alunos) && sessao.alunos.length > 0;
+    // Inicia turno imediatamente com 30s
+    sessao.readingEndsAt = null;
     sessao.turnEndsAt = hasAlunos ? new Date(Date.now() + 30000) : null;
     await sessao.save();
-    res.json({ status: sessao.status, currentSalaIndex: sessao.currentSalaIndex, currentPlayerIndex: sessao.currentPlayerIndex, turnEndsAt: sessao.turnEndsAt });
+    res.json({ status: sessao.status, currentSalaIndex: sessao.currentSalaIndex, currentPlayerIndex: sessao.currentPlayerIndex, turnEndsAt: sessao.turnEndsAt, readingEndsAt: sessao.readingEndsAt });
   } catch (err) {
     res.status(500).json({ message: 'Erro ao iniciar sessão', details: err?.message });
   }
@@ -292,6 +300,7 @@ exports.advanceTurn = async (req, res) => {
     const total = Array.isArray(sessao.alunos) ? sessao.alunos.length : 0;
     if (total === 0) return res.status(400).json({ message: 'Sem alunos na sessão' });
     sessao.currentPlayerIndex = (Number(sessao.currentPlayerIndex || 0) + 1) % total;
+    // Próximo jogador inicia com 30s de turno (sem período de leitura)
     sessao.turnEndsAt = new Date(Date.now() + 30000);
     await sessao.save();
     res.json({ currentPlayerIndex: sessao.currentPlayerIndex, turnEndsAt: sessao.turnEndsAt });
@@ -313,11 +322,52 @@ exports.advanceTurnByCode = async (req, res) => {
     // Somente avança se o timer estiver expirado (tolerância de 0.5s)
     if (endsAt && now + 500 >= endsAt) {
       sessao.currentPlayerIndex = (Number(sessao.currentPlayerIndex || 0) + 1) % total;
+      // Ao avançar por alunos, inicia turno de 30s para o próximo
       sessao.turnEndsAt = new Date(now + 30000);
       await sessao.save();
     }
     res.json({ currentPlayerIndex: sessao.currentPlayerIndex, turnEndsAt: sessao.turnEndsAt });
   } catch (err) {
     res.status(500).json({ message: 'Erro ao avançar turno (código)', details: err?.message });
+  }
+};
+
+// Inicia o turno de 30s após o período de leitura (professor)
+exports.startTurn = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const sessao = await Sessao.findById(id);
+    if (!sessao) return res.status(404).json({ message: 'Sessão não encontrada' });
+    const now = Date.now();
+    const readingEnds = sessao.readingEndsAt ? new Date(sessao.readingEndsAt).getTime() : 0;
+    if (!readingEnds || now + 500 < readingEnds) {
+      return res.status(400).json({ message: 'Período de leitura ainda não terminou' });
+    }
+    sessao.readingEndsAt = null;
+    sessao.turnEndsAt = new Date(now + 30000);
+    await sessao.save();
+    res.json({ turnEndsAt: sessao.turnEndsAt });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao iniciar turno', details: err?.message });
+  }
+};
+
+// Inicia o turno de 30s após o período de leitura (aluno)
+exports.startTurnByCode = async (req, res) => {
+  try {
+    const { codigo } = req.params;
+    const sessao = await Sessao.findOne({ codigo });
+    if (!sessao) return res.status(404).json({ message: 'Sessão não encontrada' });
+    const now = Date.now();
+    const readingEnds = sessao.readingEndsAt ? new Date(sessao.readingEndsAt).getTime() : 0;
+    if (!readingEnds || now + 500 < readingEnds) {
+      return res.status(400).json({ message: 'Período de leitura ainda não terminou' });
+    }
+    sessao.readingEndsAt = null;
+    sessao.turnEndsAt = new Date(now + 30000);
+    await sessao.save();
+    res.json({ turnEndsAt: sessao.turnEndsAt });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao iniciar turno (código)', details: err?.message });
   }
 };

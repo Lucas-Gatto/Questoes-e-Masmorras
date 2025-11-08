@@ -91,6 +91,7 @@ const SalaDeJogo = () => {
     return () => { clearInterval(idTimer); clearInterval(idPoll); };
   }, [sessaoAtual?.id]);
 
+
   // Avança turno automaticamente quando o timer chegar a zero no mestre
   useEffect(() => {
     if (!sessaoAtual?.id || !turnEndsAt || advancing) return;
@@ -308,7 +309,7 @@ const SalaDeJogo = () => {
                   }}>Pular</button>
                 </div>
                 {/* Adiciona Timer aqui se necessário */}
-                <div className="timer-container-mestre"> {/* Exemplo */}
+                <div className="timer-container-mestre">
                   <span>{(() => {
                     if (!turnEndsAt) return '—';
                     const ms = Math.max(0, new Date(turnEndsAt).getTime() - tickNow);

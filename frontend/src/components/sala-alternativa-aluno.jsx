@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import API_URL from "../config";
 // Usa estilos da página do mestre via salas-aluno.jsx
 
-const SalaAlternativa = ({ sala }) => {
+const SalaAlternativa = ({ sala, revelada = false }) => {
   // Se não há dados da sala, mostra carregamento
   if (!sala) {
     return <p className="loading-sala">Carregando dados da sala...</p>;
@@ -59,10 +59,11 @@ const SalaAlternativa = ({ sala }) => {
           const corClasse = cores[index % cores.length];
           const textoOpcao = opcao?.texto?.trim() ? opcao.texto : `Opção ${index + 1} (vazio)`;
           const idOpcao = opcao?.id != null ? opcao.id : index + 1;
+          const isCorreta = revelada && Number(sala?.opcaoCorretaId) === Number(idOpcao);
           return (
             <button
               key={idOpcao}
-              className={`btn-opcao-jogo ${corClasse} ${respondido && idOpcao !== selecionadaId ? 'disabled-grey' : ''}`}
+              className={`btn-opcao-jogo ${corClasse} ${respondido && idOpcao !== selecionadaId ? 'disabled-grey' : ''} ${isCorreta ? 'correta' : ''}`}
               title={opcao?.texto || `Opção ${index + 1}`}
               onClick={() => handleClickOpcao(idOpcao)}
               disabled={respondido}

@@ -61,7 +61,7 @@ const SalasAluno = () => {
       case 'Monstro':
         return <SalaMonstro sala={salaAtual} aventuraTitulo={aventuraTitulo} />;
       case 'Alternativa':
-        return <SalaAlternativa sala={salaAtual} aventuraTitulo={aventuraTitulo} />;
+        return <SalaAlternativa sala={salaAtual} aventuraTitulo={aventuraTitulo} revelada={revelada} />;
       default:
         return <p style={{ color: "white" }}>Tipo de sala desconhecido.</p>;
     }

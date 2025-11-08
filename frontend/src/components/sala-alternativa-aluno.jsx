@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
+import API_URL from "../config";
 // Usa estilos da página do mestre via salas-aluno.jsx
 
 const SalaAlternativa = ({ sala }) => {
@@ -6,6 +7,40 @@ const SalaAlternativa = ({ sala }) => {
   if (!sala) {
     return <p className="loading-sala">Carregando dados da sala...</p>;
   }
+
+  const [respondido, setRespondido] = useState(false);
+  const [selecionadaId, setSelecionadaId] = useState(null);
+
+  // Recupera código da sessão e nome do aluno para uso na pontuação
+  const { codigoSessao, nomeAluno } = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    const codigo = params.get("codigo") || localStorage.getItem("sessao_codigo") || "";
+    const nome = localStorage.getItem("aluno_nome") || "";
+    return { codigoSessao: codigo, nomeAluno: nome };
+  }, []);
+
+  const awardPontoSeCorreta = async () => {
+    try {
+      if (!codigoSessao || !nomeAluno) return;
+      await fetch(`${API_URL}/sessoes/by-code/${codigoSessao}/alunos/ponto`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nomeAluno })
+      });
+    } catch (_) {
+      // silencioso
+    }
+  };
+
+  const handleClickOpcao = async (idOpcao) => {
+    if (respondido) return;
+    setSelecionadaId(idOpcao);
+    setRespondido(true);
+    const correta = Number(sala?.opcaoCorretaId) === Number(idOpcao);
+    if (correta) {
+      await awardPontoSeCorreta();
+    }
+  };
 
   return (
     <div className="conteudo-alternativa">
@@ -27,8 +62,10 @@ const SalaAlternativa = ({ sala }) => {
           return (
             <button
               key={idOpcao}
-              className={`btn-opcao-jogo ${corClasse}`}
+              className={`btn-opcao-jogo ${corClasse} ${respondido && idOpcao !== selecionadaId ? 'disabled-grey' : ''}`}
               title={opcao?.texto || `Opção ${index + 1}`}
+              onClick={() => handleClickOpcao(idOpcao)}
+              disabled={respondido}
             >
               {textoOpcao}
             </button>

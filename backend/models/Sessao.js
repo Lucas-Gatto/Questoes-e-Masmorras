@@ -15,6 +15,8 @@ const SalaSnapshotSchema = new mongoose.Schema({
   texto: String,
   vidaMonstro: String,
   opcoes: [{ id: Number, texto: String }],
+  // Necessário para validação de alternativas no aluno
+  opcaoCorretaId: { type: Number, default: null },
   imagem: String,
 }, { _id: false });
 

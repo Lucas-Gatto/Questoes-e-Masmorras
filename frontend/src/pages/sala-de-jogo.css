@@ -162,6 +162,16 @@
 .btn-opcao-jogo.green { background-color: var(--alternativa_verde); }
 .btn-opcao-jogo.blue { background-color: var(--alternativa_azul); }
 
+/* Estado visual cinza para botões desabilitados (exceto o clicado) */
+.btn-opcao-jogo.disabled-grey {
+  background-color: #555 !important;
+  color: #ddd !important;
+  border-color: rgba(0,0,0,0.4) !important;
+  cursor: not-allowed !important;
+  opacity: 0.85;
+}
+.btn-opcao-jogo.disabled-grey:active { transform: none; }
+
 /* Destaque visual para alternativa correta ao revelar */
 .btn-opcao-jogo.correta {
   border-color: #2e8540;

@@ -246,3 +246,33 @@ exports.awardPontoAlunoByBody = async (req, res) => {
     res.status(500).json({ message: 'Erro ao adicionar ponto', details: err?.message });
   }
 };
+
+// Adicionar ponto a um aluno via código da sessão (público)
+exports.awardPontoAlunoByCode = async (req, res) => {
+  try {
+    const { codigo } = req.params;
+    const { nomeAluno } = req.body;
+
+    if (!codigo || !nomeAluno || typeof nomeAluno !== 'string') {
+      return res.status(400).json({ message: 'Código e nome do aluno são obrigatórios' });
+    }
+
+    const sessao = await Sessao.findOne({ codigo });
+    if (!sessao) return res.status(404).json({ message: 'Sessão não encontrada' });
+    if (sessao.status === 'finished') return res.status(400).json({ message: 'Sessão encerrada' });
+
+    const aluno = sessao.alunos.find(a => a.nome.toLowerCase() === nomeAluno.toLowerCase());
+    if (!aluno) return res.status(404).json({ message: 'Aluno não encontrado nesta sessão' });
+
+    aluno.pontos = (aluno.pontos || 0) + 1;
+    await sessao.save();
+
+    res.status(200).json({
+      message: `Ponto adicionado para ${aluno.nome}`,
+      aluno: { nome: aluno.nome, pontos: aluno.pontos, classe: aluno.classe },
+      alunos: sessao.alunos,
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao adicionar ponto', details: err?.message });
+  }
+};

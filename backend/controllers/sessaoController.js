@@ -48,7 +48,7 @@ exports.getSessaoByCode = async (req, res) => {
     const sessao = await Sessao.findOne({ codigo });
     if (!sessao) return res.status(404).json({ message: 'Sessão não encontrada' });
     // alunos e snapshot necessários ao aluno
-    res.json({
+  res.json({
       id: sessao._id,
       status: sessao.status,
       aventuraSnapshot: sessao.aventuraSnapshot,
@@ -56,6 +56,8 @@ exports.getSessaoByCode = async (req, res) => {
       alunos: sessao.alunos,
       codigo: sessao.codigo,
       enigmaReveladoPorSala: Array.isArray(sessao.enigmaReveladoPorSala) ? sessao.enigmaReveladoPorSala : [],
+      currentPlayerIndex: Number(sessao.currentPlayerIndex || 0),
+      turnEndsAt: sessao.turnEndsAt || null,
     });
   } catch (err) {
     res.status(500).json({ message: 'Erro ao buscar sessão', details: err?.message });
@@ -121,8 +123,12 @@ exports.startSessao = async (req, res) => {
     if (!sessao) return res.status(404).json({ message: 'Sessão não encontrada' });
     sessao.status = 'active';
     sessao.currentSalaIndex = 0;
+    // Inicializa turno
+    sessao.currentPlayerIndex = 0;
+    const hasAlunos = Array.isArray(sessao.alunos) && sessao.alunos.length > 0;
+    sessao.turnEndsAt = hasAlunos ? new Date(Date.now() + 30000) : null;
     await sessao.save();
-    res.json({ status: sessao.status, currentSalaIndex: sessao.currentSalaIndex });
+    res.json({ status: sessao.status, currentSalaIndex: sessao.currentSalaIndex, currentPlayerIndex: sessao.currentPlayerIndex, turnEndsAt: sessao.turnEndsAt });
   } catch (err) {
     res.status(500).json({ message: 'Erro ao iniciar sessão', details: err?.message });
   }
@@ -274,5 +280,44 @@ exports.awardPontoAlunoByCode = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ message: 'Erro ao adicionar ponto', details: err?.message });
+  }
+};
+
+// Avança turno para o próximo aluno (professor)
+exports.advanceTurn = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const sessao = await Sessao.findById(id);
+    if (!sessao) return res.status(404).json({ message: 'Sessão não encontrada' });
+    const total = Array.isArray(sessao.alunos) ? sessao.alunos.length : 0;
+    if (total === 0) return res.status(400).json({ message: 'Sem alunos na sessão' });
+    sessao.currentPlayerIndex = (Number(sessao.currentPlayerIndex || 0) + 1) % total;
+    sessao.turnEndsAt = new Date(Date.now() + 30000);
+    await sessao.save();
+    res.json({ currentPlayerIndex: sessao.currentPlayerIndex, turnEndsAt: sessao.turnEndsAt });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao avançar turno', details: err?.message });
+  }
+};
+
+// Avança turno por código (aluno, apenas quando timer expirou)
+exports.advanceTurnByCode = async (req, res) => {
+  try {
+    const { codigo } = req.params;
+    const sessao = await Sessao.findOne({ codigo });
+    if (!sessao) return res.status(404).json({ message: 'Sessão não encontrada' });
+    const total = Array.isArray(sessao.alunos) ? sessao.alunos.length : 0;
+    if (total === 0) return res.status(400).json({ message: 'Sem alunos na sessão' });
+    const now = Date.now();
+    const endsAt = sessao.turnEndsAt ? new Date(sessao.turnEndsAt).getTime() : 0;
+    // Somente avança se o timer estiver expirado (tolerância de 0.5s)
+    if (endsAt && now + 500 >= endsAt) {
+      sessao.currentPlayerIndex = (Number(sessao.currentPlayerIndex || 0) + 1) % total;
+      sessao.turnEndsAt = new Date(now + 30000);
+      await sessao.save();
+    }
+    res.json({ currentPlayerIndex: sessao.currentPlayerIndex, turnEndsAt: sessao.turnEndsAt });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao avançar turno (código)', details: err?.message });
   }
 };

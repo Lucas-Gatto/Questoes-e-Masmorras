@@ -11,6 +11,11 @@ const SalasAluno = () => {
   const [snapshot, setSnapshot] = useState(null);
   const [indiceSala, setIndiceSala] = useState(0);
   const [enigmaFlags, setEnigmaFlags] = useState([]);
+  const [alunos, setAlunos] = useState([]);
+  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+  const [turnEndsAt, setTurnEndsAt] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(30);
+  const [advancing, setAdvancing] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -35,6 +40,9 @@ const SalasAluno = () => {
           setSalaAtual(sala);
           // Guarda flags de revelação, se houver
           setEnigmaFlags(Array.isArray(data.enigmaReveladoPorSala) ? data.enigmaReveladoPorSala : []);
+          setAlunos(Array.isArray(data.alunos) ? data.alunos : []);
+          setCurrentPlayerIndex(Number(data.currentPlayerIndex || 0));
+          setTurnEndsAt(data.turnEndsAt || null);
         }
       } catch (e) {
         // silencioso
@@ -43,8 +51,37 @@ const SalasAluno = () => {
 
     const intervalId = setInterval(poll, 2000);
     poll();
-    return () => clearInterval(intervalId);
+    return () => { clearInterval(intervalId); };
   }, []);
+
+  // Atualiza timer local com base em turnEndsAt e avança turno automaticamente
+  useEffect(() => {
+    if (!codigoSessao) return;
+    const tick = () => {
+      if (!turnEndsAt) {
+        setTimeLeft(0);
+        return;
+      }
+      const ms = Math.max(0, new Date(turnEndsAt).getTime() - Date.now());
+      const secs = Math.ceil(ms / 1000);
+      setTimeLeft(secs);
+      if (secs <= 0 && !advancing) {
+        setAdvancing(true);
+        fetch(`${API_URL}/sessoes/by-code/${codigoSessao}/turn/next`, { method: 'PUT' })
+          .then(r => r.ok ? r.json() : null)
+          .then(data => {
+            if (data) {
+              setCurrentPlayerIndex(Number(data.currentPlayerIndex || 0));
+              setTurnEndsAt(data.turnEndsAt || null);
+            }
+          })
+          .catch(() => {})
+          .finally(() => setAdvancing(false));
+      }
+    };
+    const timerId = setInterval(tick, 250);
+    return () => clearInterval(timerId);
+  }, [turnEndsAt, codigoSessao, advancing]);
 
   const renderizarSala = () => {
     if (!salaAtual) {
@@ -55,11 +92,15 @@ const SalasAluno = () => {
     const aventuraTitulo = snapshot?.titulo || "Aventura";
 
     const revelada = Array.isArray(enigmaFlags) && indiceSala >= 0 && indiceSala < enigmaFlags.length ? !!enigmaFlags[indiceSala] : false;
+    const currentPlayerName = alunos?.[currentPlayerIndex]?.nome || '—';
+    const mm = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+    const ss = String(timeLeft % 60).padStart(2, '0');
+    const timerText = `${mm}:${ss}`;
     switch (salaAtual.tipo) {
       case 'Enigma':
-        return <SalaEnigma sala={salaAtual} aventuraTitulo={aventuraTitulo} revelada={revelada} />;
+        return <SalaEnigma sala={salaAtual} aventuraTitulo={aventuraTitulo} revelada={revelada} currentPlayerName={currentPlayerName} timerText={timerText} />;
       case 'Monstro':
-        return <SalaMonstro sala={salaAtual} aventuraTitulo={aventuraTitulo} />;
+        return <SalaMonstro sala={salaAtual} aventuraTitulo={aventuraTitulo} currentPlayerName={currentPlayerName} timerText={timerText} />;
       case 'Alternativa':
         return <SalaAlternativa sala={salaAtual} aventuraTitulo={aventuraTitulo} revelada={revelada} />;
       default:

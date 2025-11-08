@@ -6,7 +6,7 @@ const getVidaPercentual = (vidaMonstro) => {
   return map[vidaMonstro] ?? 66;
 };
 
-const SalaMonstro = ({ sala }) => {
+const SalaMonstro = ({ sala, currentPlayerName = '—', timerText = '00:30' }) => {
     // Se não há dados da sala, mostra carregamento
     if (!sala) {
         return <p className="loading-sala">Carregando dados da sala...</p>;
@@ -41,10 +41,10 @@ const SalaMonstro = ({ sala }) => {
               </div>
               <div className="turno-jogador">
                 <span>Turno de:</span>
-                <div className="nome-personagem">Personagem 1</div>
+                <div className="nome-personagem">{currentPlayerName}</div>
               </div>
               <div className="timer-container-mestre">
-                <span>00:30</span>
+                <span>{timerText}</span>
               </div>
             </div>
           </div>

@@ -29,6 +29,9 @@ const SessaoSchema = new mongoose.Schema({
   },
   currentSalaIndex: { type: Number, default: 0 },
   alunos: [AlunoSchema],
+  // Controle de turno: índice do jogador atual e prazo de término do turno
+  currentPlayerIndex: { type: Number, default: 0 },
+  turnEndsAt: { type: Date, default: null },
   // Flags por sala para revelar resposta do Enigma aos alunos
   enigmaReveladoPorSala: { type: [Boolean], default: [] },
   // Avaliações (média e quantidade)

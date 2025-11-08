@@ -2,7 +2,7 @@ import React from 'react';
 // Usa estilos da página do mestre via salas-aluno.jsx
 
 
-const SalaEnigma = ({ sala, revelada = false }) => {
+const SalaEnigma = ({ sala, revelada = false, currentPlayerName = '—', timerText = '00:30' }) => {
   // Se não há dados da sala, mostra carregamento
   if (!sala) {
     return <p className="loading-sala">Carregando dados da sala...</p>;
@@ -24,10 +24,10 @@ const SalaEnigma = ({ sala, revelada = false }) => {
       &nbsp;
       <div className="turno-jogador">
         <span>Turno de:</span>
-        <div className="nome-personagem">Personagem 1</div>
+        <div className="nome-personagem">{currentPlayerName}</div>
       </div>
       <div className="timer-container-mestre">
-        <span>00:30</span>
+        <span>{timerText}</span>
       </div>
     </div>
   );

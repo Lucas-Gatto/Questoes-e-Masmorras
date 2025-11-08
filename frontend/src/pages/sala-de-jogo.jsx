@@ -39,6 +39,10 @@ const SalaDeJogo = () => {
   const [sessaoAtual, setSessaoAtual] = useState(null);
   const [respostaRevelada, setRespostaRevelada] = useState(false); // Controle de revelação da resposta (Enigma)
   const [alunos, setAlunos] = useState([]); // Lista de alunos da sessão
+  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+  const [turnEndsAt, setTurnEndsAt] = useState(null);
+  const [tickNow, setTickNow] = useState(Date.now());
+  const [advancing, setAdvancing] = useState(false);
   const [showModalAlunos, setShowModalAlunos] = useState(false); // Controle do modal de seleção de alunos
 
   // Efeito para carregar a aventura do backend ao montar
@@ -77,6 +81,34 @@ const SalaDeJogo = () => {
     };
     carregar();
   }, [aventuraId, navigate]);
+
+  // Atualiza exibição do timer do mestre e carrega alunos ao ter sessão
+  useEffect(() => {
+    if (!sessaoAtual?.id) return;
+    carregarAlunos();
+    const idTimer = setInterval(() => setTickNow(Date.now()), 500);
+    const idPoll = setInterval(() => carregarAlunos(), 3000);
+    return () => { clearInterval(idTimer); clearInterval(idPoll); };
+  }, [sessaoAtual?.id]);
+
+  // Avança turno automaticamente quando o timer chegar a zero no mestre
+  useEffect(() => {
+    if (!sessaoAtual?.id || !turnEndsAt || advancing) return;
+    const remaining = new Date(turnEndsAt).getTime() - tickNow;
+    if (remaining <= 0) {
+      setAdvancing(true);
+      fetch(`${API_URL}/sessoes/${sessaoAtual.id}/turn/next`, { method: 'PUT', credentials: 'include' })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (data) {
+            setCurrentPlayerIndex(Number(data.currentPlayerIndex || 0));
+            setTurnEndsAt(data.turnEndsAt || null);
+          }
+        })
+        .catch(() => {})
+        .finally(() => setAdvancing(false));
+    }
+  }, [tickNow, turnEndsAt, sessaoAtual?.id, advancing]);
 
   // Reseta a revelação da resposta ao trocar de sala
   useEffect(() => {
@@ -128,6 +160,8 @@ const SalaDeJogo = () => {
       if (res.ok) {
         const data = await res.json();
         setAlunos(Array.isArray(data.alunos) ? data.alunos : []);
+        setCurrentPlayerIndex(Number(data.currentPlayerIndex || 0));
+        setTurnEndsAt(data.turnEndsAt || null);
       }
     } catch (e) {
       console.warn('Erro ao carregar alunos:', e);
@@ -208,8 +242,28 @@ const SalaDeJogo = () => {
             <div className="turno-jogador">
               {/* TODO: Lógica futura para definir o jogador da vez */}
               <span>Turno de:</span>
-              <div className="nome-personagem">Personagem 1</div>
-              <button className="btn-pular">Pular</button>
+              <div className="nome-personagem">{alunos?.[currentPlayerIndex]?.nome || '—'}</div>
+              <button className="btn-pular" onClick={async () => {
+                if (!sessaoAtual?.id) return;
+                try {
+                  const res = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}/turn/next`, { method: 'PUT', credentials: 'include' });
+                  if (res.ok) {
+                    const data = await res.json();
+                    setCurrentPlayerIndex(Number(data.currentPlayerIndex || 0));
+                    setTurnEndsAt(data.turnEndsAt || null);
+                  }
+                } catch (e) { /* silencioso */ }
+              }}>Pular</button>
+            </div>
+            <div className="timer-container-mestre">
+              <span>{(() => {
+                if (!turnEndsAt) return '—';
+                const ms = Math.max(0, new Date(turnEndsAt).getTime() - tickNow);
+                const s = Math.ceil(ms / 1000);
+                const mm = String(Math.floor(s / 60)).padStart(2, '0');
+                const ss = String(s % 60).padStart(2, '0');
+                return `${mm}:${ss}`;
+              })()}</span>
             </div>
           </div>
         );
@@ -240,12 +294,29 @@ const SalaDeJogo = () => {
                 <div className="turno-jogador">
                   {/* TODO: Lógica futura para definir o jogador da vez */}
                   <span>Turno de:</span>
-                  <div className="nome-personagem">Personagem 1</div>
-                  <button className="btn-pular">Pular</button>
+                  <div className="nome-personagem">{alunos?.[currentPlayerIndex]?.nome || '—'}</div>
+                  <button className="btn-pular" onClick={async () => {
+                    if (!sessaoAtual?.id) return;
+                    try {
+                      const res = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}/turn/next`, { method: 'PUT', credentials: 'include' });
+                      if (res.ok) {
+                        const data = await res.json();
+                        setCurrentPlayerIndex(Number(data.currentPlayerIndex || 0));
+                        setTurnEndsAt(data.turnEndsAt || null);
+                      }
+                    } catch (e) { /* silencioso */ }
+                  }}>Pular</button>
                 </div>
                 {/* Adiciona Timer aqui se necessário */}
                 <div className="timer-container-mestre"> {/* Exemplo */}
-                  <span>00:30</span>
+                  <span>{(() => {
+                    if (!turnEndsAt) return '—';
+                    const ms = Math.max(0, new Date(turnEndsAt).getTime() - tickNow);
+                    const s = Math.ceil(ms / 1000);
+                    const mm = String(Math.floor(s / 60)).padStart(2, '0');
+                    const ss = String(s % 60).padStart(2, '0');
+                    return `${mm}:${ss}`;
+                  })()}</span>
                 </div>
               </div>
             </div>

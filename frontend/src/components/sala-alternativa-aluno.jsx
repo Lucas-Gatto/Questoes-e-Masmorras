@@ -63,7 +63,7 @@ const SalaAlternativa = ({ sala, revelada = false }) => {
           return (
             <button
               key={idOpcao}
-              className={`btn-opcao-jogo ${corClasse} ${respondido && idOpcao !== selecionadaId ? 'disabled-grey' : ''} ${isCorreta ? 'correta' : ''}`}
+              className={`btn-opcao-jogo ${corClasse} ${respondido && idOpcao !== selecionadaId && !isCorreta ? 'disabled-grey' : ''} ${isCorreta ? 'correta' : ''}`}
               title={opcao?.texto || `Opção ${index + 1}`}
               onClick={() => handleClickOpcao(idOpcao)}
               disabled={respondido}

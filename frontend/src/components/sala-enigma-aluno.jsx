@@ -21,6 +21,14 @@ const SalaEnigma = ({ sala, revelada = false }) => {
       <div className="botoes-grid-enigma-aluno">
         <div className={`resposta-enigma ${revelada ? '' : 'borrada'}`}>{sala.resposta || 'Resposta não preenchida'}</div>
       </div>
+      &nbsp;
+      <div className="turno-jogador">
+        <span>Turno de:</span>
+        <div className="nome-personagem">Personagem 1</div>
+      </div>
+      <div className="timer-container-mestre">
+        <span>00:30</span>
+      </div>
     </div>
   );
 };

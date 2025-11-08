@@ -73,7 +73,7 @@ const SalaDeJogo = () => {
       try {
         const s = JSON.parse(localStorage.getItem('sessao_atual')) || null;
         if (s && s.id) setSessaoAtual(s);
-      } catch {}
+      } catch { }
     };
     carregar();
   }, [aventuraId, navigate]);
@@ -87,12 +87,12 @@ const SalaDeJogo = () => {
   const handleAvancarSala = () => {
     if (aventura && salaAtualIndex < aventura.salas.length - 1) {
       setSalaAtualIndex(prevIndex => prevIndex + 1); // Incrementa o índice
-            // se houver sessão do professor, sincroniza com backend
+      // se houver sessão do professor, sincroniza com backend
       if (sessaoAtual?.id) {
         fetch(`${API_URL}/sessoes/${sessaoAtual.id}/advance`, {
           method: 'PUT',
           credentials: 'include',
-        }).catch(() => {});
+        }).catch(() => { });
       }
     } else {
       // Se já está na última sala, não faz nada (botão Finalizar é que age)
@@ -122,8 +122,8 @@ const SalaDeJogo = () => {
   const carregarAlunos = async () => {
     if (!sessaoAtual?.id) return;
     try {
-      const res = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}`, { 
-        credentials: 'include' 
+      const res = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}`, {
+        credentials: 'include'
       });
       if (res.ok) {
         const data = await res.json();
@@ -165,7 +165,7 @@ const SalaDeJogo = () => {
         credentials: 'include',
         body: JSON.stringify({ nomeAluno })
       });
-      
+
       const contentType = res.headers.get('content-type') || '';
       if (res.ok) {
         const data = contentType.includes('application/json') ? await res.json() : { message: await res.text() };
@@ -204,16 +204,23 @@ const SalaDeJogo = () => {
               <button className="btn-jogo dourado" onClick={handleSelecionarRespondente}>Selecionar Respondente</button>
               {/* Botão Avançar/Finalizar foi movido para fora */}
             </div>
+            &nbsp;
+            <div className="turno-jogador">
+              {/* TODO: Lógica futura para definir o jogador da vez */}
+              <span>Turno de:</span>
+              <div className="nome-personagem">Personagem 1</div>
+              <button className="btn-pular">Pular</button>
+            </div>
           </div>
         );
       // --- Layout para MONSTRO ---
       case 'Monstro':
         return (
           <div className="conteudo-monstro">
-             <p className="texto-sala">{sala.texto || "Descrição do monstro não preenchida."}</p>
+            <p className="texto-sala">{sala.texto || "Descrição do monstro não preenchida."}</p>
             <div className="monstro-grid">
               <div className="monstro-imagem-container">
-                 {renderImagem(sala)} {/* Renderiza imagem ou placeholder */}
+                {renderImagem(sala)} {/* Renderiza imagem ou placeholder */}
               </div>
               <div className="monstro-status">
                 <div className="vida-monstro-container">
@@ -221,7 +228,7 @@ const SalaDeJogo = () => {
                   <div className="vida-barra">
                     <div
                       className="vida-preenchimento"
-                      style={{width: `${getVidaPercentual(sala.vidaMonstro)}%`}}>
+                      style={{ width: `${getVidaPercentual(sala.vidaMonstro)}%` }}>
                     </div>
                   </div>
                 </div>
@@ -236,13 +243,13 @@ const SalaDeJogo = () => {
                   <div className="nome-personagem">Personagem 1</div>
                   <button className="btn-pular">Pular</button>
                 </div>
-                 {/* Adiciona Timer aqui se necessário */}
-                 <div className="timer-container-mestre"> {/* Exemplo */}
-                     <span>00:30</span>
-                 </div>
+                {/* Adiciona Timer aqui se necessário */}
+                <div className="timer-container-mestre"> {/* Exemplo */}
+                  <span>00:30</span>
+                </div>
               </div>
             </div>
-             {/* Botão Avançar/Finalizar foi movido para fora */}
+            {/* Botão Avançar/Finalizar foi movido para fora */}
           </div>
         );
       // --- Layout para ALTERNATIVA (Com textos reais nos botões) ---
@@ -254,37 +261,37 @@ const SalaDeJogo = () => {
             <div className="botoes-grid-alternativa">
               {/* Mapeia as opções REAIS da sala */}
               {(sala.opcoes || []).map((opcao, index) => {
-                 // Garante que temos 4 opções visuais, mesmo que menos estejam salvas
-                 if (index >= 4) return null; // Limita a 4 botões visuais
+                // Garante que temos 4 opções visuais, mesmo que menos estejam salvas
+                if (index >= 4) return null; // Limita a 4 botões visuais
 
-                 const cores = ['red', 'yellow', 'green', 'blue'];
-                 const corClasse = cores[index % cores.length];
-                 // Usa o texto real da opção salva, ou um placeholder se vazio/não existir
-                 const textoOpcao = opcao?.texto?.trim() ? opcao.texto : `Opção ${index + 1} (vazio)`;
-                 const idOpcao = opcao?.id != null ? opcao.id : index + 1; // Garante um ID
-                 const isCorreta = respostaRevelada && sala?.opcaoCorretaId === idOpcao; // destaca se revelado e id bate
+                const cores = ['red', 'yellow', 'green', 'blue'];
+                const corClasse = cores[index % cores.length];
+                // Usa o texto real da opção salva, ou um placeholder se vazio/não existir
+                const textoOpcao = opcao?.texto?.trim() ? opcao.texto : `Opção ${index + 1} (vazio)`;
+                const idOpcao = opcao?.id != null ? opcao.id : index + 1; // Garante um ID
+                const isCorreta = respostaRevelada && sala?.opcaoCorretaId === idOpcao; // destaca se revelado e id bate
 
-                 return (
-                    <button
-                        key={idOpcao}
-                        className={`btn-opcao-jogo ${corClasse} ${isCorreta ? 'correta' : ''}`}
-                        // onClick={() => handleAlgumaAcaoProfessor(idOpcao)} // Ação futura do professor
-                        title={opcao?.texto || `Opção ${index + 1}`} // Mostra texto completo no hover
-                    >
-                        {textoOpcao} {/* Exibe o texto real ou fallback */}
-                    </button>
-                 );
+                return (
+                  <button
+                    key={idOpcao}
+                    className={`btn-opcao-jogo ${corClasse} ${isCorreta ? 'correta' : ''}`}
+                    // onClick={() => handleAlgumaAcaoProfessor(idOpcao)} // Ação futura do professor
+                    title={opcao?.texto || `Opção ${index + 1}`} // Mostra texto completo no hover
+                  >
+                    {textoOpcao} {/* Exibe o texto real ou fallback */}
+                  </button>
+                );
               })}
               {/* Adiciona placeholders se houver menos de 4 opções salvas */}
               {Array.from({ length: Math.max(0, 4 - (sala.opcoes?.length || 0)) }).map((_, i) => {
-                 const index = (sala.opcoes?.length || 0) + i;
-                 const cores = ['red', 'yellow', 'green', 'blue'];
-                 const corClasse = cores[index % cores.length];
-                 return (
-                     <button key={`placeholder-${index}`} className={`btn-opcao-jogo ${corClasse} placeholder`} disabled>
-                         Opção {index + 1} (vazio)
-                     </button>
-                 );
+                const index = (sala.opcoes?.length || 0) + i;
+                const cores = ['red', 'yellow', 'green', 'blue'];
+                const corClasse = cores[index % cores.length];
+                return (
+                  <button key={`placeholder-${index}`} className={`btn-opcao-jogo ${corClasse} placeholder`} disabled>
+                    Opção {index + 1} (vazio)
+                  </button>
+                );
               })}
 
               {/* Mantém o botão Revelar */}
@@ -292,9 +299,9 @@ const SalaDeJogo = () => {
 
               {/* Mensagem se não houver opções */}
               {(!sala?.opcoes || sala.opcoes.length === 0) && (
-                 <p className="sem-opcoes-mensagem">Nenhuma opção configurada.</p>
+                <p className="sem-opcoes-mensagem">Nenhuma opção configurada.</p>
               )}
-               {/* Botão Avançar foi movido para fora */}
+              {/* Botão Avançar foi movido para fora */}
             </div>
           </div>
         );
@@ -328,7 +335,7 @@ const SalaDeJogo = () => {
       <main className="sala-de-jogo-main">
         {/* Barra de Progresso */}
         <div className="progresso-barra-container">
-          <div className="progresso-barra-preenchimento" style={{height: `${progresso}%`}}></div>
+          <div className="progresso-barra-preenchimento" style={{ height: `${progresso}%` }}></div>
         </div>
 
         {/* Painel Central */}
@@ -356,7 +363,7 @@ const SalaDeJogo = () => {
         </div>
       </main>
       <Footer />
-      
+
       {/* Modal de Seleção de Alunos */}
       {showModalAlunos && (
         <div className="modal-overlay" onClick={() => setShowModalAlunos(false)}>

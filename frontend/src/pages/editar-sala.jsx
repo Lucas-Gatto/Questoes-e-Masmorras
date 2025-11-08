@@ -107,9 +107,10 @@ const EditarSala = () => {
             const salasExistentes = Array.isArray(aventuraDoc.salas)
               ? aventuraDoc.salas
               : [];
-            const salasAtualizadas = salasExistentes.map((s) =>
-              Number(s.id) === Number(salaId) ? editingSala : s
-            );
+            const idxExistente = salasExistentes.findIndex((s) => Number(s.id) === Number(salaId));
+            const salasAtualizadas = idxExistente > -1
+              ? salasExistentes.map((s) => (Number(s.id) === Number(salaId) ? editingSala : s))
+              : [...salasExistentes, editingSala];
             const payload = {
               titulo: aventuraDoc.titulo,
               salas: salasAtualizadas,
@@ -150,9 +151,11 @@ const EditarSala = () => {
         JSON.parse(localStorage.getItem("minhas_aventuras")) || [];
       const aventurasAtualizadas = aventurasSalvas.map((aventura) => {
         if (Number(aventura.id) === Number(aventuraId)) {
-          const salasAtualizadas = (aventura.salas || []).map((s) =>
-            Number(s.id) === Number(salaId) ? editingSala : s
-          );
+          const salasExistentes = Array.isArray(aventura.salas) ? aventura.salas : [];
+          const idxExistente = salasExistentes.findIndex((s) => Number(s.id) === Number(salaId));
+          const salasAtualizadas = idxExistente > -1
+            ? salasExistentes.map((s) => (Number(s.id) === Number(salaId) ? editingSala : s))
+            : [...salasExistentes, editingSala];
           return { ...aventura, salas: salasAtualizadas };
         }
         return aventura;

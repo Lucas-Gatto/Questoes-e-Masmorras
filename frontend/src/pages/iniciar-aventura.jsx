@@ -19,6 +19,24 @@ const IniciarAventura = () => {
   const [alunos, setAlunos] = useState([]);
   const [sessaoCriada, setSessaoCriada] = useState(false);
 
+  const handleCopyLink = async () => {
+    const text = joinUrl || `www.site.com/${aventuraId}`;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+    } catch (e) {
+      // silencioso
+    }
+  };
+
   // Efeito para carregar dados da aventura do backend
   useEffect(() => {
     console.log(
@@ -180,8 +198,35 @@ const IniciarAventura = () => {
             </div>
             <div className="info-conexao">
               <p>Ou acesse pelo link:</p>
-              <div className="link-acesso">
-                {joinUrl || `www.site.com/${aventuraId}`}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="link-acesso">
+                  {joinUrl || `www.site.com/${aventuraId}`}
+                </div>
+                <button
+                  className="link-acesso"
+                  onClick={handleCopyLink}
+                  title="Copiar link"
+                  type="button"
+                  aria-label="Copiar link de acesso"
+                >
+                  {/* Ícone SVG de copiar (estilo similar ao Feather Icons) */}
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <rect x="3" y="3" width="13" height="13" rx="2" ry="2"></rect>
+                  </svg>
+                </button>
               </div>
               <div style={{ color: '#C68700', fontSize: '0.9rem' }}>
                 {sessao?.codigo ? `Código: ${sessao.codigo}` : 'Crie a sessão para gerar o código'}              </div>

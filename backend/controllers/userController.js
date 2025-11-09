@@ -181,4 +181,38 @@ const trocarSenha = async (req, res) => {
   }
 };
 
-module.exports = { cadastrarUser, loginUser, logoutUser, forgotPassword, resetPassword, trocarSenha };
+// Atualizar avatar do usuário logado
+const atualizarAvatar = async (req, res) => {
+  try {
+
+    const userId = req.user._id; // vem do middleware
+    const { avatar } = req.body;
+
+    if (!avatar) return res.status(400).json({ message: 'Avatar não enviado.' });
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { avatar },
+      { new: true }
+    );
+
+    res.json({ avatar: user.avatar });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Erro ao atualizar avatar.' });
+  }
+};
+
+// Buscar avatar do usuário logado
+const buscarAvatar = async (req, res) => {
+  try {
+    const userId = req.user._id; // vem do middleware
+    const user = await User.findById(userId);
+    res.json({ avatar: user.avatar || '/avatars/Warrior.png' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Erro ao buscar avatar.' });
+  }
+};
+
+module.exports = { cadastrarUser, loginUser, logoutUser, forgotPassword, resetPassword, trocarSenha, atualizarAvatar, buscarAvatar };

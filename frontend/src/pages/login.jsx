@@ -3,6 +3,8 @@ import "./login.css";
 import bonecos from "../assets/bonecos.png";
 // 👇 1. Adicione 'Link' à importação aqui
 import { useNavigate, Link } from "react-router-dom";
+import { useContext } from "react";
+import { AvatarContext } from "../contexts/AvatarContext";
 import API_URL from "../config";
 
 function Login() {
@@ -17,6 +19,9 @@ function Login() {
   const [cadastroEmail, setCadastroEmail] = useState("");
   const [cadastroSenha, setCadastroSenha] = useState("");
   const [cadastroConfirmarSenha, setCadastroConfirmarSenha] = useState("");
+
+  //Context do Avatar
+  const { setAvatar } = useContext(AvatarContext);
 
   //Função de login
   const handleLogin = async () => {
@@ -41,6 +46,16 @@ function Login() {
         } catch (e) {
           console.warn('Falha ao limpar localStorage após login:', e);
         }
+        // 🔹 Buscar avatar do usuário logado
+        try {
+          const avatarRes = await fetch(`${API_URL}/user/avatar`, { credentials: "include" });
+          const avatarData = await avatarRes.json();
+          setAvatar(avatarData.avatar || '/avatars/Warrior.png'); // atualiza Context
+        } catch (err) {
+          console.error("Erro ao buscar avatar após login:", err);
+          setAvatar('/avatars/Warrior.png'); // fallback
+        }
+
         navigate("/suas-aventuras");
       } else {
         alert(data.message);
@@ -102,10 +117,10 @@ function Login() {
               value={loginSenha}
               onChange={(e) => setLoginSenha(e.target.value)}
             />
-            <div className="link-recuperar-senha"> 
-                <Link to="/recuperar-senha" className="forgot-password">
-                    Esqueci minha senha
-                </Link>
+            <div className="link-recuperar-senha">
+              <Link to="/recuperar-senha" className="forgot-password">
+                Esqueci minha senha
+              </Link>
             </div>
             {/* --- Fim da alteração --- */}
 

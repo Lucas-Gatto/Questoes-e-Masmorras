@@ -145,4 +145,40 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { cadastrarUser, loginUser, logoutUser, forgotPassword, resetPassword };
+//Trocar Senha
+const trocarSenha = async (req, res) => {
+  try {
+    const { senhaAtual, novaSenha } = req.body;
+
+    if (!senhaAtual || !novaSenha) {
+      return res.status(400).json({ message: 'Preencha todos os campos.' });
+    }
+
+    const userId = req.user._id;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: 'Usuário não encontrado.' });
+
+    // Verificar se a senha atual confere
+    const senhaCorreta = await user.matchPassword(senhaAtual);
+    if (!senhaCorreta) {
+      return res.status(401).json({ message: 'Senha atual incorreta.' });
+    }
+
+    //Verificar se a nova senha é igual a atual
+    if (senhaAtual === novaSenha) {
+      return res.status(400).json({ message: 'A nova senha não pode ser igual à senha atual' });
+    }
+
+    // Atualizar senha
+    user.password = novaSenha;
+    await user.save(); // já executa o hash no pre('save')
+
+    return res.json({ message: 'Senha atualizada com sucesso!' });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Erro ao atualizar senha.' });
+  }
+};
+
+module.exports = { cadastrarUser, loginUser, logoutUser, forgotPassword, resetPassword, trocarSenha };

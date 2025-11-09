@@ -7,8 +7,8 @@ const HeaderLogado = () => {
   return (
     <header className="header-logado-container">
       <div className="header-left">
-      <Link to="/perfil">
-        <div className="avatar-placeholder"></div>
+        <Link to="/perfil">
+          <div className="avatar-placeholder"></div>
         </Link>
         <nav className="header-nav">
           <Link to="/suas-aventuras">Suas aventuras</Link>

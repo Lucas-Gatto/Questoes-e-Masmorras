@@ -6,10 +6,9 @@ import API_URL from '../config';
 
 // Avatares disponíveis
 const avatares = [
-  '/avatars/Warrior.png',
-  '/avatars/Wizard.png',
-  '/avatars/Rogue.png',
-  '/avatars/Cleric.png'
+  '/avatars/qemmago.png',
+  '/avatars/qembardo.png',
+  '/avatars/qemguerreiro.png'
 ];
 
 const PerfilUsuario = () => {

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import API_URL from "../config";
 import HeaderAventura from '../components/HeaderAventura.jsx';
 import Footer from '../components/footer.jsx';
 import './avaliacao.css';
@@ -9,15 +10,30 @@ const AvaliacaoSite = () => {
   const [comentario, setComentario] = useState('');
   const [enviado, setEnviado] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (rating === 0) {
       alert('Por favor, selecione uma nota antes de enviar.');
       return;
     }
-    setEnviado(true);
-    // Futuro: enviar ao backend como avaliação geral do site
-    console.log({ tipo: 'avaliacao_site', rating, comentario });
+    try {
+      const res = await fetch(`${API_URL}/feedback/site`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ rating, comentario }),
+      });
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const msg = payload?.message || 'Falha ao enviar avaliação do site.';
+        alert(msg);
+        return;
+      }
+      setEnviado(true);
+    } catch (err) {
+      console.error('Erro ao enviar avaliação do site:', err);
+      alert('Erro de rede ao enviar avaliação.');
+    }
   };
 
   return (

@@ -69,10 +69,12 @@ app.use((req, res, next) => {
 const userRoutes = require('./routes/userRoute');
 const aventuraRoutes = require('./routes/aventuraRoute');
 const sessoesRoutes = require('./routes/sessoesRoute');
+const feedbackRoutes = require('./routes/feedbackRoute');
 
 app.use('/api/user', userRoutes);
 app.use('/api/aventuras', aventuraRoutes); // rota das aventuras
 app.use('/api/sessoes', sessoesRoutes); // rota das sessões
+app.use('/api/feedback', feedbackRoutes); // rota de feedback do site
 
 // Porta do servidor
 const PORT = process.env.PORT || 3000;

@@ -22,6 +22,7 @@ import EscolherClasse from "./pages/escolher-classe.jsx";
 import SalasAluno from "./pages/salas-aluno.jsx";
 import ResultadosAventura from "./pages/resultados-aventura.jsx";
 import Avaliacao from "./pages/avaliacao.jsx";
+import AvaliacaoSite from "./pages/avaliacao-site.jsx";
 import AguardarInicio from "./pages/aguardar-inicio.jsx";
 import RecuperarSenha from "./pages/recuperar-senha.jsx";
 import ResetSenha from "./pages/reset-senha.jsx";
@@ -65,6 +66,9 @@ function App() {
             path="/aventura/:aventuraId/resultados"
             element={<ResultadosAventura />}
           />
+
+          {/* Avaliação do Site (fluxo do professor) */}
+          <Route path="/avaliacao-site" element={<AvaliacaoSite />} />
 
           {/* --- GRUPO 4: Rotas do Aluno (com LayoutAluno) --- */}
           <Route element={<LayoutAluno />}>

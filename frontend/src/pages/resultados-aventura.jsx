@@ -50,7 +50,8 @@ const ResultadosAventura = () => {
   // --- FIM DOS DADOS DE EXEMPLO ---
 
   const handleEncerrar = () => {
-    navigate('/suas-aventuras'); // Volta para a lista principal
+    // Ao encerrar, direciona para a avaliação do site (fluxo do professor)
+    navigate('/avaliacao-site');
   };
 
   if (isLoading || !aventura) {
@@ -93,7 +94,7 @@ const ResultadosAventura = () => {
           </div>
 
           <button className="btn-jogo vermelho btn-encerrar-resultados" onClick={handleEncerrar}>
-            Encerrar Aventura
+            Encerrar e Avaliar o Site
           </button>
         </div>
       </main>

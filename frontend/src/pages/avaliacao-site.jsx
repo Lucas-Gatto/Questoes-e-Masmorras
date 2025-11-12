@@ -1,14 +1,32 @@
 import React, { useState } from 'react';
 import API_URL from "../config";
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import HeaderAventura from '../components/HeaderAventura.jsx';
 import Footer from '../components/footer.jsx';
 import './avaliacao.css';
 
 const AvaliacaoSite = () => {
+  const navigate = useNavigate();
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [comentario, setComentario] = useState('');
   const [enviado, setEnviado] = useState(false);
+
+  // Se já avaliou, não deixa acessar esta página novamente
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch(`${API_URL}/feedback/site/status`, { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          if (!Boolean(data?.shouldEvaluateSite)) {
+            navigate('/suas-aventuras');
+          }
+        }
+      } catch (_) { /* silencioso */ }
+    })();
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

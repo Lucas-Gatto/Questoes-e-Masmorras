@@ -10,6 +10,7 @@ const ResultadosAventura = () => {
   const navigate = useNavigate();
   const [aventura, setAventura] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [shouldEvaluateSite, setShouldEvaluateSite] = useState(true);
 
   // Carrega os dados da aventura do backend usando o _id da URL
   useEffect(() => {
@@ -37,6 +38,19 @@ const ResultadosAventura = () => {
       }
     };
     carregar();
+
+    // Consulta se deve exibir avaliação do site (só primeira vez)
+    (async () => {
+      try {
+        const sres = await fetch(`${API_URL}/feedback/site/status`, { credentials: 'include' });
+        if (sres.ok) {
+          const data = await sres.json();
+          setShouldEvaluateSite(Boolean(data?.shouldEvaluateSite));
+        }
+      } catch (_) {
+        // silencioso; mantém default true
+      }
+    })();
   }, [aventuraId, navigate]);
 
   // --- DADOS DE EXEMPLO PARA A TABELA ---
@@ -50,8 +64,11 @@ const ResultadosAventura = () => {
   // --- FIM DOS DADOS DE EXEMPLO ---
 
   const handleEncerrar = () => {
-    // Ao encerrar, direciona para a avaliação do site (fluxo do professor)
-    navigate('/avaliacao-site');
+    if (shouldEvaluateSite) {
+      navigate('/avaliacao-site');
+    } else {
+      navigate('/suas-aventuras');
+    }
   };
 
   if (isLoading || !aventura) {
@@ -94,7 +111,7 @@ const ResultadosAventura = () => {
           </div>
 
           <button className="btn-jogo vermelho btn-encerrar-resultados" onClick={handleEncerrar}>
-            Encerrar e Avaliar o Site
+            {shouldEvaluateSite ? 'Encerrar e Avaliar o Site' : 'Encerrar'}
           </button>
         </div>
       </main>

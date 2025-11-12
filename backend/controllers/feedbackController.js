@@ -1,4 +1,5 @@
 const createTransporter = require('../config/emailTransporter');
+const User = require('../models/User');
 
 // Envia avaliação do site (professor) por e-mail
 // Body esperado: { rating: number(1-5), comentario: string }
@@ -36,9 +37,27 @@ exports.sendSiteFeedback = async (req, res) => {
       html,
     });
 
+    // Marca o usuário como já tendo avaliado o site
+    if (req.user?.email) {
+      await User.updateOne({ email: req.user.email }, { $set: { hasSiteEvaluated: true } }).catch(() => {});
+    }
+
     return res.status(200).json({ message: 'Feedback enviado com sucesso.' });
   } catch (err) {
     console.error('[sendSiteFeedback] Falha ao enviar feedback:', err);
     return res.status(500).json({ message: 'Erro ao enviar feedback.', error: err?.message });
+  }
+};
+
+// Retorna se deve exibir a avaliação do site (apenas primeira vez)
+exports.getSiteFeedbackStatus = async (req, res) => {
+  try {
+    const email = req.user?.email;
+    if (!email) return res.status(401).json({ message: 'Não autenticado' });
+    const user = await User.findOne({ email }).lean();
+    const has = Boolean(user?.hasSiteEvaluated);
+    return res.json({ shouldEvaluateSite: !has });
+  } catch (err) {
+    return res.status(500).json({ message: 'Erro ao consultar status.', error: err?.message });
   }
 };

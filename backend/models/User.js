@@ -17,6 +17,9 @@ const userSchema = new mongoose.Schema({
     //Campos para recuperação de senha
     resetToken: String,
     resetTokenExpires: Date,
+
+    // Flag: se já avaliou o site (para exibir avaliação apenas na primeira vez)
+    hasSiteEvaluated: { type: Boolean, default: false },
 });
 
 //Criptografar senha antes de salvar

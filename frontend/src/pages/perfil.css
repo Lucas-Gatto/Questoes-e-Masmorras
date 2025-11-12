@@ -8,61 +8,159 @@
   font-family: Arial, sans-serif;
 }
 
+/* Painel principal */
 .perfil-usuario-painel {
   width: 100%;
-  max-width: 500px;
+  max-width: 450px;
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 25px;
-  padding: 35px 45px;
+  padding: 40px 45px;
   text-align: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+
+  /* Itens sempre empilhados e centralizados */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+/* Título */
 .perfil-usuario-painel h1 {
   font-family: 'MedievalSharp', cursive;
   font-size: 2rem;
   color: #C68700;
-  margin-bottom: 25px;
+  margin: 25px 0;
 }
 
-.info-usuario p {
-  font-size: 1.1rem;
+/* Foto de perfil */
+.perfil-foto {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
   margin-bottom: 15px;
-  line-height: 1.4;
+  border: 3px solid #C68700;
 }
 
-.btn-editar-info {
-  padding: 15px;
+/* Botão de alterar foto */
+.btn-alterar-foto {
+  padding: 10px 20px;
   border: none;
-  border-radius: 10px;
-  font-family: 'MedievalSharp', cursive;
-  font-size: 1.2rem;
-  font-weight: bold;
-  cursor: pointer;
-  color: white;
+  border-radius: 12px;
   background-color: #007BFF;
+  color: white;
+  cursor: pointer;
+  font-size: 1.1rem;
+  margin-bottom: 30px;
   transition: opacity 0.2s, transform 0.1s;
-  width: 100%;
+  font-family: 'MedievalSharp', cursive;
 }
 
-.btn-editar-info:hover {
+.btn-alterar-foto:hover {
   opacity: 0.9;
 }
 
-.btn-editar-info:active {
+.btn-alterar-foto:active {
+  transform: scale(0.97);
+}
+
+/* Título da seção segurança */
+.perfil-seguranca-area {
+  width: 100%;
+  text-align: center;
+  margin-top: 15px;
+}
+
+.perfil-seguranca-area h2 {
+  color: #C68700;
+  font-family: 'MedievalSharp', cursive;
+  margin-bottom: 20px;
+}
+
+/* Botão de alteração de senha */
+.btn-trocar-senha {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  background-color: #007BFF;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: 'MedievalSharp', cursive;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn-trocar-senha:hover {
+  opacity: 0.9;
+}
+
+.btn-trocar-senha:active {
   transform: scale(0.98);
 }
 
-@media (max-width: 480px) {
-  .perfil-usuario-painel {
-    padding: 25px 30px;
-  }
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .perfil-usuario-painel h1 {
-    font-size: 1.7rem;
-  }
+.modal-content {
+  background: #1a1a1a;
+  padding: 25px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  color: white;
+}
 
-  .btn-editar-info {
-    font-size: 1.1rem;
-  }
+.modal-content h3 {
+  margin-bottom: 20px;
+  font-family: 'MedievalSharp', cursive;
+  color: #C68700;
+}
+
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.avatar-opcao {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.avatar-opcao:hover {
+  border-color: #C68700;
+}
+
+.btn-fechar-modal {
+  padding: 10px;
+  width: 100%;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'MedievalSharp', cursive;
+  transition: opacity 0.2s;
+}
+
+.btn-fechar-modal:hover {
+  opacity: 0.8;
 }

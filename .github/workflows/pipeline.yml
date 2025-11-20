@@ -1,0 +1,50 @@
+name: Pipeline diária
+
+on:
+  schedule:
+    - cron: "0 3 * * *"   # Executa todo dia às 03h
+  workflow_dispatch:        # Permite rodar manualmente no GitHub
+
+jobs:
+  backend:
+    name: Testar Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v3
+
+      - name: Configurar Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+
+      - name: Instalar dependências do backend
+        working-directory: ./backend
+        run: npm install
+
+      - name: Verificar inicialização do backend
+        working-directory: ./backend
+        run: |
+          echo "Backend instalado com sucesso (nenhum teste executado)."
+
+  frontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v3
+
+      - name: Configurar Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+
+      - name: Instalar dependências do frontend
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Rodar build do frontend
+        working-directory: ./frontend
+        run: npm run build

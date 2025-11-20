@@ -2,7 +2,7 @@ name: Pipeline diária
 
 on:
   schedule:
-    - cron: "0 3 * * *"   # Executa todo dia às 03h
+    - cron: "5 14 * * *"   # Executa todo dia às 03h
   workflow_dispatch:        # Permite rodar manualmente no GitHub
 
 jobs:

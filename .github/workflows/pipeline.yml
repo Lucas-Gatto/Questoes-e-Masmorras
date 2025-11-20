@@ -48,3 +48,36 @@ jobs:
       - name: Rodar build do frontend
         working-directory: ./frontend
         run: npm run build
+
+  gerar_relatorio:
+    name: Gerar relatório da execução
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]  # garante que só roda depois dos outros jobs
+    steps:
+    - name: Criar relatório
+      run: |
+        echo "<html><body>" > report.html
+        echo "<h1>Relatório da Pipeline - $(date)</h1>" >> report.html
+
+        # Backend
+        if [ "${{ needs.backend.result }}" == "success" ]; then
+          echo "<h2>Backend</h2><p>Instalação completada com sucesso</p>" >> report.html
+        else
+          echo "<h2>Backend</h2><p>Erro na instalação</p>" >> report.html
+        fi
+
+        # Frontend
+        if [ "${{ needs.frontend.result }}" == "success" ]; then
+          echo "<h2>Frontend</h2><p>Build completada com sucesso</p>" >> report.html
+        else
+          echo "<h2>Frontend</h2><p>Erro no build</p>" >> report.html
+        fi
+
+        echo "</body></html>" >> report.html
+
+    - name: Publicar relatório
+      uses: actions/upload-artifact@v4
+      with:
+        name: relatorio-pipeline
+        path: report.html
+

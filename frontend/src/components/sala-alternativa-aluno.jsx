@@ -15,7 +15,9 @@ const SalaAlternativa = ({ sala, revelada = false }) => {
   const { codigoSessao, nomeAluno } = useMemo(() => {
     const params = new URLSearchParams(window.location.search);
     const codigo = params.get("codigo") || localStorage.getItem("sessao_codigo") || "";
-    const nome = localStorage.getItem("aluno_nome") || "";
+    let nome = "";
+    try { nome = sessionStorage.getItem("aluno_nome") || ""; } catch (_) {}
+    if (!nome) nome = localStorage.getItem("aluno_nome") || "";
     return { codigoSessao: codigo, nomeAluno: nome };
   }, []);
 

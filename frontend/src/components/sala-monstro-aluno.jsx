@@ -7,7 +7,13 @@ const getVidaPercentual = (vidaMonstro) => {
 };
 
 const SalaMonstro = ({ sala, currentPlayerName = '—', timerText = '00:30', turnEndsAt = null }) => {
-    const myName = useMemo(() => (localStorage.getItem('aluno_nome') || '').trim(), []);
+    const myName = useMemo(() => {
+      try {
+        const s = (sessionStorage.getItem('aluno_nome') || '').trim();
+        if (s) return s;
+      } catch (_) {}
+      return (localStorage.getItem('aluno_nome') || '').trim();
+    }, []);
     const isMyTurn = useMemo(() => {
       const a = (myName || '').toLocaleLowerCase();
       const b = (currentPlayerName || '').toLocaleLowerCase();

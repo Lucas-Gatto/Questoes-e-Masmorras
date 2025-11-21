@@ -66,6 +66,7 @@ const EntrarAventura = () => {
               }
               localStorage.setItem("sessao_codigo", codigo);
               localStorage.setItem("aluno_nome", nome);
+              try { sessionStorage.setItem("aluno_nome", nome); } catch (_) {}
               navigate(
                 `/escolher-classe?codigo=${codigo}&nome=${encodeURIComponent(
                   nome

@@ -43,6 +43,7 @@ function Login() {
           localStorage.removeItem('sessao_atual');
           localStorage.removeItem('sessao_codigo');
           localStorage.removeItem('aluno_nome');
+          try { sessionStorage.removeItem('aluno_nome'); } catch (_) {}
         } catch (e) {
           console.warn('Falha ao limpar localStorage após login:', e);
         }

@@ -13,7 +13,13 @@ const AguardarInicio = () => {
     // Recupera dados da sessão
     const params = new URLSearchParams(window.location.search);
     const codigo = params.get('codigo') || localStorage.getItem('sessao_codigo') || '';
-    const nome = params.get('nome') || localStorage.getItem('aluno_nome') || '';
+  let nome = params.get('nome') || '';
+  if (!nome) {
+    try { nome = sessionStorage.getItem('aluno_nome') || ''; } catch (_) {}
+  }
+  if (!nome) {
+    nome = localStorage.getItem('aluno_nome') || '';
+  }
     
     setCodigoSessao(codigo);
     setNomeAluno(nome);

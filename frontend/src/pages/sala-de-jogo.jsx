@@ -236,6 +236,8 @@ const SalaDeJogo = () => {
   const handlePerguntaRolagemCerta = async () => {
     try {
       const nomeAluno = alunos?.[currentPlayerIndex]?.nome || '';
+      const classeAluno = (alunos?.[currentPlayerIndex]?.classe || '').toLowerCase();
+      const isGuerreiro = classeAluno.includes('guerreiro');
       if (!sessaoAtual?.id || !nomeAluno) {
         setShowModalPergunta(false);
         return;
@@ -251,13 +253,21 @@ const SalaDeJogo = () => {
         const data = await resPonto.json();
         setAlunos(Array.isArray(data.alunos) ? data.alunos : alunos);
       }
-      // Decrementa 1 ponto de vida do monstro
+      // Decrementa vida do monstro: 1 ponto normalmente, 2 pontos se classe "Guerreiro"
       try {
-        const resVida = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}/monstro/vida/decrement`, { method: 'PUT', credentials: 'include' });
-        if (resVida.ok) {
-          const vidaData = await resVida.json();
-          const v = Number(vidaData?.monstroVidaAtual);
-          if (Number.isFinite(v)) setMonstroVidaAtual(v);
+        const resVida1 = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}/monstro/vida/decrement`, { method: 'PUT', credentials: 'include' });
+        if (resVida1.ok) {
+          const vidaData1 = await resVida1.json();
+          const v1 = Number(vidaData1?.monstroVidaAtual);
+          if (Number.isFinite(v1)) setMonstroVidaAtual(v1);
+        }
+        if (isGuerreiro) {
+          const resVida2 = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}/monstro/vida/decrement`, { method: 'PUT', credentials: 'include' });
+          if (resVida2.ok) {
+            const vidaData2 = await resVida2.json();
+            const v2 = Number(vidaData2?.monstroVidaAtual);
+            if (Number.isFinite(v2)) setMonstroVidaAtual(v2);
+          }
         }
       } catch (_) { /* silencioso */ }
       // Avança turno automaticamente

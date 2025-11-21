@@ -19,6 +19,10 @@ input {
   color: #ffffff;
   padding: 12px;
   font-family: "MedievalSharp", cursive;
+  border-radius: 20px ;
+  border: none;
+  font-weight: bold;
+  font-size: 1.1rem;
 }
 
 .btn-entrar-aventura-container {

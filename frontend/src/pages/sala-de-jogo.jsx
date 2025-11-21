@@ -286,9 +286,23 @@ const SalaDeJogo = () => {
     }
   };
 
-  // Resposta errada: apenas fecha a modal
-  const handlePerguntaRolagemErrada = () => {
-    setShowModalPergunta(false);
+  // Resposta errada: avança turno sem pontuar nem causar dano
+  const handlePerguntaRolagemErrada = async () => {
+    try {
+      if (!sessaoAtual?.id) {
+        setShowModalPergunta(false);
+        return;
+      }
+      const resTurno = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}/turn/next`, { method: 'PUT', credentials: 'include' });
+      if (resTurno.ok) {
+        const turnData = await resTurno.json();
+        setCurrentPlayerIndex(Number(turnData.currentPlayerIndex || 0));
+        setTurnEndsAt(turnData.turnEndsAt || null);
+      }
+    } catch (_) { /* silencioso */ }
+    finally {
+      setShowModalPergunta(false);
+    }
   };
 
   // Renderiza o conteúdo principal da sala baseado no tipo

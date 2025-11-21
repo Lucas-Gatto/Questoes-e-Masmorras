@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 // Usa estilos da página do mestre via salas-aluno.jsx
 
 const getVidaPercentual = (vidaMonstro) => {
@@ -6,7 +6,29 @@ const getVidaPercentual = (vidaMonstro) => {
   return map[vidaMonstro] ?? 66;
 };
 
-const SalaMonstro = ({ sala, currentPlayerName = '—', timerText = '00:30' }) => {
+const SalaMonstro = ({ sala, currentPlayerName = '—', timerText = '00:30', turnEndsAt = null }) => {
+    const myName = useMemo(() => (localStorage.getItem('aluno_nome') || '').trim(), []);
+    const isMyTurn = useMemo(() => {
+      const a = (myName || '').toLocaleLowerCase();
+      const b = (currentPlayerName || '').toLocaleLowerCase();
+      return a && b && a === b;
+    }, [myName, currentPlayerName]);
+
+    const [nivelPergunta, setNivelPergunta] = useState(2);
+    const [hasRolled, setHasRolled] = useState(false);
+
+    // Reseta estado de rolagem ao mudar de jogador ou iniciar novo turno
+    useEffect(() => {
+      setHasRolled(false);
+      setNivelPergunta(2);
+    }, [currentPlayerName, turnEndsAt]);
+
+    const handleRollDice = () => {
+      if (!isMyTurn || hasRolled) return;
+      const roll = Math.floor(Math.random() * 6) + 1; // 1-6
+      setNivelPergunta(roll);
+      setHasRolled(true);
+    };
     // Se não há dados da sala, mostra carregamento
     if (!sala) {
         return <p className="loading-sala">Carregando dados da sala...</p>;
@@ -36,8 +58,20 @@ const SalaMonstro = ({ sala, currentPlayerName = '—', timerText = '00:30' }) =
                 </div>
               </div>
               <div className="pergunta-nivel">
-                <span>Pergunta de Nível: <strong>2</strong></span>
-                <div className="dado-icone">🎲</div>
+                <span>Pergunta de Nível: <strong>{nivelPergunta}</strong></span>
+                <div
+                  className="dado-icone"
+                  onClick={handleRollDice}
+                  title={isMyTurn ? (hasRolled ? 'Você já rolou neste turno' : 'Clique para rolar o dado') : 'Aguarde seu turno para rolar'}
+                  role="button"
+                  aria-disabled={!isMyTurn || hasRolled}
+                  style={{
+                    cursor: (!isMyTurn || hasRolled) ? 'not-allowed' : 'pointer',
+                    opacity: (!isMyTurn || hasRolled) ? 0.6 : 1
+                  }}
+                >
+                  🎲
+                </div>
               </div>
               <div className="turno-jogador">
                 <span>Turno de:</span>

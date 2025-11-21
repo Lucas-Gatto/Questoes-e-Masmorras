@@ -45,6 +45,8 @@ const SalaDeJogo = () => {
   const [advancing, setAdvancing] = useState(false);
   const [showModalAlunos, setShowModalAlunos] = useState(false); // Controle do modal de seleção de alunos
   const [currentRollValue, setCurrentRollValue] = useState(2);
+  const [showModalPergunta, setShowModalPergunta] = useState(false);
+  const [textoPerguntaRolagem, setTextoPerguntaRolagem] = useState('');
 
   // Efeito para carregar a aventura do backend ao montar
   useEffect(() => {
@@ -292,8 +294,28 @@ const SalaDeJogo = () => {
                   </div>
                 </div>
                 <div className="pergunta-nivel-professor">
-                  {/* TODO: Lógica futura para definir o nível da pergunta */}
-                  <span>Pergunta de Nível: <strong>{currentRollValue}</strong></span>
+                  <span
+                    onClick={() => {
+                      // Ao abrir modal, sorteia uma pergunta pelo nível atual
+                      const nivel = Number(currentRollValue || 2);
+                      const grupos = Array.isArray(aventura?.perguntas) ? aventura.perguntas : [];
+                      const idx = Math.max(0, Math.min((grupos.length || 1) - 1, nivel - 1));
+                      const grupo = grupos[idx];
+                      const sub = Array.isArray(grupo?.subPerguntas) ? grupo.subPerguntas : [];
+                      let texto = `Nenhuma pergunta de rolagem cadastrada para nível ${nivel}.`;
+                      if (sub.length > 0) {
+                        const sorteada = sub[Math.floor(Math.random() * sub.length)];
+                        texto = (sorteada?.texto || '').trim() || `Pergunta vazia (nível ${nivel}).`;
+                      }
+                      setTextoPerguntaRolagem(texto);
+                      setShowModalPergunta(true);
+                    }}
+                    role="button"
+                    title="Abrir Pergunta de Rolagem"
+                    style={{ cursor: 'pointer' }}
+                  >
+                    Pergunta de Nível: <strong>{currentRollValue}</strong>
+                  </span>
                 </div>
                 <div className="turno-jogador">
                   {/* TODO: Lógica futura para definir o jogador da vez */}
@@ -460,6 +482,21 @@ const SalaDeJogo = () => {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Pergunta de Rolagem (mesmo estilo do SelecionarRespondente) */}
+      {showModalPergunta && (
+        <div className="modal-overlay" onClick={() => setShowModalPergunta(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Pergunta de Nível {currentRollValue}</h3>
+              <button className="modal-close" onClick={() => setShowModalPergunta(false)}>×</button>
+            </div>
+            <div className="modal-body">
+              <p style={{ whiteSpace: 'pre-wrap' }}>{textoPerguntaRolagem || '—'}</p>
             </div>
           </div>
         </div>

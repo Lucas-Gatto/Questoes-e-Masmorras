@@ -345,9 +345,8 @@ const SalaDeJogo = () => {
                     );
                   })()}
                 </div>
-                <div className="pergunta-nivel-professor">
-                  <span
-                    onClick={() => {
+                <div className="pergunta-nivel-professor"
+                onClick={() => {
                       // Ao abrir modal, sorteia uma pergunta pelo nível atual
                       const nivel = Number(currentRollValue || 2);
                       const grupos = Array.isArray(aventura?.perguntas) ? aventura.perguntas : [];
@@ -365,7 +364,8 @@ const SalaDeJogo = () => {
                     role="button"
                     title="Abrir Pergunta de Rolagem"
                     style={{ cursor: 'pointer' }}
-                  >
+                    >
+                  <span>
                     Pergunta de Nível: <strong>{currentRollValue}</strong>
                   </span>
                 </div>

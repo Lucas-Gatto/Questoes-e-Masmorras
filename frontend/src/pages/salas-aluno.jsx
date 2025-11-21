@@ -101,7 +101,7 @@ const SalasAluno = () => {
       case 'Enigma':
         return <SalaEnigma sala={salaAtual} aventuraTitulo={aventuraTitulo} revelada={revelada} currentPlayerName={currentPlayerName} timerText={timerText} />;
       case 'Monstro':
-        return <SalaMonstro sala={salaAtual} aventuraTitulo={aventuraTitulo} currentPlayerName={currentPlayerName} timerText={timerText} turnEndsAt={turnEndsAt} />;
+        return <SalaMonstro sala={salaAtual} aventuraTitulo={aventuraTitulo} currentPlayerName={currentPlayerName} timerText={timerText} turnEndsAt={turnEndsAt} numJogadores={Array.isArray(alunos) ? alunos.length : 0} />;
       case 'Alternativa':
         return <SalaAlternativa sala={salaAtual} aventuraTitulo={aventuraTitulo} revelada={revelada} />;
       default:

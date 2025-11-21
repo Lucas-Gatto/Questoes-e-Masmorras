@@ -287,10 +287,9 @@ const SalaDeJogo = () => {
                     </div>
                   </div>
                 </div>
-                <div className="pergunta-nivel">
+                <div className="pergunta-nivel-professor">
                   {/* TODO: Lógica futura para definir o nível da pergunta */}
                   <span>Pergunta de Nível: <strong>2</strong></span>
-                  <div className="dado-icone">🎲</div>
                 </div>
                 <div className="turno-jogador">
                   {/* TODO: Lógica futura para definir o jogador da vez */}

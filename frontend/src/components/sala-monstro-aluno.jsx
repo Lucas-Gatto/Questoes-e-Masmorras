@@ -23,10 +23,9 @@ const SalaMonstro = ({ sala, currentPlayerName = '—', timerText = '00:30', tur
     const [nivelPergunta, setNivelPergunta] = useState(2);
     const [hasRolled, setHasRolled] = useState(false);
 
-    // Reseta estado de rolagem ao mudar de jogador ou iniciar novo turno
+    // Reseta apenas a permissão de rolar ao mudar de jogador ou iniciar novo turno
     useEffect(() => {
       setHasRolled(false);
-      setNivelPergunta(2);
     }, [currentPlayerName, turnEndsAt]);
 
     const handleRollDice = () => {

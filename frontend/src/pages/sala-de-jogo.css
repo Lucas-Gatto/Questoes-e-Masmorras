@@ -227,6 +227,7 @@
 }
 .vida-preenchimento { height: 100%; background-color: var(--titulo); border-radius: 10px; transition: width 0.3s ease; }
 .pergunta-nivel, .turno-jogador { display: flex; align-items: center; gap: 10px; }
+.pergunta-nivel-professor { background-color: var(--azul); border-radius: 20px; flex-grow: 1; text-align: center; align-content: center; font-size: large;}
 .dado-icone { font-size: 2.5rem; line-height: 1; }
 .turno-jogador span { opacity: 0.8; }
 .nome-personagem { background-color: var(--input_amarelo); padding: 8px 15px; border-radius: 20px; flex-grow: 1; text-align: center; }

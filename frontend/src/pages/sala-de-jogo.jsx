@@ -341,7 +341,7 @@ const SalaDeJogo = () => {
                       const totalJogadores = Array.isArray(alunos) ? alunos.length : 0;
                       const vidaTotal = getVidaMonstroPontos(sala.vidaMonstro, totalJogadores);
                       const vidaExibida = monstroVidaAtual != null ? Math.min(vidaTotal, Math.max(0, monstroVidaAtual)) : vidaTotal;
-                      return `Vida do Monstro (${sala.vidaMonstro || 'Média'}): ${vidaExibida} ${vidaExibida === 1 ? 'ponto' : 'pontos'}`;
+                      return `Vida do Monstro (${sala.vidaMonstro || 'Média'}): ${vidaExibida} / ${vidaTotal} ${vidaTotal === 1 ? 'ponto' : 'pontos'}`;
                     })()}
                   </span>
                   {(() => {
@@ -350,9 +350,17 @@ const SalaDeJogo = () => {
                     const vidaExibida = monstroVidaAtual != null ? Math.min(vidaTotal, Math.max(0, monstroVidaAtual)) : vidaTotal;
                     return (
                       <div className="vida-barra" style={{ display: 'flex', gap: '2px', alignItems: 'center' }}>
-                        {vidaExibida > 0 ? (
-                          Array.from({ length: vidaExibida }).map((_, i) => (
-                            <div key={i} style={{ flex: 1, height: '12px', backgroundColor: '#dc3545', borderRadius: '2px' }} />
+                        {vidaTotal > 0 ? (
+                          Array.from({ length: vidaTotal }).map((_, i) => (
+                            <div
+                              key={i}
+                              style={{
+                                flex: 1,
+                                height: '12px',
+                                backgroundColor: i < vidaExibida ? '#dc3545' : '#6c757d',
+                                borderRadius: '2px'
+                              }}
+                            />
                           ))
                         ) : (
                           <div style={{ width: '100%', height: '12px', backgroundColor: '#6c757d', borderRadius: '2px' }} />

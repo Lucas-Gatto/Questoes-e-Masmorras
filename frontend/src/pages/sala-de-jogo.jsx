@@ -118,6 +118,9 @@ const SalaDeJogo = () => {
   // Reseta a revelação da resposta ao trocar de sala
   useEffect(() => {
     setRespostaRevelada(false);
+    // Ao trocar de sala, limpar estado local de vida do monstro para evitar
+    // exibir valor antigo (ex.: 0) até a próxima sincronização com backend.
+    setMonstroVidaAtual(null);
   }, [salaAtualIndex]);
 
   // Navega para a próxima sala se não for a última

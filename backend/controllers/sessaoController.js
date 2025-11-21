@@ -137,6 +137,9 @@ exports.advanceSala = async (req, res) => {
       const hasAlunos = Array.isArray(sessao.alunos) && sessao.alunos.length > 0;
       sessao.readingEndsAt = null;
       sessao.turnEndsAt = hasAlunos ? new Date(Date.now() + 30000) : null;
+      // Ao avançar para uma nova sala, resetar vida do monstro para forçar recomputo
+      // na próxima interação. Isso evita carregar vida zerada de uma sala anterior.
+      sessao.monstroVidaAtual = null;
     } else {
       sessao.status = 'finished';
     }

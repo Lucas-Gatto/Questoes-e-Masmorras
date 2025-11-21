@@ -1,5 +1,23 @@
 const Sessao = require('../models/Sessao');
 
+// Determina a duração do turno (em ms), aplicando bônus de +10s
+// para jogadores da classe "Mago" quando a sala atual é Enigma ou Monstro.
+function getTurnDurationMs(sessao, playerIndex) {
+  const base = 30000; // 30s padrão
+  try {
+    const idxSala = Number(sessao.currentSalaIndex || 0);
+    const sala = Array.isArray(sessao.aventuraSnapshot?.salas) ? sessao.aventuraSnapshot.salas[idxSala] : null;
+    const tipoSala = String(sala?.tipo || '').toLowerCase();
+    const idxPlayer = Number((playerIndex !== undefined && playerIndex !== null) ? playerIndex : (sessao.currentPlayerIndex || 0));
+    const aluno = Array.isArray(sessao.alunos) ? sessao.alunos[idxPlayer] : null;
+    const classe = String(aluno?.classe || '').toLowerCase();
+    const elegivelBonus = (tipoSala === 'enigma' || tipoSala === 'monstro') && classe === 'mago';
+    return base + (elegivelBonus ? 10000 : 0); // +10s se elegível
+  } catch (_) {
+    return base;
+  }
+}
+
 function gerarCodigo(len = 6) {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let out = '';
@@ -132,11 +150,11 @@ exports.advanceSala = async (req, res) => {
     if (sessao.currentSalaIndex < (sessao.aventuraSnapshot?.salas?.length || 0) - 1) {
       sessao.currentSalaIndex += 1;
       sessao.status = 'active';
-      // Ao trocar de sala: reinicia turno diretamente para 30s
+      // Ao trocar de sala: reinicia turno
       sessao.currentPlayerIndex = 0;
       const hasAlunos = Array.isArray(sessao.alunos) && sessao.alunos.length > 0;
       sessao.readingEndsAt = null;
-      sessao.turnEndsAt = hasAlunos ? new Date(Date.now() + 30000) : null;
+      sessao.turnEndsAt = hasAlunos ? new Date(Date.now() + getTurnDurationMs(sessao, 0)) : null;
       // Ao avançar para uma nova sala, resetar vida do monstro para forçar recomputo
       // na próxima interação. Isso evita carregar vida zerada de uma sala anterior.
       sessao.monstroVidaAtual = null;
@@ -160,9 +178,9 @@ exports.startSessao = async (req, res) => {
     // Inicializa turno
     sessao.currentPlayerIndex = 0;
     const hasAlunos = Array.isArray(sessao.alunos) && sessao.alunos.length > 0;
-    // Inicia turno imediatamente com 30s
+    // Inicia turno imediatamente
     sessao.readingEndsAt = null;
-    sessao.turnEndsAt = hasAlunos ? new Date(Date.now() + 30000) : null;
+    sessao.turnEndsAt = hasAlunos ? new Date(Date.now() + getTurnDurationMs(sessao, 0)) : null;
     await sessao.save();
     res.json({ status: sessao.status, currentSalaIndex: sessao.currentSalaIndex, currentPlayerIndex: sessao.currentPlayerIndex, turnEndsAt: sessao.turnEndsAt, readingEndsAt: sessao.readingEndsAt });
   } catch (err) {
@@ -327,9 +345,10 @@ exports.advanceTurn = async (req, res) => {
     if (!sessao) return res.status(404).json({ message: 'Sessão não encontrada' });
     const total = Array.isArray(sessao.alunos) ? sessao.alunos.length : 0;
     if (total === 0) return res.status(400).json({ message: 'Sem alunos na sessão' });
-    sessao.currentPlayerIndex = (Number(sessao.currentPlayerIndex || 0) + 1) % total;
-    // Próximo jogador inicia com 30s de turno (sem período de leitura)
-    sessao.turnEndsAt = new Date(Date.now() + 30000);
+    const nextIndex = (Number(sessao.currentPlayerIndex || 0) + 1) % total;
+    sessao.currentPlayerIndex = nextIndex;
+    // Próximo jogador inicia turno (sem período de leitura)
+    sessao.turnEndsAt = new Date(Date.now() + getTurnDurationMs(sessao, nextIndex));
     await sessao.save();
     res.json({ currentPlayerIndex: sessao.currentPlayerIndex, turnEndsAt: sessao.turnEndsAt });
   } catch (err) {
@@ -349,9 +368,10 @@ exports.advanceTurnByCode = async (req, res) => {
     const endsAt = sessao.turnEndsAt ? new Date(sessao.turnEndsAt).getTime() : 0;
     // Somente avança se o timer estiver expirado (tolerância de 0.5s)
     if (endsAt && now + 500 >= endsAt) {
-      sessao.currentPlayerIndex = (Number(sessao.currentPlayerIndex || 0) + 1) % total;
-      // Ao avançar por alunos, inicia turno de 30s para o próximo
-      sessao.turnEndsAt = new Date(now + 30000);
+      const nextIndex = (Number(sessao.currentPlayerIndex || 0) + 1) % total;
+      sessao.currentPlayerIndex = nextIndex;
+      // Ao avançar por alunos, inicia turno para o próximo
+      sessao.turnEndsAt = new Date(now + getTurnDurationMs(sessao, nextIndex));
       await sessao.save();
     }
     res.json({ currentPlayerIndex: sessao.currentPlayerIndex, turnEndsAt: sessao.turnEndsAt });
@@ -372,7 +392,7 @@ exports.startTurn = async (req, res) => {
       return res.status(400).json({ message: 'Período de leitura ainda não terminou' });
     }
     sessao.readingEndsAt = null;
-    sessao.turnEndsAt = new Date(now + 30000);
+    sessao.turnEndsAt = new Date(now + getTurnDurationMs(sessao));
     await sessao.save();
     res.json({ turnEndsAt: sessao.turnEndsAt });
   } catch (err) {
@@ -392,7 +412,7 @@ exports.startTurnByCode = async (req, res) => {
       return res.status(400).json({ message: 'Período de leitura ainda não terminou' });
     }
     sessao.readingEndsAt = null;
-    sessao.turnEndsAt = new Date(now + 30000);
+    sessao.turnEndsAt = new Date(now + getTurnDurationMs(sessao));
     await sessao.save();
     res.json({ turnEndsAt: sessao.turnEndsAt });
   } catch (err) {

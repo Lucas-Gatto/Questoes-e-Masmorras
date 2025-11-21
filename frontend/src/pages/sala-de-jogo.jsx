@@ -227,6 +227,43 @@ const SalaDeJogo = () => {
     }
   };
 
+  // Resposta correta na Pergunta de Rolagem: pontua e avança turno
+  const handlePerguntaRolagemCerta = async () => {
+    try {
+      const nomeAluno = alunos?.[currentPlayerIndex]?.nome || '';
+      if (!sessaoAtual?.id || !nomeAluno) {
+        setShowModalPergunta(false);
+        return;
+      }
+      // Adiciona ponto ao jogador do turno
+      const resPonto = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}/alunos/ponto`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ nomeAluno })
+      });
+      if (resPonto.ok) {
+        const data = await resPonto.json();
+        setAlunos(Array.isArray(data.alunos) ? data.alunos : alunos);
+      }
+      // Avança turno automaticamente
+      const resTurno = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}/turn/next`, { method: 'PUT', credentials: 'include' });
+      if (resTurno.ok) {
+        const turnData = await resTurno.json();
+        setCurrentPlayerIndex(Number(turnData.currentPlayerIndex || 0));
+        setTurnEndsAt(turnData.turnEndsAt || null);
+      }
+    } catch (_) { /* silencioso */ }
+    finally {
+      setShowModalPergunta(false);
+    }
+  };
+
+  // Resposta errada: apenas fecha a modal
+  const handlePerguntaRolagemErrada = () => {
+    setShowModalPergunta(false);
+  };
+
   // Renderiza o conteúdo principal da sala baseado no tipo
   const renderConteudoSala = (sala) => {
     // Segurança: Retorna mensagem se a sala for nula/indefinida
@@ -497,6 +534,14 @@ const SalaDeJogo = () => {
             </div>
             <div className="modal-body">
               <p style={{ whiteSpace: 'pre-wrap' }}>{textoPerguntaRolagem || '—'}</p>
+              <div style={{ display: 'inline-flex', gap: '12px', marginTop: '12px'}}>
+                <button className="btn-jogo verde" onClick={handlePerguntaRolagemCerta} title="Responder certo">
+                  ✅ Certo
+                </button>
+                <button className="btn-jogo vermelho" onClick={handlePerguntaRolagemErrada} title="Responder errado">
+                  ❌ Errado
+                </button>
+              </div>
             </div>
           </div>
         </div>

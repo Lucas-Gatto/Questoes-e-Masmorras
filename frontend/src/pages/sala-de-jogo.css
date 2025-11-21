@@ -106,6 +106,8 @@
 .btn-jogo.vermelho { background-color: var(--alternativa_vermelha); }
 .btn-jogo.azul { background-color: var(--alternativa_azul); }
 .btn-jogo.dourado { background-color: var(--alternativa_amarela); }
+.btn-jogo.verde { background-color: var(--alternativa_verde); }
+.btn-jogo.vermelho { background-color: var(--alternativa_vermelha); }
 
 /* Estilos Específicos: ENIGMA */
 .botoes-grid-enigma {

@@ -13,7 +13,7 @@ const getVidaMonstroPontos = (vida, numJogadores) => {
   return n; // padrão: média
 };
 
-const SalaMonstro = ({ sala, currentPlayerName = '—', timerText = '00:30', turnEndsAt = null, numJogadores = 0, monstroVidaAtual = null }) => {
+const SalaMonstro = ({ sala, currentPlayerName = '—', timerText = '00:30', turnEndsAt = null, numJogadores = 0, monstroVidaAtual = null, alunos = [] }) => {
     const myName = useMemo(() => {
       try {
         const s = (sessionStorage.getItem('aluno_nome') || '').trim();
@@ -28,11 +28,20 @@ const SalaMonstro = ({ sala, currentPlayerName = '—', timerText = '00:30', tur
     }, [myName, currentPlayerName]);
 
     const [nivelPergunta, setNivelPergunta] = useState(2);
-    const [hasRolled, setHasRolled] = useState(false);
+    const [rollCount, setRollCount] = useState(0);
 
-    // Reseta apenas a permissão de rolar ao mudar de jogador ou iniciar novo turno
+    // Detecta se minha classe é Bardo
+    const isBardo = useMemo(() => {
+      const a = (alunos || []);
+      const me = (myName || '').toLowerCase();
+      const found = a.find(x => String(x?.nome || '').toLowerCase() === me);
+      const classe = String(found?.classe || '').toLowerCase();
+      return classe.includes('bardo');
+    }, [alunos, myName]);
+
+    // Reseta contagem de rolagens ao mudar de jogador ou iniciar novo turno
     useEffect(() => {
-      setHasRolled(false);
+      setRollCount(0);
     }, [currentPlayerName, turnEndsAt]);
 
     // Código da sessão para sincronizar valor da rolagem com backend
@@ -42,10 +51,12 @@ const SalaMonstro = ({ sala, currentPlayerName = '—', timerText = '00:30', tur
     }, []);
 
     const handleRollDice = async () => {
-      if (!isMyTurn || hasRolled) return;
+      if (!isMyTurn) return;
+      const limit = isBardo ? 2 : 1;
+      if (rollCount >= limit) return;
       const roll = Math.floor(Math.random() * 6) + 1; // 1-6
       setNivelPergunta(roll);
-      setHasRolled(true);
+      setRollCount(c => Math.min(limit, c + 1));
       // Envia valor da rolagem ao backend para o professor visualizar
       try {
         if (codigoSessao) {
@@ -115,12 +126,12 @@ const SalaMonstro = ({ sala, currentPlayerName = '—', timerText = '00:30', tur
                 <div
                   className="dado-icone"
                   onClick={handleRollDice}
-                  title={isMyTurn ? (hasRolled ? 'Você já rolou neste turno' : 'Clique para rolar o dado') : 'Aguarde seu turno para rolar'}
+                  title={isMyTurn ? (rollCount >= (isBardo ? 2 : 1) ? 'Limite de rolagens atingido' : (isBardo ? 'Você pode rolar até duas vezes' : 'Clique para rolar o dado')) : 'Aguarde seu turno para rolar'}
                   role="button"
-                  aria-disabled={!isMyTurn || hasRolled}
+                  aria-disabled={!isMyTurn || rollCount >= (isBardo ? 2 : 1)}
                   style={{
-                    cursor: (!isMyTurn || hasRolled) ? 'not-allowed' : 'pointer',
-                    opacity: (!isMyTurn || hasRolled) ? 0.6 : 1
+                    cursor: (!isMyTurn || rollCount >= (isBardo ? 2 : 1)) ? 'not-allowed' : 'pointer',
+                    opacity: (!isMyTurn || rollCount >= (isBardo ? 2 : 1)) ? 0.6 : 1
                   }}
                 >
                   🎲

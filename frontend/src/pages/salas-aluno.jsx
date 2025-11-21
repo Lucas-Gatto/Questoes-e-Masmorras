@@ -108,7 +108,7 @@ const SalasAluno = () => {
       case 'Enigma':
         return <SalaEnigma sala={salaAtual} aventuraTitulo={aventuraTitulo} revelada={revelada} currentPlayerName={currentPlayerName} timerText={timerText} />;
       case 'Monstro':
-        return <SalaMonstro sala={salaAtual} aventuraTitulo={aventuraTitulo} currentPlayerName={currentPlayerName} timerText={timerText} turnEndsAt={turnEndsAt} numJogadores={Array.isArray(alunos) ? alunos.length : 0} monstroVidaAtual={monstroVidaAtual} />;
+        return <SalaMonstro sala={salaAtual} aventuraTitulo={aventuraTitulo} currentPlayerName={currentPlayerName} timerText={timerText} turnEndsAt={turnEndsAt} numJogadores={Array.isArray(alunos) ? alunos.length : 0} monstroVidaAtual={monstroVidaAtual} alunos={alunos} />;
       case 'Alternativa':
         // Usa key para forçar re-montagem ao trocar de sala e evitar retenção de estado
         return <SalaAlternativa key={indiceSala} sala={salaAtual} aventuraTitulo={aventuraTitulo} revelada={revelada} />;

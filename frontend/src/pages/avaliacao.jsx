@@ -1,21 +1,46 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './avaliacao.css';
+import API_URL from '../config';
+import { toast } from '../contexts/toastService.js';
 
 const Avaliacao = () => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
-  const [comentario, setComentario] = useState('');
   const [enviado, setEnviado] = useState(false);
+  const [codigo, setCodigo] = useState('');
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const c = params.get('codigo') || localStorage.getItem('sessao_codigo') || '';
+    setCodigo(c);
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (rating === 0) {
-      alert('Por favor, selecione uma nota antes de enviar.');
+      toast.show('Por favor, selecione uma nota antes de enviar.', { type: 'warning' });
       return;
     }
-    setEnviado(true);
-    // Aqui você pode enviar os dados para o backend futuramente
-    console.log({ rating, comentario });
+    if (!codigo) {
+      toast.show('Código da sessão não encontrado.', { type: 'error' });
+      return;
+    }
+    try {
+      const res = await fetch(`${API_URL}/sessoes/by-code/${codigo}/avaliacao`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estrelas: rating }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        toast.show(data?.message || 'Erro ao enviar avaliação.', { type: 'error' });
+        return;
+      }
+      setEnviado(true);
+      toast.show('Avaliação enviada! Obrigado por participar.', { type: 'success' });
+    } catch (err) {
+      toast.show('Falha ao enviar avaliação.', { type: 'error' });
+    }
   };
 
   return (
@@ -46,16 +71,8 @@ const Avaliacao = () => {
         </p>
       )}
 
-      {/* Campo de comentário */}
+      {/* Envio apenas com estrelas */}
       <form onSubmit={handleSubmit} className="form-avaliacao">
-        <textarea
-          className="campo-comentario"
-          placeholder="Conte-nos o motivo da sua nota..."
-          value={comentario}
-          onChange={(e) => setComentario(e.target.value)}
-          required
-        ></textarea>
-
         <button type="submit" className="botao-enviar">
           Enviar Avaliação
         </button>

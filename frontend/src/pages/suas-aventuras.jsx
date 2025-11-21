@@ -64,6 +64,8 @@ const SuasAventuras = () => {
             <Aventura
               key={aventura._id}
               titulo={aventura.titulo}
+              rating={aventura.avaliacaoMedia || 0}
+              ratingCount={aventura.avaliacaoCount || 0}
               onDelete={() => handleDeleteAventura(aventura._id)}
               onEdit={() => navigate(`/editar-aventura/${aventura._id}`)}
               onPlay={() => navigate(`/iniciar-aventura/${aventura._id}`)}

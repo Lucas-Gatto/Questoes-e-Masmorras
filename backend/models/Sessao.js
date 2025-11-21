@@ -23,6 +23,7 @@ const SalaSnapshotSchema = new mongoose.Schema({
 const SessaoSchema = new mongoose.Schema({
   codigo: { type: String, required: true, unique: true },
   status: { type: String, enum: ['waiting', 'active', 'finished'], default: 'waiting' },
+  aventuraId: { type: mongoose.Schema.Types.ObjectId, ref: 'Aventura', default: null },
   aventuraSnapshot: {
     titulo: { type: String, required: true },
     salas: [SalaSnapshotSchema],

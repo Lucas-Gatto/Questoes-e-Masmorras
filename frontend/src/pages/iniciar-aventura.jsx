@@ -77,7 +77,10 @@ const IniciarAventura = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ aventuraSnapshot: { titulo: aventura.titulo, salas: aventura.salas } }),
+        body: JSON.stringify({ 
+          aventuraSnapshot: { titulo: aventura.titulo, salas: aventura.salas },
+          aventuraId: aventuraId,
+        }),
       });
             if (res.status === 401) {
         alert('Sua sessão expirou. Faça login novamente.');

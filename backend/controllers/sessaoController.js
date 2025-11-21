@@ -27,7 +27,7 @@ function gerarCodigo(len = 6) {
 
 exports.createSessao = async (req, res) => {
   try {
-    const { aventuraSnapshot } = req.body;
+    const { aventuraSnapshot, aventuraId } = req.body;
     if (!aventuraSnapshot || !aventuraSnapshot.titulo || !Array.isArray(aventuraSnapshot.salas)) {
       return res.status(400).json({ message: 'Dados de aventura inválidos para sessão.' });
     }
@@ -39,6 +39,7 @@ exports.createSessao = async (req, res) => {
 
     const sessao = await Sessao.create({
       codigo,
+      aventuraId: aventuraId || null,
       aventuraSnapshot,
       createdBy: req.user?._id || null,
     });
@@ -259,10 +260,39 @@ exports.avaliarSessaoByCode = async (req, res) => {
     sessao.avaliacaoMedia = novaMedia;
     await sessao.save();
 
+    // Propaga avaliação para a Aventura vinculada (agregando todas as avaliações)
+    let aventuraAtualizada = null;
+    try {
+      const mongoose = require('mongoose');
+      const Aventura = require('../models/Aventura');
+      let aventura = null;
+      if (sessao.aventuraId && mongoose.Types.ObjectId.isValid(String(sessao.aventuraId))) {
+        aventura = await Aventura.findById(sessao.aventuraId);
+      }
+      // Fallback: tentar pelo título e autor
+      if (!aventura) {
+        aventura = await Aventura.findOne({ createdBy: sessao.createdBy, titulo: sessao.aventuraSnapshot?.titulo });
+      }
+      if (aventura) {
+        const novoCountA = (aventura.avaliacaoCount || 0) + 1;
+        const novaMediaA = ((aventura.avaliacaoMedia || 0) * (aventura.avaliacaoCount || 0) + valor) / novoCountA;
+        aventura.avaliacaoCount = novoCountA;
+        aventura.avaliacaoMedia = novaMediaA;
+        aventuraAtualizada = await aventura.save();
+      }
+    } catch (_) {
+      // silencioso: não falha o endpoint se não conseguir propagar
+    }
+
     return res.status(200).json({
       codigo: sessao.codigo,
       avaliacaoMedia: sessao.avaliacaoMedia,
       avaliacaoCount: sessao.avaliacaoCount,
+      aventura: aventuraAtualizada ? {
+        id: aventuraAtualizada._id,
+        avaliacaoMedia: aventuraAtualizada.avaliacaoMedia,
+        avaliacaoCount: aventuraAtualizada.avaliacaoCount,
+      } : null,
     });
   } catch (err) {
     res.status(500).json({ message: 'Erro ao registrar avaliação', details: err?.message });

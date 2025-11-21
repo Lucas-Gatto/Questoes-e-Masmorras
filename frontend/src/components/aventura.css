@@ -52,3 +52,18 @@
   height: 45px;
   cursor: pointer;
 }
+
+/* Avaliação de aventuras: 5 estrelas exibidas abaixo do card */
+.rating-stars {
+  display: inline-flex;
+  gap: 6px;
+  margin-top: 12px;
+  user-select: none;
+}
+
+.rating-stars .star {
+  font-size: 30px;
+  line-height: 1;
+  color: #C68700; /* dourado temático */
+  opacity: 0.9;
+}

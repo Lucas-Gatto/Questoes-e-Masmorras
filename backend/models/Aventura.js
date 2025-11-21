@@ -53,6 +53,9 @@ const AventuraSchema = new Schema({
   salas: { type: [SalaSchema], required: true, default: [] }, // Garante que sempre haja um array
   perguntas: { type: [PerguntaSchema], required: true, default: [] }, // Garante que sempre haja um array
   createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true }, // Link para o usuário que criou
+  // Avaliações agregadas de todas as sessões desta aventura
+  avaliacaoMedia: { type: Number, default: 0 },
+  avaliacaoCount: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
 });
 

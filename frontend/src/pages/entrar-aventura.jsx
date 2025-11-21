@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./entrar-aventura.css";
 import API_URL from "../config";
+import { toast } from "../contexts/toastService.js";
 
 const EntrarAventura = () => {
   const navigate = useNavigate();
+  const show = (msg, opts) => toast.show(msg, opts);
   const [tituloSessao, setTituloSessao] = useState("");
   const [codigo, setCodigo] = useState("");
   const [nome, setNome] = useState("");
@@ -47,7 +49,7 @@ const EntrarAventura = () => {
           className="btn-entrar-aventura"
           onClick={async () => {
             if (!nome || !codigo) {
-              alert("Informe seu nome e use o link com código.");
+              show("Informe seu nome e use o link com código.", { type: 'warning' });
               return;
             }
             try {
@@ -61,7 +63,7 @@ const EntrarAventura = () => {
               );
               const data = await res.json();
               if (!res.ok) {
-                alert(data?.message || "Falha ao entrar na sessão");
+                show(data?.message || "Falha ao entrar na sessão", { type: 'error' });
                 return;
               }
               localStorage.setItem("sessao_codigo", codigo);
@@ -73,7 +75,7 @@ const EntrarAventura = () => {
                 )}`
               );
             } catch (err) {
-              alert("Erro ao entrar na sessão.");
+              show("Erro ao entrar na sessão.", { type: 'error' });
             }
           }}
         >

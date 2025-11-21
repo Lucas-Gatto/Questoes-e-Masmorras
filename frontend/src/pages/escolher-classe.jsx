@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './escolher-classe.css';
 import API_URL from "../config";
+import { toast } from "../contexts/toastService.js";
 
 // --- Imagens das Classes (ajuste os caminhos/nomes) ---
 import magoImg from '../assets/mago.png'; // Exemplo
@@ -36,6 +37,7 @@ const classesInfo = {
 
 const EscolherClasse = () => {
   const navigate = useNavigate();
+  const show = (msg, opts) => toast.show(msg, opts);
 
   const [selectedClassKey, setSelectedClassKey] = useState('bardo'); 
 
@@ -49,7 +51,7 @@ const EscolherClasse = () => {
     const nome = decodeURIComponent(params.get('nome') || '');
     const classe = selectedClassKey;
     if (!codigo || !nome) {
-      alert('Sessão inválida. Volte ao link da aventura.');
+      show('Sessão inválida. Volte ao link da aventura.', { type: 'error' });
       return;
     }
     try {
@@ -60,13 +62,13 @@ const EscolherClasse = () => {
       });
       if (!res.ok) {
         const data = await res.json();
-        alert(data?.message || 'Erro ao salvar classe');
+        show(data?.message || 'Erro ao salvar classe', { type: 'error' });
         return;
       }
-      alert(`Classe ${classesInfo[selectedClassKey]?.nome} selecionada!`);
+      show(`Classe ${classesInfo[selectedClassKey]?.nome} selecionada!`, { type: 'success' });
       navigate(`/aguardar-inicio?codigo=${codigo}&nome=${encodeURIComponent(nome)}`);
     } catch (err) {
-      alert('Erro ao salvar classe');
+      show('Erro ao salvar classe', { type: 'error' });
     }
   };
 

@@ -6,6 +6,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useContext } from "react";
 import { AvatarContext } from "../contexts/AvatarContext";
 import API_URL from "../config";
+import { toast } from "../contexts/toastService.js";
 
 function Login() {
   //Constante de redirecionamento de página
@@ -59,10 +60,10 @@ function Login() {
 
         navigate("/suas-aventuras");
       } else {
-        alert(data.message);
+        show(data?.message || 'Erro ao fazer login.', { type: 'error' });
       }
     } catch (err) {
-      alert("Erro ao fazer login.");
+      show("Erro ao fazer login.", { type: 'error' });
     }
   };
 
@@ -82,7 +83,7 @@ function Login() {
       const data = await res.json();
       if (res.ok) {
         console.log("Cadastro OK:", data);
-        alert("Cadastro realizado com sucesso!");
+        show("Cadastro realizado com sucesso!", { type: 'success' });
 
         //Limpa os campos
         setCadastroEmail("");
@@ -90,10 +91,10 @@ function Login() {
         setCadastroConfirmarSenha("");
 
       } else {
-        alert(data.message);
+        show(data?.message || 'Erro ao cadastrar.', { type: 'error' });
       }
     } catch (err) {
-      alert("Erro ao cadastrar.");
+      show("Erro ao cadastrar.", { type: 'error' });
     }
   };
 
@@ -171,3 +172,4 @@ function Login() {
 }
 
 export default Login;
+  const show = (msg, opts) => toast.show(msg, opts);

@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
+import { ToastProvider } from "./contexts/ToastContext.jsx";
 import { AvatarProvider } from "./contexts/AvatarContext.jsx";
 
 import React from "react";
@@ -16,7 +17,9 @@ if (import.meta.env.MODE !== "production") {
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AvatarProvider>
-      <App />
+      <ToastProvider>
+        <App />
+      </ToastProvider>
     </AvatarProvider>
   </StrictMode>
 );

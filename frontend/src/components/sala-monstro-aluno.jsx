@@ -13,7 +13,7 @@ const getVidaMonstroPontos = (vida, numJogadores) => {
   return n; // padrão: média
 };
 
-const SalaMonstro = ({ sala, currentPlayerName = '—', timerText = '00:30', turnEndsAt = null, numJogadores = 0 }) => {
+const SalaMonstro = ({ sala, currentPlayerName = '—', timerText = '00:30', turnEndsAt = null, numJogadores = 0, monstroVidaAtual = null }) => {
     const myName = useMemo(() => {
       try {
         const s = (sessionStorage.getItem('aluno_nome') || '').trim();
@@ -82,15 +82,17 @@ const SalaMonstro = ({ sala, currentPlayerName = '—', timerText = '00:30', tur
                 <span>
                   {(() => {
                     const vidaTotal = getVidaMonstroPontos(sala.vidaMonstro, numJogadores);
-                    return `Vida do Monstro (${sala.vidaMonstro || 'Média'}): ${vidaTotal} ${vidaTotal === 1 ? 'ponto' : 'pontos'}`;
+                    const vidaExibida = (monstroVidaAtual != null && Number.isFinite(monstroVidaAtual)) ? Math.min(vidaTotal, Math.max(0, monstroVidaAtual)) : vidaTotal;
+                    return `Vida do Monstro (${sala.vidaMonstro || 'Média'}): ${vidaExibida} ${vidaExibida === 1 ? 'ponto' : 'pontos'}`;
                   })()}
                 </span>
                 {(() => {
                   const vidaTotal = getVidaMonstroPontos(sala.vidaMonstro, numJogadores);
+                  const vidaExibida = (monstroVidaAtual != null && Number.isFinite(monstroVidaAtual)) ? Math.min(vidaTotal, Math.max(0, monstroVidaAtual)) : vidaTotal;
                   return (
                     <div className="vida-barra" style={{ display: 'flex', gap: '2px', alignItems: 'center' }}>
-                      {vidaTotal > 0 ? (
-                        Array.from({ length: vidaTotal }).map((_, i) => (
+                      {vidaExibida > 0 ? (
+                        Array.from({ length: vidaExibida }).map((_, i) => (
                           <div key={i} style={{ flex: 1, height: '12px', backgroundColor: '#dc3545', borderRadius: '2px' }} />
                         ))
                       ) : (

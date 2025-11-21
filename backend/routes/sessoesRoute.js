@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createSessao, getSessaoById, getSessaoByCode, addAlunoByCode, setClasseByCode, advanceSala, startSessao, finishSessao, avaliarSessaoByCode, awardPontoAlunoByBody, revealEnigma, awardPontoAlunoByCode, advanceTurn, advanceTurnByCode, startTurn, startTurnByCode, setRollValueByCode } = require('../controllers/sessaoController');
+const { createSessao, getSessaoById, getSessaoByCode, addAlunoByCode, setClasseByCode, advanceSala, startSessao, finishSessao, avaliarSessaoByCode, awardPontoAlunoByBody, revealEnigma, awardPontoAlunoByCode, advanceTurn, advanceTurnByCode, startTurn, startTurnByCode, setRollValueByCode, decrementMonstroVida } = require('../controllers/sessaoController');
 const ensureAuth = require('../middleware/ensureAuth');
 
 // Rotas do aluno (públicas)
@@ -24,5 +24,7 @@ router.put('/:id/alunos/ponto', ensureAuth, awardPontoAlunoByBody);
 router.put('/:id/reveal-enigma', ensureAuth, revealEnigma);
 router.put('/:id/turn/next', ensureAuth, advanceTurn);
 router.put('/:id/turn/start', ensureAuth, startTurn);
+// Decrementa vida do monstro (professor)
+router.put('/:id/monstro/vida/decrement', ensureAuth, decrementMonstroVida);
 
 module.exports = router;

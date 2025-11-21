@@ -47,6 +47,7 @@ const SalaDeJogo = () => {
   const [currentRollValue, setCurrentRollValue] = useState(2);
   const [showModalPergunta, setShowModalPergunta] = useState(false);
   const [textoPerguntaRolagem, setTextoPerguntaRolagem] = useState('');
+  const [monstroVidaAtual, setMonstroVidaAtual] = useState(null);
 
   // Efeito para carregar a aventura do backend ao montar
   useEffect(() => {
@@ -169,6 +170,10 @@ const SalaDeJogo = () => {
         if (data.currentRollValue != null) {
           setCurrentRollValue(Number(data.currentRollValue) || 2);
         }
+        if (data.monstroVidaAtual != null) {
+          const v = Number(data.monstroVidaAtual);
+          setMonstroVidaAtual(Number.isFinite(v) ? v : null);
+        }
       }
     } catch (e) {
       console.warn('Erro ao carregar alunos:', e);
@@ -246,6 +251,15 @@ const SalaDeJogo = () => {
         const data = await resPonto.json();
         setAlunos(Array.isArray(data.alunos) ? data.alunos : alunos);
       }
+      // Decrementa 1 ponto de vida do monstro
+      try {
+        const resVida = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}/monstro/vida/decrement`, { method: 'PUT', credentials: 'include' });
+        if (resVida.ok) {
+          const vidaData = await resVida.json();
+          const v = Number(vidaData?.monstroVidaAtual);
+          if (Number.isFinite(v)) setMonstroVidaAtual(v);
+        }
+      } catch (_) { /* silencioso */ }
       // Avança turno automaticamente
       const resTurno = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}/turn/next`, { method: 'PUT', credentials: 'include' });
       if (resTurno.ok) {
@@ -326,16 +340,18 @@ const SalaDeJogo = () => {
                     {(() => {
                       const totalJogadores = Array.isArray(alunos) ? alunos.length : 0;
                       const vidaTotal = getVidaMonstroPontos(sala.vidaMonstro, totalJogadores);
-                      return `Vida do Monstro (${sala.vidaMonstro || 'Média'}): ${vidaTotal} ${vidaTotal === 1 ? 'ponto' : 'pontos'}`;
+                      const vidaExibida = monstroVidaAtual != null ? Math.min(vidaTotal, Math.max(0, monstroVidaAtual)) : vidaTotal;
+                      return `Vida do Monstro (${sala.vidaMonstro || 'Média'}): ${vidaExibida} ${vidaExibida === 1 ? 'ponto' : 'pontos'}`;
                     })()}
                   </span>
                   {(() => {
                     const totalJogadores = Array.isArray(alunos) ? alunos.length : 0;
                     const vidaTotal = getVidaMonstroPontos(sala.vidaMonstro, totalJogadores);
+                    const vidaExibida = monstroVidaAtual != null ? Math.min(vidaTotal, Math.max(0, monstroVidaAtual)) : vidaTotal;
                     return (
                       <div className="vida-barra" style={{ display: 'flex', gap: '2px', alignItems: 'center' }}>
-                        {vidaTotal > 0 ? (
-                          Array.from({ length: vidaTotal }).map((_, i) => (
+                        {vidaExibida > 0 ? (
+                          Array.from({ length: vidaExibida }).map((_, i) => (
                             <div key={i} style={{ flex: 1, height: '12px', backgroundColor: '#dc3545', borderRadius: '2px' }} />
                           ))
                         ) : (

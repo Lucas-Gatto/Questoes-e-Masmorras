@@ -38,6 +38,8 @@ const SessaoSchema = new mongoose.Schema({
   enigmaReveladoPorSala: { type: [Boolean], default: [] },
   // Valor atual da rolagem de dado (Nível Pergunta)
   currentRollValue: { type: Number, default: 2 },
+  // Vida atual do monstro na sala de Monstro (número de pontos restantes)
+  monstroVidaAtual: { type: Number, default: null },
   // Avaliações (média e quantidade)
   avaliacaoMedia: { type: Number, default: 0 },
   avaliacaoCount: { type: Number, default: 0 },

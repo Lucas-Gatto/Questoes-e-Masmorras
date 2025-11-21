@@ -16,6 +16,7 @@ const SalasAluno = () => {
   const [turnEndsAt, setTurnEndsAt] = useState(null);
   const [timeLeft, setTimeLeft] = useState(30);
   const [advancing, setAdvancing] = useState(false);
+  const [monstroVidaAtual, setMonstroVidaAtual] = useState(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -43,6 +44,12 @@ const SalasAluno = () => {
           setAlunos(Array.isArray(data.alunos) ? data.alunos : []);
           setCurrentPlayerIndex(Number(data.currentPlayerIndex || 0));
           setTurnEndsAt(data.turnEndsAt || null);
+          if (data.monstroVidaAtual != null) {
+            const v = Number(data.monstroVidaAtual);
+            setMonstroVidaAtual(Number.isFinite(v) ? v : null);
+          } else {
+            setMonstroVidaAtual(null);
+          }
         }
       } catch (e) {
         // silencioso
@@ -101,7 +108,7 @@ const SalasAluno = () => {
       case 'Enigma':
         return <SalaEnigma sala={salaAtual} aventuraTitulo={aventuraTitulo} revelada={revelada} currentPlayerName={currentPlayerName} timerText={timerText} />;
       case 'Monstro':
-        return <SalaMonstro sala={salaAtual} aventuraTitulo={aventuraTitulo} currentPlayerName={currentPlayerName} timerText={timerText} turnEndsAt={turnEndsAt} numJogadores={Array.isArray(alunos) ? alunos.length : 0} />;
+        return <SalaMonstro sala={salaAtual} aventuraTitulo={aventuraTitulo} currentPlayerName={currentPlayerName} timerText={timerText} turnEndsAt={turnEndsAt} numJogadores={Array.isArray(alunos) ? alunos.length : 0} monstroVidaAtual={monstroVidaAtual} />;
       case 'Alternativa':
         return <SalaAlternativa sala={salaAtual} aventuraTitulo={aventuraTitulo} revelada={revelada} />;
       default:

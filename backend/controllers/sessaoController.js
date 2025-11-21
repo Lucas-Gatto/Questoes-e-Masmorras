@@ -60,6 +60,7 @@ exports.getSessaoByCode = async (req, res) => {
       turnEndsAt: sessao.turnEndsAt || null,
       readingEndsAt: sessao.readingEndsAt || null,
       currentRollValue: Number(sessao.currentRollValue || 2),
+      monstroVidaAtual: Number.isFinite(sessao.monstroVidaAtual) ? sessao.monstroVidaAtual : null,
     });
   } catch (err) {
     res.status(500).json({ message: 'Erro ao buscar sessão', details: err?.message });
@@ -393,5 +394,40 @@ exports.startTurnByCode = async (req, res) => {
     res.json({ turnEndsAt: sessao.turnEndsAt });
   } catch (err) {
     res.status(500).json({ message: 'Erro ao iniciar turno (código)', details: err?.message });
+  }
+};
+
+// Decrementa 1 ponto de vida do monstro na sala atual
+exports.decrementMonstroVida = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const sessao = await Sessao.findById(id);
+    if (!sessao) return res.status(404).json({ message: 'Sessão não encontrada' });
+    if (sessao.status === 'finished') return res.status(400).json({ message: 'Sessão encerrada' });
+
+    const idx = Number(sessao.currentSalaIndex || 0);
+    const sala = Array.isArray(sessao.aventuraSnapshot?.salas) ? sessao.aventuraSnapshot.salas[idx] : null;
+    if (!sala || String(sala.tipo).toLowerCase() !== 'monstro') {
+      return res.status(400).json({ message: 'Sala atual não é do tipo Monstro' });
+    }
+
+    const vidaStr = (sala.vidaMonstro || '').toLowerCase();
+    const n = Array.isArray(sessao.alunos) ? sessao.alunos.length : 0;
+    let vidaMax = n;
+    if (vidaStr.includes('baixa')) vidaMax = Math.floor(n / 2);
+    else if (vidaStr.includes('média') || vidaStr.includes('media')) vidaMax = n;
+    else if (vidaStr.includes('alta')) vidaMax = n * 2;
+    else if (vidaStr.includes('chefe')) vidaMax = n * 3;
+
+    if (!Number.isFinite(sessao.monstroVidaAtual) || sessao.monstroVidaAtual == null) {
+      sessao.monstroVidaAtual = vidaMax;
+    }
+    // Garante teto e piso
+    sessao.monstroVidaAtual = Math.min(vidaMax, Math.max(0, Number(sessao.monstroVidaAtual) - 1));
+    await sessao.save();
+
+    return res.status(200).json({ monstroVidaAtual: sessao.monstroVidaAtual, monstroVidaMax: vidaMax });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao decrementar vida do monstro', details: err?.message });
   }
 };

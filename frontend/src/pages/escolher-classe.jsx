@@ -15,16 +15,22 @@ const classesInfo = {
     nome: "Mago",
     descricao: "Mestres das artes arcanas, conjuram magias poderosas.",
     imagem: magoImg,
+    habilidadeTitulo: "Manipulação Temporal",
+    habilidade: "Com o uso de magias antigas, o Mago aumenta seu tempo disponível para responder enigmas e perguntas de rolagens.",
   },
   bardo: {
     nome: "Bardo",
     descricao: "Música e carisma são suas armas, inspiram aliados e confundem inimigos.",
     imagem: bardoImg,
+    habilidadeTitulo: "Distração Musical",
+    habilidade: "O Bardo distrai o monstro e consegue rolar seu dado de perguntas de rolagem uma vez adicional e deve aceitar o novo resultado.",
   },
   guerreiro: {
     nome: "Guerreiro",
     descricao: "Combatentes habilidosos, mestres no uso de armas e armaduras.",
     imagem: guerreiroImg,
+    habilidadeTitulo: "Força de Mil Homens",
+    habilidade: "Entre pancadas poderosas, o Guerreiro causa um ponto de dano adicional em monstros se responder corretamente sua pergunta de rolagem.",
   },
 };
 
@@ -101,6 +107,13 @@ const EscolherClasse = () => {
               <div className="descricao-classe-display">
                 {selectedClassData.descricao}
               </div>
+              {/* Habilidade da Classe */}
+              {selectedClassData.habilidade && (
+                <div className="habilidade-classe-display">
+                  <strong>{selectedClassData.habilidadeTitulo || 'Habilidade'}</strong>
+                  <div>{selectedClassData.habilidade}</div>
+                </div>
+              )}
               <button className="btn-confirmar-escolha" onClick={handleConfirm}>
                 Confirmar Escolha
               </button>

@@ -97,6 +97,17 @@
   text-align: left;
 }
 
+.habilidade-classe-display {
+  background-color: var(--input_amarelo);
+  padding: 12px 20px;
+  border-radius: 15px;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  border: none;
+  text-align: left;
+}
+
 .nome-classe-display {
   font-weight: bold;
   min-width: 120px;

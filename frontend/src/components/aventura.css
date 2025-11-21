@@ -1,3 +1,10 @@
+.aventura-card {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .fundo-aventura {
   width: 400px;
   height: 300px;
@@ -10,7 +17,7 @@
   background-size: contain;
   background-repeat: no-repeat;
   flex-direction: column;
-}
+ /* espaço para as estrelas fora do pergaminho */}
 
 .subtitulo_aventura {
   font-family: "MedievalSharp", cursive;
@@ -53,15 +60,13 @@
   cursor: pointer;
 }
 
-/* Avaliação de aventuras: 5 estrelas exibidas abaixo do card */
-.rating-stars {
+.rating-stars-below {
   display: inline-flex;
   gap: 6px;
-  margin-top: 12px;
   user-select: none;
 }
 
-.rating-stars .star {
+.rating-stars-below .star {
   font-size: 30px;
   line-height: 1;
   color: #C68700; /* dourado temático */

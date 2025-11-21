@@ -110,7 +110,8 @@ const SalasAluno = () => {
       case 'Monstro':
         return <SalaMonstro sala={salaAtual} aventuraTitulo={aventuraTitulo} currentPlayerName={currentPlayerName} timerText={timerText} turnEndsAt={turnEndsAt} numJogadores={Array.isArray(alunos) ? alunos.length : 0} monstroVidaAtual={monstroVidaAtual} />;
       case 'Alternativa':
-        return <SalaAlternativa sala={salaAtual} aventuraTitulo={aventuraTitulo} revelada={revelada} />;
+        // Usa key para forçar re-montagem ao trocar de sala e evitar retenção de estado
+        return <SalaAlternativa key={indiceSala} sala={salaAtual} aventuraTitulo={aventuraTitulo} revelada={revelada} />;
       default:
         return <p style={{ color: "white" }}>Tipo de sala desconhecido.</p>;
     }

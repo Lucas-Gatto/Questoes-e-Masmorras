@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import API_URL from "../config";
 // Usa estilos da página do mestre via salas-aluno.jsx
 
@@ -10,6 +10,12 @@ const SalaAlternativa = ({ sala, revelada = false }) => {
 
   const [respondido, setRespondido] = useState(false);
   const [selecionadaId, setSelecionadaId] = useState(null);
+
+  // Ao trocar de sala de alternativa, resetar seleção e estado de respondido
+  useEffect(() => {
+    setRespondido(false);
+    setSelecionadaId(null);
+  }, [sala?.id, sala?.nome, sala?.texto]);
 
   // Recupera código da sessão e nome do aluno para uso na pontuação
   const { codigoSessao, nomeAluno } = useMemo(() => {

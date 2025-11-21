@@ -11,6 +11,7 @@ const ResultadosAventura = () => {
   const [aventura, setAventura] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [shouldEvaluateSite, setShouldEvaluateSite] = useState(true);
+  const [jogadores, setJogadores] = useState([]);
 
   // Carrega os dados da aventura do backend usando o _id da URL
   useEffect(() => {
@@ -51,17 +52,30 @@ const ResultadosAventura = () => {
         // silencioso; mantém default true
       }
     })();
-  }, [aventuraId, navigate]);
 
-  // --- DADOS DE EXEMPLO PARA A TABELA ---
-  // TODO: Substituir por dados reais quando o backend suportar
-  const dadosJogadoresExemplo = [
-    { id: 1, nome: 'jogador 1', respondidas: 4, corretas: 3 },
-    { id: 2, nome: 'jogador 2', respondidas: 5, corretas: 5 },
-    { id: 3, nome: 'jogador 3', respondidas: 6, corretas: 5 },
-    { id: 4, nome: 'jogador 4', respondidas: 3, corretas: 3 },
-  ];
-  // --- FIM DOS DADOS DE EXEMPLO ---
+    // Carrega jogadores (alunos) e seus pontos da sessão atual (localStorage)
+    (async () => {
+      try {
+        const sessaoLocal = JSON.parse(localStorage.getItem('sessao_atual')) || null;
+        const sessaoId = sessaoLocal?.id;
+        if (!sessaoId) return; // sem sessão atual
+        const resSessao = await fetch(`${API_URL}/sessoes/${sessaoId}`, { credentials: 'include' });
+        if (!resSessao.ok) return;
+        const sessaoData = await resSessao.json();
+        const arrAlunos = Array.isArray(sessaoData?.alunos) ? sessaoData.alunos : [];
+        // Ordena por pontos desc, depois por nome
+        arrAlunos.sort((a, b) => {
+          const pa = Number(a.pontos || 0);
+          const pb = Number(b.pontos || 0);
+          if (pb !== pa) return pb - pa;
+          return String(a.nome || '').localeCompare(String(b.nome || ''));
+        });
+        setJogadores(arrAlunos);
+      } catch (e) {
+        // silencioso
+      }
+    })();
+  }, [aventuraId, navigate]);
 
   const handleEncerrar = () => {
     if (shouldEvaluateSite) {
@@ -87,27 +101,31 @@ const ResultadosAventura = () => {
           <h2 className="status-concluido">Concluído</h2>
           <h1 className="titulo-aventura-resultados">{aventura.titulo}</h1>
           <p className="descricao-resultados">
-            {/* TODO: Adicionar um campo de descrição à aventura ou usar texto padrão */}
-            Norem ipsum dolor sit amet consectetur Norem ipsum dolor sit amet consectetur.
-            Norem ipsum dolor sit amet consectetur Norem ipsum dolor sit amet consectetur.
+            O desempenho dos seus aventureiros foi exemplar!
           </p>
 
           <div className="tabela-resultados">
             {/* Cabeçalho da Tabela */}
             <div className="tabela-header">
               <div className="tabela-coluna th">Jogadores</div>
-              <div className="tabela-coluna th">Perguntas Respondidas</div>
-              <div className="tabela-coluna th">Respostas Corretas</div>
+              <div className="tabela-coluna th">Pontos</div>
             </div>
 
-            {/* Linhas da Tabela (com dados de exemplo) */}
-            {dadosJogadoresExemplo.map((jogador) => (
-              <div className="tabela-linha" key={jogador.id}>
-                <div className="tabela-coluna">{jogador.nome}</div>
-                <div className="tabela-coluna">{jogador.respondidas}</div>
-                <div className="tabela-coluna">{jogador.corretas}</div>
+            {/* Linhas da Tabela com dados reais de jogadores e pontos */}
+            {jogadores.length === 0 ? (
+              <div className="tabela-linha">
+                <div className="tabela-coluna" style={{ gridColumn: '1 / -1', opacity: 0.8 }}>
+                  Nenhum jogador encontrado nesta sessão.
+                </div>
               </div>
-            ))}
+            ) : (
+              jogadores.map((jogador, idx) => (
+                <div className="tabela-linha" key={`${jogador.nome}-${idx}`}>
+                  <div className="tabela-coluna">{jogador.nome}</div>
+                  <div className="tabela-coluna">{Number(jogador.pontos || 0)}</div>
+                </div>
+              ))
+            )}
           </div>
 
           <button className="btn-jogo vermelho btn-encerrar-resultados" onClick={handleEncerrar}>

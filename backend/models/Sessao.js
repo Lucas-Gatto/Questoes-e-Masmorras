@@ -36,6 +36,8 @@ const SessaoSchema = new mongoose.Schema({
   readingEndsAt: { type: Date, default: null },
   // Flags por sala para revelar resposta do Enigma aos alunos
   enigmaReveladoPorSala: { type: [Boolean], default: [] },
+  // Valor atual da rolagem de dado (Nível Pergunta)
+  currentRollValue: { type: Number, default: 2 },
   // Avaliações (média e quantidade)
   avaliacaoMedia: { type: Number, default: 0 },
   avaliacaoCount: { type: Number, default: 0 },

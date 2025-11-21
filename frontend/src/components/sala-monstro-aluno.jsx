@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import API_URL from "../config";
 // Usa estilos da página do mestre via salas-aluno.jsx
 
 const getVidaPercentual = (vidaMonstro) => {
@@ -28,11 +29,29 @@ const SalaMonstro = ({ sala, currentPlayerName = '—', timerText = '00:30', tur
       setHasRolled(false);
     }, [currentPlayerName, turnEndsAt]);
 
-    const handleRollDice = () => {
+    // Código da sessão para sincronizar valor da rolagem com backend
+    const codigoSessao = useMemo(() => {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("codigo") || localStorage.getItem("sessao_codigo") || "";
+    }, []);
+
+    const handleRollDice = async () => {
       if (!isMyTurn || hasRolled) return;
       const roll = Math.floor(Math.random() * 6) + 1; // 1-6
       setNivelPergunta(roll);
       setHasRolled(true);
+      // Envia valor da rolagem ao backend para o professor visualizar
+      try {
+        if (codigoSessao) {
+          await fetch(`${API_URL}/sessoes/by-code/${codigoSessao}/monstro/roll`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ valor: roll })
+          });
+        }
+      } catch (_) {
+        // silencioso: a rolagem local permanece
+      }
     };
     // Se não há dados da sala, mostra carregamento
     if (!sala) {

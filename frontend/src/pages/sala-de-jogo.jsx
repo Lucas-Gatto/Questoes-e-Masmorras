@@ -44,6 +44,7 @@ const SalaDeJogo = () => {
   const [tickNow, setTickNow] = useState(Date.now());
   const [advancing, setAdvancing] = useState(false);
   const [showModalAlunos, setShowModalAlunos] = useState(false); // Controle do modal de seleção de alunos
+  const [currentRollValue, setCurrentRollValue] = useState(2);
 
   // Efeito para carregar a aventura do backend ao montar
   useEffect(() => {
@@ -163,6 +164,9 @@ const SalaDeJogo = () => {
         setAlunos(Array.isArray(data.alunos) ? data.alunos : []);
         setCurrentPlayerIndex(Number(data.currentPlayerIndex || 0));
         setTurnEndsAt(data.turnEndsAt || null);
+        if (data.currentRollValue != null) {
+          setCurrentRollValue(Number(data.currentRollValue) || 2);
+        }
       }
     } catch (e) {
       console.warn('Erro ao carregar alunos:', e);
@@ -289,7 +293,7 @@ const SalaDeJogo = () => {
                 </div>
                 <div className="pergunta-nivel-professor">
                   {/* TODO: Lógica futura para definir o nível da pergunta */}
-                  <span>Pergunta de Nível: <strong>2</strong></span>
+                  <span>Pergunta de Nível: <strong>{currentRollValue}</strong></span>
                 </div>
                 <div className="turno-jogador">
                   {/* TODO: Lógica futura para definir o jogador da vez */}

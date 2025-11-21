@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createSessao, getSessaoById, getSessaoByCode, addAlunoByCode, setClasseByCode, advanceSala, startSessao, finishSessao, avaliarSessaoByCode, awardPontoAlunoByBody, revealEnigma, awardPontoAlunoByCode, advanceTurn, advanceTurnByCode, startTurn, startTurnByCode } = require('../controllers/sessaoController');
+const { createSessao, getSessaoById, getSessaoByCode, addAlunoByCode, setClasseByCode, advanceSala, startSessao, finishSessao, avaliarSessaoByCode, awardPontoAlunoByBody, revealEnigma, awardPontoAlunoByCode, advanceTurn, advanceTurnByCode, startTurn, startTurnByCode, setRollValueByCode } = require('../controllers/sessaoController');
 const ensureAuth = require('../middleware/ensureAuth');
 
 // Rotas do aluno (públicas)
@@ -11,6 +11,8 @@ router.post('/by-code/:codigo/avaliacao', avaliarSessaoByCode);
 router.put('/by-code/:codigo/alunos/ponto', awardPontoAlunoByCode);
 router.put('/by-code/:codigo/turn/next', advanceTurnByCode);
 router.put('/by-code/:codigo/turn/start', startTurnByCode);
+// Atualiza valor de rolagem (Nível Pergunta)
+router.put('/by-code/:codigo/monstro/roll', setRollValueByCode);
 
 // Rotas do professor (autenticadas)
 router.post('/', ensureAuth, createSessao);

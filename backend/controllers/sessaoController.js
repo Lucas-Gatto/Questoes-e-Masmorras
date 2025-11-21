@@ -59,9 +59,33 @@ exports.getSessaoByCode = async (req, res) => {
       currentPlayerIndex: Number(sessao.currentPlayerIndex || 0),
       turnEndsAt: sessao.turnEndsAt || null,
       readingEndsAt: sessao.readingEndsAt || null,
+      currentRollValue: Number(sessao.currentRollValue || 2),
     });
   } catch (err) {
     res.status(500).json({ message: 'Erro ao buscar sessão', details: err?.message });
+  }
+};
+
+// Atualiza valor de rolagem (Nível Pergunta) por código da sessão
+exports.setRollValueByCode = async (req, res) => {
+  try {
+    const { codigo } = req.params;
+    const { valor } = req.body;
+    const num = Number(valor);
+    if (!Number.isFinite(num) || num < 1 || num > 6) {
+      return res.status(400).json({ message: 'Valor de rolagem inválido. Use 1 a 6.' });
+    }
+    const sessao = await Sessao.findOne({ codigo });
+    if (!sessao) return res.status(404).json({ message: 'Sessão não encontrada' });
+    // Permitir atualização apenas enquanto a sessão não estiver finalizada
+    if (sessao.status === 'finished') {
+      return res.status(400).json({ message: 'Sessão encerrada' });
+    }
+    sessao.currentRollValue = num;
+    await sessao.save();
+    res.status(200).json({ currentRollValue: sessao.currentRollValue });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao atualizar rolagem', details: err?.message });
   }
 };
 

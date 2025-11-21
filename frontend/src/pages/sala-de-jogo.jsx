@@ -6,15 +6,15 @@ import './sala-de-jogo.css';
 import API_URL from "../config";
 // Exemplo: import dadoIcon from '../assets/dado.png';
 
-// Função auxiliar para converter string de vida em porcentagem
-const getVidaPercentual = (vida) => {
-  switch (vida?.toLowerCase()) { // Adiciona toLowerCase para segurança
-    case 'baixa': return 25;
-    case 'média': case 'media': return 50; // Com e sem acento
-    case 'alta': return 75;
-    case 'chefe': return 100;
-    default: return 50; // Padrão
-  }
+// Calcula pontos de vida do monstro conforme número de jogadores e categoria
+const getVidaMonstroPontos = (vida, numJogadores) => {
+  const v = (vida || '').toLowerCase();
+  const n = Math.max(0, Number(numJogadores || 0));
+  if (v.includes('baixa')) return Math.floor(n / 2);
+  if (v.includes('média') || v.includes('media')) return n;
+  if (v.includes('alta')) return n * 2;
+  if (v.includes('chefe')) return n * 3;
+  return n; // padrão: média
 };
 
 // Função auxiliar para renderizar a imagem (com fallback para placeholder)
@@ -322,13 +322,28 @@ const SalaDeJogo = () => {
               </div>
               <div className="monstro-status">
                 <div className="vida-monstro-container">
-                  <span>Vida do Monstro ({sala.vidaMonstro || 'Média'})</span>
-                  <div className="vida-barra">
-                    <div
-                      className="vida-preenchimento"
-                      style={{ width: `${getVidaPercentual(sala.vidaMonstro)}%` }}>
-                    </div>
-                  </div>
+                  <span>
+                    {(() => {
+                      const totalJogadores = Array.isArray(alunos) ? alunos.length : 0;
+                      const vidaTotal = getVidaMonstroPontos(sala.vidaMonstro, totalJogadores);
+                      return `Vida do Monstro (${sala.vidaMonstro || 'Média'}): ${vidaTotal} ${vidaTotal === 1 ? 'ponto' : 'pontos'}`;
+                    })()}
+                  </span>
+                  {(() => {
+                    const totalJogadores = Array.isArray(alunos) ? alunos.length : 0;
+                    const vidaTotal = getVidaMonstroPontos(sala.vidaMonstro, totalJogadores);
+                    return (
+                      <div className="vida-barra" style={{ display: 'flex', gap: '2px', alignItems: 'center' }}>
+                        {vidaTotal > 0 ? (
+                          Array.from({ length: vidaTotal }).map((_, i) => (
+                            <div key={i} style={{ flex: 1, height: '12px', backgroundColor: '#dc3545', borderRadius: '2px' }} />
+                          ))
+                        ) : (
+                          <div style={{ width: '100%', height: '12px', backgroundColor: '#6c757d', borderRadius: '2px' }} />
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
                 <div className="pergunta-nivel-professor">
                   <span

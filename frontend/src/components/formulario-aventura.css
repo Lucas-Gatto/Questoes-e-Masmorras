@@ -247,8 +247,7 @@
     cursor: help;
     transition: background-color 0.3s ease;
     vertical-align: middle; /* alinhar com texto */
-    position: relative;
-    top: -15px; /* pequeno ajuste fino para alinhamento perfeito */
+    margin-top: -15px; /* pequeno ajuste fino para alinhamento perfeito */
 }
 
 .tooltip-icon:hover {

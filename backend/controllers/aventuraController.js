@@ -17,7 +17,9 @@ exports.createAventura = async (req, res) => {
 
 exports.listAventuras = async (req, res) => {
   try {
-    const aventuras = await Aventura.find({ createdBy: req.user._id });
+    // Retorna lista leve (sem campos pesados como salas/perguntas/imagens)
+    const aventuras = await Aventura.find({ createdBy: req.user._id })
+      .select('titulo avaliacaoMedia avaliacaoCount createdAt');
     res.json(aventuras);
   } catch (err) {
     res.status(500).json({ error: "Erro ao listar aventuras" });

@@ -18,9 +18,8 @@ const IniciarAventura = () => {
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [alunos, setAlunos] = useState([]);
   const [sessaoCriada, setSessaoCriada] = useState(false);
-  // Refs para controlar polling e cancelamento de requisições
-  const pollIdRef = useRef(null);
-  const pollAbortRef = useRef(null);
+  // Controla cancelamento de requisições de polling de alunos
+  const alunosControllerRef = useRef(null);
 
   const handleCopyLink = async () => {
     const text = joinUrl || `www.site.com/${aventuraId}`;
@@ -103,8 +102,6 @@ const IniciarAventura = () => {
       const qr = await QRCodeLib.toDataURL(url);
       setQrDataUrl(qr);
 
-      // começa polling de alunos para exibição
-      iniciarPollingAlunos(sessaoInfo.id);
       setSessaoCriada(true);
     } catch (err) {
       console.error('Falha ao criar sessão:', err);
@@ -112,50 +109,46 @@ const IniciarAventura = () => {
     }
   };
 
-  const iniciarPollingAlunos = (sessaoId) => {
-    // Limpa polling anterior, se existir
-    if (pollIdRef.current) {
-      clearInterval(pollIdRef.current);
-      pollIdRef.current = null;
-    }
-    // Função de polling com cancelamento e tratamento de 404
+  // Polling de alunos com cancelamento e pausa quando a aba estiver oculta
+  useEffect(() => {
+    if (!sessao?.id) return;
+    const sessaoId = sessao.id;
     const poll = async () => {
+      // Evita polling quando a aba estiver oculta
+      if (typeof document !== 'undefined' && document.hidden) return;
+      // Aborta requisição anterior (se houver) para evitar acúmulo
+      if (alunosControllerRef.current) {
+        try { alunosControllerRef.current.abort(); } catch (_) {}
+      }
+      const controller = new AbortController();
+      alunosControllerRef.current = controller;
       try {
-        // Cancela requisição anterior, se existir
-        if (pollAbortRef.current) {
-          try { pollAbortRef.current.abort(); } catch (_) {}
-        }
-        const controller = new AbortController();
-        pollAbortRef.current = controller;
         const res = await fetch(`${API_URL}/sessoes/${sessaoId}`, {
           credentials: 'include',
           signal: controller.signal,
         });
-        if (res.status === 404) {
-          // Sessão não existe mais: parar polling e limpar estado/storage
-          if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
-          pollAbortRef.current = null;
-          try { localStorage.removeItem('sessao_atual'); } catch (_) {}
-          setSessao(null);
-          setAlunos([]);
-          setSessaoCriada(false);
-          setJoinUrl('');
-          setQrDataUrl('');
-          return;
-        }
         if (res.ok) {
           const s = await res.json();
           setAlunos(Array.isArray(s.alunos) ? s.alunos : []);
         }
       } catch (e) {
-        // silencioso
+        if (e?.name !== 'AbortError') {
+          // silencioso
+        }
+      }
+      // Limpa referência após finalizar ciclo
+      alunosControllerRef.current = null;
+    };
+    const id = setInterval(poll, 2000);
+    // Dispara imediatamente
+    poll();
+    return () => {
+      clearInterval(id);
+      if (alunosControllerRef.current) {
+        try { alunosControllerRef.current.abort(); } catch (_) {}
       }
     };
-    // Inicia polling com intervalo mais longo (5s)
-    pollIdRef.current = setInterval(poll, 5000);
-    // Executa uma vez imediatamente
-    poll();
-  };
+  }, [sessao?.id]);
 
   // Ao carregar a aventura, cria a sessão automaticamente uma única vez
   useEffect(() => {

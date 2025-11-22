@@ -59,6 +59,9 @@ const AventuraSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
+// Índice para consultas por usuário criador (acelera listagem)
+AventuraSchema.index({ createdBy: 1, createdAt: -1 });
+
 // Exporta o modelo principal 'Aventura'
 // O terceiro parâmetro ('Aventuras') define o nome da coleção no MongoDB
 module.exports = mongoose.model("Aventura", AventuraSchema, 'Aventuras');

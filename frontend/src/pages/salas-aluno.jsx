@@ -17,9 +17,8 @@ const SalasAluno = () => {
   const [timeLeft, setTimeLeft] = useState(30);
   const [advancing, setAdvancing] = useState(false);
   const [monstroVidaAtual, setMonstroVidaAtual] = useState(null);
-  // Refs para controlar polling e cancelamento de requisições
-  const pollIdRef = useRef(null);
-  const pollAbortRef = useRef(null);
+  // Controla cancelamento de requisições de polling
+  const pollControllerRef = useRef(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -28,29 +27,16 @@ const SalasAluno = () => {
     if (!c) return;
 
     const poll = async () => {
+      // Evita polling quando a aba estiver oculta
+      if (typeof document !== 'undefined' && document.hidden) return;
+      // Aborta request anterior, se houver
+      if (pollControllerRef.current) {
+        try { pollControllerRef.current.abort(); } catch (_) {}
+      }
+      const controller = new AbortController();
+      pollControllerRef.current = controller;
       try {
-        // Cancela requisição anterior, se existir
-        if (pollAbortRef.current) {
-          try { pollAbortRef.current.abort(); } catch (_) {}
-        }
-        const controller = new AbortController();
-        pollAbortRef.current = controller;
-        const res = await fetch(`${API_URL}/sessoes/by-code/${c}`);
-        if (res.status === 404) {
-          // Sessão não existe mais: parar polling e limpar estado/storage
-          if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
-          pollAbortRef.current = null;
-          try { localStorage.removeItem('sessao_codigo'); } catch (_) {}
-          setCodigoSessao('');
-          setSnapshot(null);
-          setSalaAtual(null);
-          setEnigmaFlags([]);
-          setAlunos([]);
-          setCurrentPlayerIndex(0);
-          setTurnEndsAt(null);
-          setMonstroVidaAtual(null);
-          return;
-        }
+        const res = await fetch(`${API_URL}/sessoes/by-code/${c}`, { signal: controller.signal });
         if (res.ok) {
           const data = await res.json();
           // Se a sessão terminou, redireciona para avaliação
@@ -76,7 +62,8 @@ const SalasAluno = () => {
           }
         }
       } catch (e) {
-        // silencioso
+        // silencioso, exceto abort
+        if (e?.name !== 'AbortError') {}
       }
     };
 
@@ -84,23 +71,12 @@ const SalasAluno = () => {
     if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
     pollIdRef.current = setInterval(poll, 5000);
     poll();
-
-    const onVisibilityChange = () => {
-      const isHidden = document.visibilityState === 'hidden';
-      if (isHidden) {
-        if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
-        if (pollAbortRef.current) { try { pollAbortRef.current.abort(); } catch (_) {} pollAbortRef.current = null; }
-      } else if (!pollIdRef.current && c) {
-        pollIdRef.current = setInterval(poll, 5000);
-        poll();
-      }
-    };
-    document.addEventListener('visibilitychange', onVisibilityChange);
-
     return () => {
-      document.removeEventListener('visibilitychange', onVisibilityChange);
-      if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
-      if (pollAbortRef.current) { try { pollAbortRef.current.abort(); } catch (_) {} pollAbortRef.current = null; }
+      clearInterval(intervalId);
+      // Aborta qualquer request em voo
+      if (pollControllerRef.current) {
+        try { pollControllerRef.current.abort(); } catch (_) {}
+      }
     };
   }, []);
 

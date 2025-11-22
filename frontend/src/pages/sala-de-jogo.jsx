@@ -48,9 +48,8 @@ const SalaDeJogo = () => {
   const [showModalPergunta, setShowModalPergunta] = useState(false);
   const [textoPerguntaRolagem, setTextoPerguntaRolagem] = useState('');
   const [monstroVidaAtual, setMonstroVidaAtual] = useState(null);
-  // Refs para controlar polling e cancelamento de requisições
-  const pollIdRef = useRef(null);
-  const pollAbortRef = useRef(null);
+  // Controla cancelamento de requisições de polling de alunos
+  const alunosControllerRef = useRef(null);
 
   // Efeito para carregar a aventura do backend ao montar
   useEffect(() => {
@@ -95,29 +94,18 @@ const SalaDeJogo = () => {
     // Atualiza uma vez imediatamente
     carregarAlunos();
     const idTimer = setInterval(() => setTickNow(Date.now()), 500);
-    // Inicia polling com intervalo maior e controlado
-    const startPoll = () => {
-      if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
-      pollIdRef.current = setInterval(() => carregarAlunos(), 5000);
-    };
-    startPoll();
-
-    const onVisibilityChange = () => {
-      const isHidden = document.visibilityState === 'hidden';
-      if (isHidden) {
-        if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
-        if (pollAbortRef.current) { try { pollAbortRef.current.abort(); } catch (_) {} pollAbortRef.current = null; }
-      } else if (!pollIdRef.current) {
-        startPoll();
-      }
-    };
-    document.addEventListener('visibilitychange', onVisibilityChange);
-
+    const idPoll = setInterval(() => {
+      // Evita polling quando a aba estiver oculta
+      if (typeof document !== 'undefined' && document.hidden) return;
+      carregarAlunos();
+    }, 3000);
     return () => {
-      document.removeEventListener('visibilitychange', onVisibilityChange);
       clearInterval(idTimer);
-      if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
-      if (pollAbortRef.current) { try { pollAbortRef.current.abort(); } catch (_) {} pollAbortRef.current = null; }
+      clearInterval(idPoll);
+      // Aborta qualquer request em voo
+      if (alunosControllerRef.current) {
+        try { alunosControllerRef.current.abort(); } catch (_) {}
+      }
     };
   }, [sessaoAtual?.id]);
 
@@ -187,13 +175,13 @@ const SalaDeJogo = () => {
   // Carrega a lista de alunos da sessão atual
   const carregarAlunos = async () => {
     if (!sessaoAtual?.id) return;
+    // Aborta requisição anterior (se houver) para evitar acúmulo de chamadas
+    if (alunosControllerRef.current) {
+      try { alunosControllerRef.current.abort(); } catch (_) {}
+    }
+    const controller = new AbortController();
+    alunosControllerRef.current = controller;
     try {
-      // Cancela requisição anterior, se existir
-      if (pollAbortRef.current) {
-        try { pollAbortRef.current.abort(); } catch (_) {}
-      }
-      const controller = new AbortController();
-      pollAbortRef.current = controller;
       const res = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}`, {
         credentials: 'include',
         signal: controller.signal,
@@ -224,8 +212,10 @@ const SalaDeJogo = () => {
         }
       }
     } catch (e) {
-      // silencioso
+      if (e?.name !== 'AbortError') console.warn('Erro ao carregar alunos:', e);
     }
+    // Limpa referência após finalizar
+    alunosControllerRef.current = null;
   };
 
   // Revela resposta do Enigma e sincroniza com backend

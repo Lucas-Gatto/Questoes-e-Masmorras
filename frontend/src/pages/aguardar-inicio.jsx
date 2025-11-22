@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './aguardar-inicio.css';
 import API_URL from "../config";
@@ -8,6 +8,9 @@ const AguardarInicio = () => {
   const [codigoSessao, setCodigoSessao] = useState('');
   const [nomeAluno, setNomeAluno] = useState('');
   const [aventuraTitulo, setAventuraTitulo] = useState('');
+  // Refs para controlar polling e cancelamento de requisições
+  const pollIdRef = useRef(null);
+  const pollAbortRef = useRef(null);
 
   useEffect(() => {
     // Recupera dados da sessão
@@ -33,15 +36,32 @@ const AguardarInicio = () => {
     // Polling para verificar se a sessão foi iniciada
     const poll = async () => {
       try {
+        // Cancela requisição anterior, se existir
+        if (pollAbortRef.current) {
+          try { pollAbortRef.current.abort(); } catch (_) {}
+        }
+        const controller = new AbortController();
+        pollAbortRef.current = controller;
         const res = await fetch(`${API_URL}/sessoes/by-code/${codigo}`);
+        if (res.status === 404) {
+          // Sessão não existe mais: parar polling e limpar estado/storage
+          if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
+          pollAbortRef.current = null;
+          try { localStorage.removeItem('sessao_codigo'); } catch (_) {}
+          setCodigoSessao('');
+          setAventuraTitulo('');
+          alert('Sessão não encontrada. Volte ao link da aventura.');
+          navigate('/');
+          return;
+        }
         if (res.ok) {
           const data = await res.json();
-          
+
           // Salva o título da aventura se disponível
           if (data.aventuraSnapshot?.titulo) {
             setAventuraTitulo(data.aventuraSnapshot.titulo);
           }
-          
+
           // Se a sessão foi iniciada (status 'active'), redireciona para as salas
           if (data.status === 'active') {
             navigate(`/salas-aluno?codigo=${codigo}`);
@@ -52,11 +72,28 @@ const AguardarInicio = () => {
       }
     };
 
-    // Faz polling a cada 2 segundos
-    const intervalId = setInterval(poll, 2000);
+    // Faz polling com intervalo maior (5s)
+    if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
+    pollIdRef.current = setInterval(poll, 5000);
     poll(); // Executa imediatamente também
 
-    return () => clearInterval(intervalId);
+    const onVisibilityChange = () => {
+      const isHidden = document.visibilityState === 'hidden';
+      if (isHidden) {
+        if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
+        if (pollAbortRef.current) { try { pollAbortRef.current.abort(); } catch (_) {} pollAbortRef.current = null; }
+      } else if (!pollIdRef.current && codigo) {
+        pollIdRef.current = setInterval(poll, 5000);
+        poll();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
+      if (pollAbortRef.current) { try { pollAbortRef.current.abort(); } catch (_) {} pollAbortRef.current = null; }
+    };
   }, [navigate]);
 
   return (

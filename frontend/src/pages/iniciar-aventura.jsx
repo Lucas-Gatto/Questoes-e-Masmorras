@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import HeaderAventura from "../components/HeaderAventura.jsx";
 import Footer from "../components/footer.jsx";
@@ -18,6 +18,9 @@ const IniciarAventura = () => {
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [alunos, setAlunos] = useState([]);
   const [sessaoCriada, setSessaoCriada] = useState(false);
+  // Refs para controlar polling e cancelamento de requisições
+  const pollIdRef = useRef(null);
+  const pollAbortRef = useRef(null);
 
   const handleCopyLink = async () => {
     const text = joinUrl || `www.site.com/${aventuraId}`;
@@ -110,10 +113,36 @@ const IniciarAventura = () => {
   };
 
   const iniciarPollingAlunos = (sessaoId) => {
-    // atualiza lista de alunos a cada 2s
-    const intervalId = setInterval(async () => {
+    // Limpa polling anterior, se existir
+    if (pollIdRef.current) {
+      clearInterval(pollIdRef.current);
+      pollIdRef.current = null;
+    }
+    // Função de polling com cancelamento e tratamento de 404
+    const poll = async () => {
       try {
-        const res = await fetch(`${API_URL}/sessoes/${sessaoId}`, { credentials: 'include' });
+        // Cancela requisição anterior, se existir
+        if (pollAbortRef.current) {
+          try { pollAbortRef.current.abort(); } catch (_) {}
+        }
+        const controller = new AbortController();
+        pollAbortRef.current = controller;
+        const res = await fetch(`${API_URL}/sessoes/${sessaoId}`, {
+          credentials: 'include',
+          signal: controller.signal,
+        });
+        if (res.status === 404) {
+          // Sessão não existe mais: parar polling e limpar estado/storage
+          if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
+          pollAbortRef.current = null;
+          try { localStorage.removeItem('sessao_atual'); } catch (_) {}
+          setSessao(null);
+          setAlunos([]);
+          setSessaoCriada(false);
+          setJoinUrl('');
+          setQrDataUrl('');
+          return;
+        }
         if (res.ok) {
           const s = await res.json();
           setAlunos(Array.isArray(s.alunos) ? s.alunos : []);
@@ -121,9 +150,11 @@ const IniciarAventura = () => {
       } catch (e) {
         // silencioso
       }
-    }, 2000);
-    // limpa ao sair
-    return () => clearInterval(intervalId);
+    };
+    // Inicia polling com intervalo mais longo (5s)
+    pollIdRef.current = setInterval(poll, 5000);
+    // Executa uma vez imediatamente
+    poll();
   };
 
   // Ao carregar a aventura, cria a sessão automaticamente uma única vez
@@ -141,6 +172,9 @@ const IniciarAventura = () => {
         console.log(
           `Iniciando a aventura "${aventura.titulo}"... Chamando backend para iniciar sessão`
         );
+        // Parar polling antes de iniciar o jogo
+        if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
+        if (pollAbortRef.current) { try { pollAbortRef.current.abort(); } catch (_) {} pollAbortRef.current = null; }
         const res = await fetch(`${API_URL}/sessoes/${sessao.id}/start`, {
           method: "PUT",
           credentials: "include",
@@ -164,6 +198,25 @@ const IniciarAventura = () => {
       );
     }
   };
+
+  // Pausar/retomar polling conforme visibilidade da aba e limpar ao desmontar
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      const isHidden = document.visibilityState === 'hidden';
+      if (isHidden) {
+        if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
+        if (pollAbortRef.current) { try { pollAbortRef.current.abort(); } catch (_) {} pollAbortRef.current = null; }
+      } else if (!pollIdRef.current && sessao?.id) {
+        iniciarPollingAlunos(sessao.id);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
+      if (pollAbortRef.current) { try { pollAbortRef.current.abort(); } catch (_) {} pollAbortRef.current = null; }
+    };
+  }, [sessao?.id]);
 
   // Tela de carregamento
   if (!aventura) {

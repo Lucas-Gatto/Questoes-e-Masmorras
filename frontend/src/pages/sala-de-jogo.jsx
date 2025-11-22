@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import HeaderAventura from '../components/HeaderAventura.jsx';
 import Footer from '../components/footer.jsx';
@@ -48,6 +48,9 @@ const SalaDeJogo = () => {
   const [showModalPergunta, setShowModalPergunta] = useState(false);
   const [textoPerguntaRolagem, setTextoPerguntaRolagem] = useState('');
   const [monstroVidaAtual, setMonstroVidaAtual] = useState(null);
+  // Refs para controlar polling e cancelamento de requisições
+  const pollIdRef = useRef(null);
+  const pollAbortRef = useRef(null);
 
   // Efeito para carregar a aventura do backend ao montar
   useEffect(() => {
@@ -89,10 +92,33 @@ const SalaDeJogo = () => {
   // Atualiza exibição do timer do mestre e carrega alunos ao ter sessão
   useEffect(() => {
     if (!sessaoAtual?.id) return;
+    // Atualiza uma vez imediatamente
     carregarAlunos();
     const idTimer = setInterval(() => setTickNow(Date.now()), 500);
-    const idPoll = setInterval(() => carregarAlunos(), 3000);
-    return () => { clearInterval(idTimer); clearInterval(idPoll); };
+    // Inicia polling com intervalo maior e controlado
+    const startPoll = () => {
+      if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
+      pollIdRef.current = setInterval(() => carregarAlunos(), 5000);
+    };
+    startPoll();
+
+    const onVisibilityChange = () => {
+      const isHidden = document.visibilityState === 'hidden';
+      if (isHidden) {
+        if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
+        if (pollAbortRef.current) { try { pollAbortRef.current.abort(); } catch (_) {} pollAbortRef.current = null; }
+      } else if (!pollIdRef.current) {
+        startPoll();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      clearInterval(idTimer);
+      if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
+      if (pollAbortRef.current) { try { pollAbortRef.current.abort(); } catch (_) {} pollAbortRef.current = null; }
+    };
   }, [sessaoAtual?.id]);
 
 
@@ -162,9 +188,28 @@ const SalaDeJogo = () => {
   const carregarAlunos = async () => {
     if (!sessaoAtual?.id) return;
     try {
+      // Cancela requisição anterior, se existir
+      if (pollAbortRef.current) {
+        try { pollAbortRef.current.abort(); } catch (_) {}
+      }
+      const controller = new AbortController();
+      pollAbortRef.current = controller;
       const res = await fetch(`${API_URL}/sessoes/${sessaoAtual.id}`, {
-        credentials: 'include'
+        credentials: 'include',
+        signal: controller.signal,
       });
+      if (res.status === 404) {
+        // Sessão não existe mais: parar polling e limpar estado/storage
+        if (pollIdRef.current) { clearInterval(pollIdRef.current); pollIdRef.current = null; }
+        pollAbortRef.current = null;
+        try { localStorage.removeItem('sessao_atual'); } catch (_) {}
+        setSessaoAtual(null);
+        setAlunos([]);
+        setCurrentPlayerIndex(0);
+        setTurnEndsAt(null);
+        setMonstroVidaAtual(null);
+        return;
+      }
       if (res.ok) {
         const data = await res.json();
         setAlunos(Array.isArray(data.alunos) ? data.alunos : []);
@@ -179,7 +224,7 @@ const SalaDeJogo = () => {
         }
       }
     } catch (e) {
-      console.warn('Erro ao carregar alunos:', e);
+      // silencioso
     }
   };
 

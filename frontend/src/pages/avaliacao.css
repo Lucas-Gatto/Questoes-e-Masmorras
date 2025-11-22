@@ -1,11 +1,17 @@
+/* Container Principal */
 .avaliacao-container {
   background-color: rgba(0, 0, 0, 0.7);
-  padding: 100px 150px;
+  /* Desktop: padding grande original */
+  padding: 60px 100px; 
   border-radius: 20px;
   text-align: center;
   box-shadow: 0 0 10px rgba(22, 22, 22, 0.2);
-  width: fit-content;
-  margin: 50px auto;
+  
+  /* RESPONSIVIDADE: Largura fluida com limite máximo */
+  width: 90%;
+  max-width: 700px;
+  margin: 40px auto;
+  box-sizing: border-box; /* Garante que padding não estoure */
 }
 
 .titulo-avaliacao {
@@ -14,14 +20,17 @@
   font-size: 28px;
   margin-bottom: 20px;
   text-shadow: 0 0 10px rgba(255, 200, 0, 0.4);
+  line-height: 1.2;
 }
 
+/* Estrelas */
 .estrelas {
   display: flex;
   justify-content: center;
   gap: 10px;
   font-size: 45px;
   cursor: pointer;
+  flex-wrap: wrap; /* Permite quebrar linha se tela for minúscula */
 }
 
 .estrela {
@@ -48,24 +57,20 @@
   font-family: 'Trebuchet MS', sans-serif;
 }
 
-.mensagem-avaliacao {
-  color: white;
-  margin-top: 15px;
-  font-size: 18px;
-  font-family: 'Trebuchet MS', sans-serif;
-}
-
-/* Campo de comentário */
+/* Formulário */
 .form-avaliacao {
   margin-top: 25px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 15px;
+  width: 100%;
 }
 
 .campo-comentario {
-  width: 400px;
+  /* RESPONSIVIDADE: 100% da largura do container pai */
+  width: 100%; 
+  max-width: 500px; /* Limite para não ficar muito largo em desktop */
   height: 120px;
   background-color: rgba(255, 200, 0, 0.1);
   border: 2px solid #dca519;
@@ -73,10 +78,11 @@
   color: white;
   font-size: 16px;
   padding: 12px;
-  resize: none;
+  resize: vertical; /* Permite redimensionar apenas altura */
   outline: none;
   transition: 0.3s ease;
   font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box; /* Essencial para não vazar */
 }
 
 .campo-comentario::placeholder {
@@ -85,7 +91,6 @@
 
 .campo-comentario:focus {
   box-shadow: 0 0 10px rgba(255, 200, 0, 0.4);
-  
 }
 
 /* Botão */
@@ -95,25 +100,54 @@
   color: black;
   font-weight: bold;
   font-size: 16px;
-  padding: 10px 20px;
+  padding: 12px 30px;
   border-radius: 10px;
   cursor: pointer;
   transition: 0.3s ease;
-  margin-top: 25px;
+  margin-top: 20px;
   font-family: "MedievalSharp", cursive;
+  max-width: 100%;
 }
 
 .botao-enviar:hover {
-    
   background-color: #ffcc00;
   transform: scale(1.05);
 }
 
 /* Mensagem de sucesso */
 .mensagem-sucesso {
-margin-top: 20px;
+  margin-top: 20px;
   color: #ffffff;
   font-size: 18px;
-  margin-top: 15px;
   text-shadow: 0 0 10px rgba(255, 200, 0, 0.5);
+}
+
+/* ============================================================
+   RESPONSIVIDADE (MOBILE)
+   ============================================================ */
+@media (max-width: 600px) {
+  .avaliacao-container {
+    /* Reduz padding drásticamente para ganhar espaço */
+    padding: 40px 20px;
+    width: 95%;
+    margin: 20px auto;
+  }
+
+  .titulo-avaliacao {
+    font-size: 1.5rem; /* 24px aprox */
+  }
+
+  .estrelas {
+    font-size: 35px; /* Estrelas um pouco menores */
+    gap: 5px;
+  }
+
+  .campo-comentario {
+    font-size: 1rem;
+  }
+
+  .botao-enviar {
+    width: 100%; /* Botão ocupa largura total no mobile */
+    padding: 15px;
+  }
 }
